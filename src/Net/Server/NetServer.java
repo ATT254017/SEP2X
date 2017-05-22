@@ -18,6 +18,7 @@ public class NetServer implements Runnable, DataReceivedAction {
 	private Thread runner;
 	
 	public NetServer(int port) throws IOException {
+		methodHandlers = new HashMap<String, ServerMethodHandler>();
 		listenerSocket = new ServerSocket(port);
 		runner = new Thread(this);
 		runner.start();

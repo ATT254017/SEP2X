@@ -1,6 +1,8 @@
 package Net.Client;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import Net.NetMessage;
 import Net.SocketHandler;
@@ -10,6 +12,10 @@ public class NetClient {
 	private SocketHandler socketHandler;
 	private int requestNum = 0;
 	
+	public NetClient(String host, int port) throws UnknownHostException, IOException
+	{
+		socketHandler = new SocketHandler(new Socket(host, port));
+	}
 	public ServerResponse runServerMethod(String method, Object... args) {
 		int thisRequestID = requestNum++;
 		HashMap<String, Object> params = new HashMap<>();
