@@ -34,6 +34,23 @@ public class SocketHandler implements Runnable {
 
 	@Override
 	public void run() {
-		
+		while (true) {
+			NetMessage msg = null;
+			try {
+				msg = (NetMessage) inputStream.readObject();
+			} 
+			catch (IOException ex) {
+				return;
+			}
+			catch(ClassNotFoundException ex){
+				return;
+			}
+
+			for (DataReceivedAction data : dataReceivedActionListeners) {
+				if (data != null)
+					data.dataReceived(this, msg);
+			}
+		}
+		//Exception happened, should probably notify that the connection is closed.
 	}
 }
