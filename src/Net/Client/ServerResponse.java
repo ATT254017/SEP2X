@@ -44,6 +44,7 @@ public class ServerResponse implements DataReceivedAction  {
 			if(reqID == this.id)
 			{
 				//the response i was looking for.
+				socket.removeDataReceivedListener(this); //so i don't care about further messages
 				response = getParameters(params);
 				status = ResponseStatus.Ready;
 			}
