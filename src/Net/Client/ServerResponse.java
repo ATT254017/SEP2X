@@ -39,6 +39,6 @@ public class ServerResponse implements DataReceivedAction {
 
 	@Override
 	public void dataReceived(SocketHandler socket, NetMessage net) {
-		
+		net.getParams().get(net);
 	}
 }
