@@ -1,8 +1,9 @@
 package Net;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class NetMessage {
+public class NetMessage implements Serializable{
 	private String msg;
 	private Map<String, Object> params;
 	

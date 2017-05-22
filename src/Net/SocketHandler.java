@@ -14,8 +14,10 @@ public class SocketHandler implements Runnable {
 	
 	public SocketHandler(Socket connection) throws IOException {
 		dataReceivedActionListeners = new ArrayList<>();
-		inputStream = new ObjectInputStream(connection.getInputStream());
 		outputStream = new ObjectOutputStream(connection.getOutputStream());
+		System.out.println("getting input");
+		inputStream = new ObjectInputStream(connection.getInputStream());
+		System.out.println("getting input");
 		runner = new Thread(this);
 		runner.start();
 	}

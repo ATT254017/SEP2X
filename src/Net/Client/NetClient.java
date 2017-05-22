@@ -14,7 +14,8 @@ public class NetClient {
 	
 	public NetClient(String host, int port) throws UnknownHostException, IOException
 	{
-		socketHandler = new SocketHandler(new Socket(host, port));
+		Socket socket = new Socket(host, port);
+		socketHandler = new SocketHandler(socket);
 	}
 	public ServerResponse runServerMethod(String method, Object... args) {
 		int thisRequestID = requestNum++;

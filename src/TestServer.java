@@ -18,6 +18,8 @@ public class TestServer {
 				return null;
 			}
 		});
+		
+		System.out.println("Server started");
 	}
 
 }
