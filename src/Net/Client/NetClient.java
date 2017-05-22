@@ -24,6 +24,7 @@ public class NetClient {
 			socketHandler.send(new NetMessage(method, params));
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
 		
 		ServerResponse response = new ServerResponse(thisRequestID, responseTimeout);
