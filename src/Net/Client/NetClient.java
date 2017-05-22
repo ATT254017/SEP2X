@@ -2,7 +2,6 @@ package Net.Client;
 
 import java.io.IOException;
 import java.util.HashMap;
-
 import Net.NetMessage;
 import Net.SocketHandler;
 
