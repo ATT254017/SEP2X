@@ -53,7 +53,7 @@ public class NetServer implements Runnable, DataReceivedAction {
 
 	@Override
 	public void dataReceived(SocketHandler socket, NetMessage net) {
-		System.out.println("recv somethin");
+		System.out.println("Received a request");
 		if (methodHandlers.containsKey(net.getMessage())) {
 			if (net.getParams().containsKey("REQUEST_ID")) {
 				int reqID = (int) net.getParams().get("REQUEST_ID");
