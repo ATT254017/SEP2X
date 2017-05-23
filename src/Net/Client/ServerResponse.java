@@ -8,15 +8,17 @@ import Net.DataReceivedAction;
 import Net.NetMessage;
 import Net.SocketHandler;
 
-public class ServerResponse implements DataReceivedAction, StatusListener {
+public class ServerResponse implements DataReceivedAction {
 	private int id;
 	private Object[] response;
 	private ResponseStatus status;
 	private LocalDateTime timeout;
+	private ArrayList<StatusListener> statusListeners;
 
 	public ServerResponse(int id, int timeout) {
 		this.id = id;
 		this.status = ResponseStatus.InProgress;
+		statusListeners = new ArrayList<>();
 		setTimeout(timeout);
 	}
 
@@ -37,6 +39,14 @@ public class ServerResponse implements DataReceivedAction, StatusListener {
 
 	public void setTimeout(int timeout) {
 		this.timeout = LocalDateTime.now().plusNanos((long) (timeout * 1e6));
+	}
+
+	public void addStatusListener(StatusListener statusListener) {
+		statusListeners.add(statusListener);
+	}
+
+	public void removeStatusListener(StatusListener statusListener) {
+		statusListeners.add(statusListener);
 	}
 
 	@Override
@@ -63,6 +73,15 @@ public class ServerResponse implements DataReceivedAction, StatusListener {
 		}
 	}
 
+	public void fireStatusChangedEvent(StatusListener statusListener) {
+		for (int i = statusListeners.size() - 1; i > -1; i--) {
+			StatusListener subscriber = statusListeners.get(i);
+			if (subscriber != null) {
+				subscriber.statusChangeEvent(this);
+			}
+		}
+	}
+
 	private Object[] getParameters(Map<String, Object> params) {
 		ArrayList<Object> temp = new ArrayList<Object>();
 		for (int i = 0; true; i++) {
@@ -73,12 +92,5 @@ public class ServerResponse implements DataReceivedAction, StatusListener {
 				break;
 		}
 		return temp.toArray(new Object[0]);
-	}
-
-	@Override
-	public void statusChangeEvent(ServerResponse sender) {
-		if (this == sender) {
-
-		}
 	}
 }
