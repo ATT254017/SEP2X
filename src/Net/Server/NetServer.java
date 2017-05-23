@@ -75,7 +75,14 @@ public class NetServer implements Runnable, DataReceivedAction {
 				}
 
 			}
-		}
+		} else {
+            NetMessage response = new NetMessage("BAD REQUEST: NO SUCH METHOD FOUND", null);
+            try {
+                socket.send(response);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 
 	private Object[] getParameters(Map<String, Object> params) {
