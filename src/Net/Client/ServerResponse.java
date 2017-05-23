@@ -8,7 +8,7 @@ import Net.DataReceivedAction;
 import Net.NetMessage;
 import Net.SocketHandler;
 
-public class ServerResponse implements DataReceivedAction {
+public class ServerResponse implements DataReceivedAction, StatusListener {
 	private int id;
 	private Object[] response;
 	private ResponseStatus status;
@@ -73,5 +73,12 @@ public class ServerResponse implements DataReceivedAction {
 				break;
 		}
 		return temp.toArray(new Object[0]);
+	}
+
+	@Override
+	public void statusChangeEvent(ServerResponse sender) {
+		if (this == sender) {
+
+		}
 	}
 }
