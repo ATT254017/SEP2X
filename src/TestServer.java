@@ -22,6 +22,19 @@ public class TestServer {
 			}
 		});
 
+		server.addServerMethod("Method2", new ServerMethodHandler() {
+			@Override
+			public Object[] ServerMethod(Object[] args) {
+				System.out.println("CLIENT INVOKED THIS FUCKING METHOD!");
+				System.out.println("They sent:");
+				if(args != null)
+					for(int i = 0; i < args.length;i++)
+						System.out.println(args[i].toString());
+
+				return new Object[] { "sup mah bra." };
+			}
+		});
+
 		System.out.println("Server method registered");
 	}
 
