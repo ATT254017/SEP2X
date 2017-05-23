@@ -16,9 +16,13 @@ public class NetClient {
 	{
 		Socket socket = new Socket(host, port);
 		socketHandler = new SocketHandler(socket);
+		this.responseTimeout = 5000;
 	}
 	public ServerResponse runServerMethod(String method, Object... args) {
 		int thisRequestID = requestNum++;
+		ServerResponse response = new ServerResponse(thisRequestID, responseTimeout);
+		socketHandler.addDataReceivedActionListener(response);
+		
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("REQUEST_ID", thisRequestID);
 		
@@ -34,8 +38,6 @@ public class NetClient {
 			return null;
 		}
 		
-		ServerResponse response = new ServerResponse(thisRequestID, responseTimeout);
-		socketHandler.addDataReceivedActionListener(response);
 		return response;
 	}
 	

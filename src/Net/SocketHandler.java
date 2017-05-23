@@ -48,9 +48,11 @@ public class SocketHandler implements Runnable {
 				return;
 			}
 
-			for (DataReceivedAction data : dataReceivedActionListeners) {
-				if (data != null)
-					data.dataReceived(this, msg);
+			//invoke event:
+			for (int i = dataReceivedActionListeners.size() - 1; i > -1; i--) { //subscriber may unsubscribe itself during invocation, so; loop backwards.
+				DataReceivedAction subscriber = dataReceivedActionListeners.get(i);
+				if (subscriber != null)
+					subscriber.dataReceived(this, msg);
 			}
 		}
 		//Exception happened, should probably notify that the connection is closed.

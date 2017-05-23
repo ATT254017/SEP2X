@@ -3,7 +3,6 @@ package Net.Client;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Observable;
 
 import Net.DataReceivedAction;
 import Net.NetMessage;
@@ -17,13 +16,19 @@ public class ServerResponse implements DataReceivedAction {
 
 	public ServerResponse(int id, int timeout) {
 		this.id = id;
+		this.status = ResponseStatus.InProgress;
 		setTimeout(timeout);
 	}
 
 	public Object[] awaitResponse() throws InterruptedException {
-		while (status == ResponseStatus.InProgress && LocalDateTime.now().isBefore(timeout))
+		while (status == ResponseStatus.InProgress && !timedOut())
 			Thread.sleep(1);
 		return response;
+	}
+	
+	private boolean timedOut()
+	{
+		return LocalDateTime.now().isAfter(timeout);
 	}
 
 	public ResponseStatus getStatus() {
@@ -37,19 +42,24 @@ public class ServerResponse implements DataReceivedAction {
 	@Override
 	public void dataReceived(SocketHandler socket, NetMessage net) {
 		Map<String, Object> params = net.getParams();
-
 		if (net.getMessage().equals("RESPONSE")) {
 			if (params.containsKey("REQUEST_ID")) {
 				int reqID = (int) params.get("REQUEST_ID");
 				if (reqID == this.id) {
 					// the response i was looking for.
-					socket.removeDataReceivedListener(this); // so i don't care
-																// about further
+					socket.removeDataReceivedListener(this); 	// i don't care
+																// about any further
 																// messages
 					response = getParameters(params);
 					status = ResponseStatus.Ready;
+					return;
 				}
 			}
+		}
+		if(status == ResponseStatus.InProgress && timedOut())
+		{
+			socket.removeDataReceivedListener(this); 
+			status = ResponseStatus.Timeout;
 		}
 	}
 

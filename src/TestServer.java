@@ -15,7 +15,7 @@ public class TestServer {
 				for(int i = 0; i < args.length; i++)
 					System.out.println("ARG: " + args[i].toString());
 				
-				return null;
+				return new Object[] { "respss" };
 			}
 		});
 		
