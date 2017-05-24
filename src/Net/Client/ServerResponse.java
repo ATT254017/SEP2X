@@ -1,47 +1,43 @@
 package Net.Client;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
 import Net.DataReceivedAction;
 import Net.NetMessage;
 import Net.SocketHandler;
 
-public class ServerResponse implements DataReceivedAction, Runnable {
+public class ServerResponse implements DataReceivedAction, TimeOutEvent {
 	private int id;
 	private Object[] response;
 	private ResponseStatus status;
-	private LocalDateTime timeout;
 	private ArrayList<StatusListener> statusListeners;
-	private Thread runner;
+	private TimeOut timeOut;
 
 	public ServerResponse(int id, int timeout) {
-		runner = new Thread(this);
-		runner.start();
+	    timeOut = new TimeOut(timeout);
+	    timeOut.addTimeOutEventListener(this);
 		this.id = id;
 		this.status = ResponseStatus.InProgress;
 		statusListeners = new ArrayList<>();
-		setTimeout(timeout);
 	}
 
+/*
 	public Object[] awaitResponse() throws InterruptedException {
 		while (status == ResponseStatus.InProgress && !timedOut())
 			Thread.sleep(1);
 		return response;
 	}
-	
-	private boolean timedOut()
-	{
-		return LocalDateTime.now().isAfter(timeout);
-	}
+*/
 
 	public ResponseStatus getStatus() {
 		return status;
 	}
 
+/*
 	public void setTimeout(int timeout) {
 		this.timeout = LocalDateTime.now().plusNanos((long) (timeout * 1e6));
 	}
+*/
 
 	public void addStatusListener(StatusListener statusListener) {
 		statusListeners.add(statusListener);
@@ -69,12 +65,14 @@ public class ServerResponse implements DataReceivedAction, Runnable {
 				}
 			}
 		}
+		/*
 		if(status == ResponseStatus.InProgress && timedOut())
 		{
 			socket.removeDataReceivedListener(this); 
 			status = ResponseStatus.Timeout;
 			fireStatusChangedEvent();
 		}
+		*/
 	}
 
 	public void fireStatusChangedEvent() {
@@ -98,15 +96,9 @@ public class ServerResponse implements DataReceivedAction, Runnable {
 		return temp.toArray(new Object[0]);
 	}
 
-	@Override
-	public void run() {
-		while(true) {
-			if (timedOut()) {
-				status = ResponseStatus.Timeout;
-				fireStatusChangedEvent();
-				System.out.println("Request TimedOut");
-				break;
-			}
-		}
-	}
+    @Override
+    public void timeOutElapsedAction() {
+        status = ResponseStatus.Timeout;
+        fireStatusChangedEvent();
+    }
 }
