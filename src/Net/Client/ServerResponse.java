@@ -3,7 +3,6 @@ package Net.Client;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Map;
-
 import Net.DataReceivedAction;
 import Net.NetMessage;
 import Net.SocketHandler;
@@ -83,7 +82,7 @@ public class ServerResponse implements DataReceivedAction {
 	}
 
 	private Object[] getParameters(Map<String, Object> params) {
-		ArrayList<Object> temp = new ArrayList<Object>();
+		ArrayList<Object> temp = new ArrayList<>();
 		for (int i = 0; true; i++) {
 			String key = "RESP" + Integer.toString(i);
 			if (params.containsKey(key))
