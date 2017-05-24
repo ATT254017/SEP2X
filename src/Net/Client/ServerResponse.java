@@ -7,14 +7,17 @@ import Net.DataReceivedAction;
 import Net.NetMessage;
 import Net.SocketHandler;
 
-public class ServerResponse implements DataReceivedAction {
+public class ServerResponse implements DataReceivedAction, Runnable {
 	private int id;
 	private Object[] response;
 	private ResponseStatus status;
 	private LocalDateTime timeout;
 	private ArrayList<StatusListener> statusListeners;
+	private Thread runner;
 
 	public ServerResponse(int id, int timeout) {
+		runner = new Thread(this);
+		runner.start();
 		this.id = id;
 		this.status = ResponseStatus.InProgress;
 		statusListeners = new ArrayList<>();
@@ -61,6 +64,7 @@ public class ServerResponse implements DataReceivedAction {
 																// messages
 					response = getParameters(params);
 					status = ResponseStatus.Ready;
+					fireStatusChangedEvent();
 					return;
 				}
 			}
@@ -69,10 +73,11 @@ public class ServerResponse implements DataReceivedAction {
 		{
 			socket.removeDataReceivedListener(this); 
 			status = ResponseStatus.Timeout;
+			fireStatusChangedEvent();
 		}
 	}
 
-	public void fireStatusChangedEvent(StatusListener statusListener) {
+	public void fireStatusChangedEvent() {
 		for (int i = statusListeners.size() - 1; i > -1; i--) {
 			StatusListener subscriber = statusListeners.get(i);
 			if (subscriber != null) {
@@ -91,5 +96,17 @@ public class ServerResponse implements DataReceivedAction {
 				break;
 		}
 		return temp.toArray(new Object[0]);
+	}
+
+	@Override
+	public void run() {
+		while(true) {
+			if (timedOut()) {
+				status = ResponseStatus.Timeout;
+				fireStatusChangedEvent();
+				System.out.println("Request TimedOut");
+				break;
+			}
+		}
 	}
 }
