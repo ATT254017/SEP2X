@@ -18,6 +18,7 @@ public class NetClient {
 		socketHandler = new SocketHandler(socket);
 		this.responseTimeout = 5000;
 	}
+
 	public ServerResponse runServerMethod(String method, Object... args) {
 		int thisRequestID = requestNum++;
 		ServerResponse response = new ServerResponse(thisRequestID, responseTimeout);
