@@ -14,7 +14,7 @@ public class ClientControl {
 	private static final Object initInstanceLock = new Object();
 	private NetClient networkClient;
 
-	public ClientControl() {
+	private ClientControl() {
 	}
 	
 	public void setServerConnectionDetails(String host, int port) throws UnknownHostException, IOException
@@ -35,9 +35,8 @@ public class ClientControl {
 	
 	public void runServerMethod(Methods m, MethodResponseHandler responseHandler, Object... args)
 	{
-		ServerResponse response = networkClient.runServerMethod(m.getValue(), args);
-		response.addStatusListener(new StatusListener() {
-			
+		networkClient.runServerMethod(m.getValue(), args).addStatusListener(new StatusListener() 
+		{
 			@Override
 			public void statusChangeEvent(ServerResponse sender) {
 				sender.removeStatusListener(this);
