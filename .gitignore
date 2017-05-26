@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# Jar Files
+/*.jar
+
 # Log file
 *.log
 
