@@ -53,7 +53,7 @@ public class NetServer implements Runnable, DataReceivedAction {
 
 	@Override
 	public void dataReceived(SocketHandler socket, NetMessage net) {
-		System.out.println("Received a request");
+		System.out.println("recv somethin");
 		if (methodHandlers.containsKey(net.getMessage())) {
 			if (net.getParams().containsKey("REQUEST_ID")) {
 				int reqID = (int) net.getParams().get("REQUEST_ID");
@@ -75,14 +75,7 @@ public class NetServer implements Runnable, DataReceivedAction {
 				}
 
 			}
-		} else {
-            NetMessage response = new NetMessage("BAD REQUEST: NO SUCH METHOD FOUND", null);
-            try {
-                socket.send(response);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+		}
 	}
 
 	private Object[] getParameters(Map<String, Object> params) {
