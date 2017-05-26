@@ -23,13 +23,10 @@ public class TimeOut {
                 for (int i = timeOuts.size() - 1; i > -1; i--) {
                     if (LocalDateTime.now().isAfter(timeOuts.get(i).getTimer())) {
                         TimeOut temp = timeOuts.get(i);
-                       new Thread(new Runnable() {
-                           @Override
-                           public void run() {
-                               temp.fireTimeElapsedEvent();
-                           }
-                       }).start();
-                        timeOuts.remove(temp);
+                       new Thread(() -> temp.fireTimeElapsedEvent()).start();
+                       synchronized (timeOuts) {
+                        timeOuts.remove(i);
+                       }
                     }
                 }
             }
@@ -37,6 +34,11 @@ public class TimeOut {
     });
 
     public TimeOut(int timeOut) {
+
+        synchronized (timeOuts)
+        {
+        	timeOuts.add(this);
+        }
         timer = LocalDateTime.now().plusNanos(timeOut * 1000000);
         checkThread();
     }

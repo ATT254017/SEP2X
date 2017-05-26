@@ -12,6 +12,7 @@ public class ServerResponse implements DataReceivedAction, TimeOutEvent {
 	private ResponseStatus status;
 	private ArrayList<StatusListener> statusListeners;
 	private TimeOut timeOut;
+	private final Object timeoutLock = new Object();
 
 	public ServerResponse(int id, int timeout) {
 	    timeOut = new TimeOut(timeout);
@@ -19,6 +20,11 @@ public class ServerResponse implements DataReceivedAction, TimeOutEvent {
 		this.id = id;
 		this.status = ResponseStatus.InProgress;
 		statusListeners = new ArrayList<>();
+	}
+	
+	public Object[] getResponse()
+	{
+		return response;
 	}
 
 /*
@@ -55,12 +61,17 @@ public class ServerResponse implements DataReceivedAction, TimeOutEvent {
 				int reqID = (int) params.get("REQUEST_ID");
 				if (reqID == this.id) {
 					// the response i was looking for.
+					timeOut.removeTimeOutListener(this);
+					synchronized (timeoutLock) {
+						if(status == ResponseStatus.InProgress)
+							status = ResponseStatus.Ready;
+					}
 					socket.removeDataReceivedListener(this); 	// i don't care
 																// about any further
 																// messages
 					response = getParameters(params);
-					status = ResponseStatus.Ready;
-					fireStatusChangedEvent();
+					if(status == ResponseStatus.Ready)
+						fireStatusChangedEvent();
 					return;
 				}
 			}
@@ -98,7 +109,12 @@ public class ServerResponse implements DataReceivedAction, TimeOutEvent {
 
     @Override
     public void timeOutElapsedAction() {
-        status = ResponseStatus.Timeout;
-        fireStatusChangedEvent();
+		timeOut.removeTimeOutListener(this);
+    	synchronized (timeoutLock) {
+			if(status == ResponseStatus.InProgress)
+				status = ResponseStatus.Timeout;
+		}
+    	if(status == ResponseStatus.Timeout)
+    		fireStatusChangedEvent();
     }
 }
