@@ -1,6 +1,6 @@
 package Model;
 
-public enum Methods {
+public enum Method {
     SignIn("SIGN_IN", false),
     RegisterAccount("REGISTER_ACCOUNT", false);
 	
@@ -8,7 +8,7 @@ public enum Methods {
 	
     private final String value;
     private final boolean loginRequired;
-    private Methods(String val, boolean loginRequired) 
+    private Method(String val, boolean loginRequired) 
     { 
     	this.value = val;
     	this.loginRequired = loginRequired;

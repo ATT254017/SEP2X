@@ -3,7 +3,7 @@ import java.net.UnknownHostException;
 
 import Client.*;
 import Model.Account;
-import Model.Methods;
+import Model.Method;
 import Model.Person;
 
 public class TestClient {
@@ -13,7 +13,7 @@ public class TestClient {
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 		
-		clientControl.runServerMethod(Methods.RegisterAccount, blah ->
+		clientControl.runServerMethod(Method.RegisterAccount, blah ->
 		{
 			try {
 				Thread.sleep(5000);

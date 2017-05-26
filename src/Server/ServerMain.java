@@ -14,8 +14,8 @@ public class ServerMain {
 		database = new DBControl();
 		networkServer = new NetServer(listenerPort);
 		sessionIDs = new HashMap<String, Account>();
-		networkServer.addServerMethod(Methods.RegisterAccount.getValue(), e -> handleRegisterAccount(e));
-		networkServer.addServerMethod(Methods.SignIn.getValue(), e -> handleLoginAccount(e));
+		networkServer.addServerMethod(Method.RegisterAccount.getValue(), e -> handleRegisterAccount(e));
+		networkServer.addServerMethod(Method.SignIn.getValue(), e -> handleLoginAccount(e));
 	}
 
 	private Object[] handleLoginAccount(Object[] args) {
