@@ -26,7 +26,7 @@ public class DBControl {
 	public boolean registerAccount(Account account)
 	{
 		return false;
-		//
+		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
 	}
 	
 }
