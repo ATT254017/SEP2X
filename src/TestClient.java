@@ -1,15 +1,30 @@
 import java.io.IOException;
 import java.net.UnknownHostException;
 
-import Net.Client.NetClient;
-import Net.Client.ServerResponse;
+import Client.*;
+import Model.Account;
+import Model.Methods;
+import Model.Person;
 
 public class TestClient {
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-		NetClient client = new NetClient("localhost",  9999);
-		ServerResponse response = client.runServerMethod("Method1", "This", "Client", "is", "awesome!!");
-		ServerResponse response2 = client.runServerMethod("Method2", "David", "is", "a FAGG!!");
+		
+		ClientControl clientControl = ClientControl.getInstance();
+		clientControl.setServerConnectionDetails("localhost", 9999);
+		
+		clientControl.runServerMethod(Methods.RegisterAccount, blah ->
+		{
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+			}
+			System.out.println(Thread.currentThread().getId() + ": I'm out");
+			
+		}, new Account("MyUserName", "fdlgdfgk", "email", new Person(0, "firstName", "lastName", "address", 234, false)));
+		
+		
+		System.out.println(Thread.currentThread().getId() + ": I can haz response?");
 		
 		/*
 		Object[] serverResponseVars = response.awaitResponse();
