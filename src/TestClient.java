@@ -11,6 +11,7 @@ public class TestClient {
 		ServerResponse response = client.runServerMethod("Method1", "This", "Client", "is", "awesome!!");
 		ServerResponse response2 = client.runServerMethod("Method2", "David", "is", "a FAGG!!");
 		
+		/*
 		Object[] serverResponseVars = response.awaitResponse();
 		Object[] serverResponseVars2 = response2.awaitResponse();
 		System.out.println("Server returned: ");
@@ -21,7 +22,7 @@ public class TestClient {
 		System.out.println("Server returned: ");
 		if(serverResponseVars2 != null)
 			for(int i = 0; i < serverResponseVars2.length; i++)
-				System.out.println(serverResponseVars2[i].toString());
+				System.out.println(serverResponseVars2[i].toString());*/
 	}
 
 }
