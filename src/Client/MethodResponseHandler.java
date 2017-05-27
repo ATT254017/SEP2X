@@ -1,5 +1,7 @@
 package Client;
 
+import Model.MethodStatus;
+
 public interface MethodResponseHandler {
-	void handle(Object[] args);
+	void handle(MethodStatus status, Object[] args);
 }

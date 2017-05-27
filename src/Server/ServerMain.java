@@ -50,8 +50,7 @@ public class ServerMain {
 		
 		//output:
 		//0: RegisterAccountStatus - status
-		Object[] response = new Object[1];
-		response[0] = RegisterAccountStatus.UnknownError;
+		Object[] response = new Object[] { RegisterAccountStatus.UnknownError };
 		if(args.length == 1)
 		{
 			if(args[0] instanceof Account)

@@ -2,7 +2,8 @@ package Model;
 
 public enum Method {
     SignIn("SIGN_IN", false),
-    RegisterAccount("REGISTER_ACCOUNT", false);
+    RegisterAccount("REGISTER_ACCOUNT", false),
+	CreateListing("CREATE_LISTING", true);
 	
 	
 	
