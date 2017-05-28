@@ -17,10 +17,20 @@ public class ServerMain {
 		sessionIDs = new HashMap<String, Account>();
 		networkServer.addServerMethod(Method.RegisterAccount.getValue(), a -> handleRegisterAccount(a));
 		networkServer.addServerMethod(Method.SignIn.getValue(), a -> handleLoginAccount(a));
-		networkServer.addServerMethod(Method.CreateListing.getValue(), a -> handleLoginAccount(a));
-		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleLoginAccount(a));
+		networkServer.addServerMethod(Method.CreateListing.getValue(), a -> handleCreateListing(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleBuyItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.GetAccount.getValue(), a -> handleLoginAccount(a));
 		networkServer.addServerMethod(Method.GetListings.getValue(), a -> handleLoginAccount(a));
+	}
+	
+	private Object[] handleBuyItem(Object[] args, Account buyer)
+	{
+		return null;
+	}
+	
+	private Object[] handleCreateListing(Object[] args, Account owner)
+	{
+		return null;
 	}
 
 	private Object[] handleLoginAccount(Object[] args) {
@@ -70,8 +80,12 @@ public class ServerMain {
 		return response;
 	}
 
-	public static void main(String[] args) {
-
+	private Account getAuthenticatedAccount(Object[] args)
+	{
+		//first index in args should be my sessionID
+		if(args.length >= 1 && args[0] instanceof String && sessionIDs.containsKey((String)args[0]))
+			return sessionIDs.get((String)args[0]);
+		
+		return null;
 	}
-
 }

@@ -52,6 +52,11 @@ public class ClientControl
 	{
 		runServerMethod(Method.SignIn, handler, username, password);
 	}
+	
+	public void getAccount(String username, MethodResponseHandler handler)
+	{
+		runServerMethod(Method.GetAccount, handler, username);
+	}
 
 	public void runServerMethod(Method m, MethodResponseHandler responseHandler, Object... args)
 	{
