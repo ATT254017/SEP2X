@@ -75,6 +75,14 @@ public class ServerMain {
 		//0:
 	}
 
+	private Object[] handleGetListings(Object[] args) {
+		// input:
+		// 0: search keyword: String
+		// 1: category
+		// if both the search keyword and category are null, get every listing that has been created
+		return null;
+	}
+
 	public static void main(String[] args) {
 
 	}
