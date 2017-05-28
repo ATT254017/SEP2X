@@ -17,6 +17,14 @@ public class Item {
         this.description = description;
         this.state.setItemState(state);
     }
+    
+    public void changeItemState(String state) {
+    	this.state.setItemState(state);
+    }
+    
+    public String getItemState() {
+    	return this.state.getValue();
+    }
 
     public void setItemID(int itemID) {
         this.itemID = itemID;
