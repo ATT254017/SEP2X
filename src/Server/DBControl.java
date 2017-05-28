@@ -88,6 +88,7 @@ public class DBControl {
       // TODO Auto-generated method stub
       return null;
    }
+   
    public long insertPerson(Person person) {
       String SQL = "INSERT INTO item(name, surname, address, phone) "
               + "VALUES(?,?,?,?)";
