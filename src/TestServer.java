@@ -1,12 +1,12 @@
 import java.io.IOException;
-
-import Net.Server.NetServer;
-import Net.Server.ServerMethodHandler;
-
+import Server.*;
 public class TestServer {
 
 	public static void main(String[] args) throws IOException {
-		NetServer server = new NetServer(9999);
+		
+		ServerMain serverMain = new ServerMain(9999);
+		
+		/*NetServer server = new NetServer(9999);
 		System.out.println("Server started");
 		server.addServerMethod("Method1", new ServerMethodHandler() {
 			
@@ -35,7 +35,7 @@ public class TestServer {
 			}
 		});
 
-		System.out.println("Server method registered");
+		System.out.println("Server method registered");*/
 	}
 
 }

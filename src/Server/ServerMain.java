@@ -14,8 +14,8 @@ public class ServerMain {
 		database = new DBControl();
 		networkServer = new NetServer(listenerPort);
 		sessionIDs = new HashMap<String, Account>();
-		networkServer.addServerMethod(Methods.RegisterAccount.getValue(), e -> handleRegisterAccount(e));
-		networkServer.addServerMethod(Methods.SignIn.getValue(), e -> handleLoginAccount(e));
+		networkServer.addServerMethod(Method.RegisterAccount.getValue(), e -> handleRegisterAccount(e));
+		networkServer.addServerMethod(Method.SignIn.getValue(), e -> handleLoginAccount(e));
 	}
 
 	private Object[] handleLoginAccount(Object[] args) {
@@ -50,8 +50,7 @@ public class ServerMain {
 		
 		//output:
 		//0: RegisterAccountStatus - status
-		Object[] response = new Object[1];
-		response[0] = RegisterAccountStatus.UnknownError;
+		Object[] response = new Object[] { RegisterAccountStatus.UnknownError };
 		if(args.length == 1)
 		{
 			if(args[0] instanceof Account)
