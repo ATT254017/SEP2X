@@ -2,14 +2,10 @@ package Client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 import Model.Account;
 import Model.Method;
 import Model.MethodStatus;
-import Model.Person;
 import Net.Client.NetClient;
 import Net.Client.ResponseStatus;
 import Net.Client.ServerResponse;
@@ -46,7 +42,7 @@ public class ClientControl
 		return instance;
 	}
 
-	public void registerAccount(Account account, MethodResponseHandler handler)
+	public void registerAccount(Account account, String password, MethodResponseHandler handler)
 	{
 		runServerMethod(Method.RegisterAccount, handler, account);
 	}

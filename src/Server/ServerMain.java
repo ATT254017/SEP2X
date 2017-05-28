@@ -31,7 +31,7 @@ public class ServerMain {
 		response[0] = false;
 		if (args.length == 2) {
 			if (args[0] instanceof String && args[1] instanceof String) {
-				Account theAccount = database.checkSignin((String) args[0], (String) args[1]);
+				Account theAccount = database.checkUserCredentials((String) args[0], (String) args[1]);
 				if (theAccount != null) {
 					response[0] = true;
 					String session = UUID.randomUUID().toString();

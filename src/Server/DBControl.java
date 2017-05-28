@@ -18,7 +18,7 @@ public class DBControl {
 			connection.close();
 	}
 	
-	public Account checkSignin(String userName, String passwd)
+	public Account checkUserCredentials(String userName, String passwd)
 	{
 		//returns null if not exist
 		return null;
