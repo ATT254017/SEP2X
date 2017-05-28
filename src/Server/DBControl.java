@@ -1,18 +1,16 @@
 package Server;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
-import Model.Account;
+import Model.*;
+
 
 /**
  * Created by Afonso on 5/26/2017.
  */
 public class DBControl {
 	
-	Connection connection;
+
 	public DBControl(String connectionURI, String username, String password) throws SQLException
 	{
 		try {
@@ -32,7 +30,7 @@ public class DBControl {
 			return;
 		}
 		
-		connection = DriverManager.getConnection(connectionURI, username, password);
+		
 	}
 	private void databaseDriverError()
 	{
@@ -49,5 +47,116 @@ public class DBControl {
 		return false;
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
 	}
+	
+	public long insertItem(Item item) {
+      String SQL = "INSERT INTO item(itemid, item_name, item_price, description)"
+              + "VALUES(?,?,?,?)";
+
+      long id = 0;
+
+      try (Connection conn = connect();
+              PreparedStatement pstmt = conn.prepareStatement(SQL,
+              Statement.RETURN_GENERATED_KEYS)) {
+
+          pstmt.setInt(1, item.getItemID());
+          pstmt.setString(2, item.getItemName());
+          pstmt.setDouble(3, item.getItemPrice());
+          pstmt.setString(4, item.getDescription());
+          
+
+          int affectedRows = pstmt.executeUpdate();
+          // check the affected rows 
+          if (affectedRows > 0) {
+              // get the ID back
+              try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                  if (rs.next()) {
+                      id = rs.getLong(1);
+                  }
+              } catch (SQLException ex) {
+                  System.out.println(ex.getMessage());
+              }
+          }
+      } catch (SQLException ex) {
+          System.out.println(ex.getMessage());
+      }
+      return id;
+  }
+   
+   
+   private Connection connect()
+   {
+      // TODO Auto-generated method stub
+      return null;
+   }
+   public long insertPerson(Person person) {
+      String SQL = "INSERT INTO item(name, surname, address, phone) "
+              + "VALUES(?,?,?,?)";
+
+      long id = 0;
+
+      try (Connection conn = connect();
+              PreparedStatement pstmt = conn.prepareStatement(SQL,
+              Statement.RETURN_GENERATED_KEYS)) {
+
+          pstmt.setString(1, person.getFirstName());
+          pstmt.setString(2, person.getLastName());
+          pstmt.setString(3, person.getAddress());
+          pstmt.setInt(4, person.getPhoneNumber());
+          
+          
+
+          int affectedRows = pstmt.executeUpdate();
+          // check the affected rows 
+          if (affectedRows > 0) {
+              // get the ID back
+              try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                  if (rs.next()) {
+                      id = rs.getLong(1);
+                  }
+              } catch (SQLException ex) {
+                  System.out.println(ex.getMessage());
+              }
+          }
+      } catch (SQLException ex) {
+          System.out.println(ex.getMessage());
+      }
+      return id;
+  }
+   
+   public long insertAccount(Account account) {
+      String SQL = "INSERT INTO account(username,email) "
+              + "VALUES(?,?)";
+
+      long id = 0;
+
+      try (Connection conn = connect();
+              PreparedStatement pstmt = conn.prepareStatement(SQL,
+              Statement.RETURN_GENERATED_KEYS)) {
+
+          pstmt.setString(1, account.getUserName());
+          pstmt.setString(2, account.getEmail());
+                  
+          
+          int affectedRows = pstmt.executeUpdate();
+          // check the affected rows 
+          if (affectedRows > 0) {
+              // get the ID back
+              try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                  if (rs.next()) {
+                      id = rs.getLong(1);
+                  }
+              } catch (SQLException ex) {
+                  System.out.println(ex.getMessage());
+              }
+          }
+      } catch (SQLException ex) {
+          System.out.println(ex.getMessage());
+      }
+      return id;
+  }
+   
+   
+   //close the connection
+
 	
 }
