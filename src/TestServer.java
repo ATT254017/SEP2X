@@ -1,8 +1,10 @@
 import java.io.IOException;
+import java.sql.SQLException;
+
 import Server.*;
 public class TestServer {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, SQLException {
 		
 		ServerMain serverMain = new ServerMain(9999);
 		

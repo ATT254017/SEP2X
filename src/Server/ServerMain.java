@@ -1,6 +1,7 @@
 package Server;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import Net.Server.*;
 import Model.*;
@@ -10,12 +11,12 @@ public class ServerMain {
 	private NetServer networkServer;
 	private Map<String, Account> sessionIDs;
 
-	public ServerMain(int listenerPort) throws IOException {
-		database = new DBControl();
+	public ServerMain(int listenerPort) throws IOException, SQLException {
+		database = new DBControl(null, null, null);
 		networkServer = new NetServer(listenerPort);
 		sessionIDs = new HashMap<String, Account>();
-		networkServer.addServerMethod(Method.RegisterAccount.getValue(), e -> handleRegisterAccount(e));
-		networkServer.addServerMethod(Method.SignIn.getValue(), e -> handleLoginAccount(e));
+		networkServer.addServerMethod(Method.RegisterAccount.getValue(), a -> handleRegisterAccount(a));
+		networkServer.addServerMethod(Method.SignIn.getValue(), a -> handleLoginAccount(a));
 	}
 
 	private Object[] handleLoginAccount(Object[] args) {
@@ -47,15 +48,16 @@ public class ServerMain {
 	{
 		//input:
 		//0: Account - accountDetails
+		//1: String - account password
 		
 		//output:
 		//0: RegisterAccountStatus - status
 		Object[] response = new Object[] { RegisterAccountStatus.UnknownError };
 		if(args.length == 1)
 		{
-			if(args[0] instanceof Account)
+			if(args[0] instanceof Account && args[1] instanceof String)
 			{
-				if(database.registerAccount((Account)args[0]))
+				if(database.registerAccount((Account)args[0], (String)args[1]))
 					response[0] = RegisterAccountStatus.AccountCreated;
 				else
 					response[0] = RegisterAccountStatus.UsernameAlreadyExists;

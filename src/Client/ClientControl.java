@@ -20,6 +20,7 @@ public class ClientControl
 
 	private ClientControl()
 	{
+		
 	}
 
 	public void setServerConnectionDetails(String host, int port) throws UnknownHostException, IOException
@@ -44,7 +45,7 @@ public class ClientControl
 
 	public void registerAccount(Account account, String password, MethodResponseHandler handler)
 	{
-		runServerMethod(Method.RegisterAccount, handler, account);
+		runServerMethod(Method.RegisterAccount, handler, account, password);
 	}
 
 	public void signIn(String username, String password, MethodResponseHandler handler)
