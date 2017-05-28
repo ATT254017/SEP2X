@@ -8,12 +8,14 @@ public class Item {
     private String itemName;
     private double itemPrice;
     private String description;
+    private ItemState state;
 
-    public Item(int itemID, String itemName, double itemPrice, String description) {
+    public Item(int itemID, String itemName, double itemPrice, String description, String state) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.description = description;
+        this.state.setItemState(state);
     }
 
     public void setItemID(int itemID) {
