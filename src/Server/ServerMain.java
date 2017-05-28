@@ -17,6 +17,13 @@ public class ServerMain {
 		sessionIDs = new HashMap<String, Account>();
 		networkServer.addServerMethod(Method.RegisterAccount.getValue(), a -> handleRegisterAccount(a));
 		networkServer.addServerMethod(Method.SignIn.getValue(), a -> handleLoginAccount(a));
+		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleBuyItem(a));
+	}
+	
+	
+	private Object[] handleBuyItem(Object[] args)
+	{
+		return null;
 	}
 
 	private Object[] handleLoginAccount(Object[] args) {
