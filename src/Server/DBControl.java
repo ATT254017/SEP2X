@@ -134,7 +134,7 @@ public class DBControl {
               Statement.RETURN_GENERATED_KEYS)) {
 
           pstmt.setString(1, account.getUserName());
-          pstmt.setString(3, account.getEmail());
+          pstmt.setString(2, account.getEmail());
                   
           
           int affectedRows = pstmt.executeUpdate();
