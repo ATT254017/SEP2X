@@ -3,9 +3,10 @@ package Model;
 public enum Method {
     SignIn("SIGN_IN", false),
     RegisterAccount("REGISTER_ACCOUNT", false),
-	CreateListing("CREATE_LISTING", true);
-	
-	
+	CreateListing("CREATE_LISTING", true),
+    GetAccount("GET_ACCOUNT", false),
+    BuyItem("BUY_ITEM", true),
+	GetListings("GET_LISTINGS", false);
 	
     private final String value;
     private final boolean loginRequired;
