@@ -115,7 +115,7 @@ public class DBControl {
 	public boolean registerAccount(Account account, String password)
 	{
 		String createAccountSQL = "INSERT INTO Account(AccountID, Username, Password, Email, Name, Surname, Address, Phone, IsMale, Birthday)" 
-	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		
 		try(Connection conn = connect();
 	              PreparedStatement pstmt = conn.prepareStatement(createAccountSQL,
@@ -142,6 +142,20 @@ public class DBControl {
 	    }
 		return false;
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
+	}
+	
+	public boolean deleteAccount(Account account, String password) {
+		String deleteAccountSQL = "DELETE FROM Account WHERE AccountID=" + "'" + account.getAccountID() + "';";
+		
+		try(Connection conn = connect();
+	              PreparedStatement pstmt = conn.prepareStatement(createAccountSQL,
+	                      Statement.RETURN_GENERATED_KEYS)) {
+			
+		} catch (SQLException ex) {
+	          System.out.println(ex.getMessage());
+	    }
+		
+		return false;
 	}
 	
 	public long insertItem(Item item) {
