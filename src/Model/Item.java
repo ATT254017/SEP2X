@@ -10,16 +10,16 @@ public class Item {
     private String description;
     private ItemState state;
 
-    public Item(int itemID, String itemName, double itemPrice, String description, String state) {
+    public Item(int itemID, String itemName, double itemPrice, String description, ItemState state) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.description = description;
-        this.state.setItemState(state);
+        this.state = state;
     }
     
-    public void changeItemState(String state) {
-    	this.state.setItemState(state);
+    public void changeItemState(ItemState state) {
+    	this.state = state;
     }
     
     public String getItemState() {

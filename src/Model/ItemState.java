@@ -10,10 +10,6 @@ public enum ItemState {
 		this.value = value;
 	}
 	
-	public void setItemState(String value) {
-		this.value = value;
-	}
-	
 	public String getValue() {
 		return value;
 	}
