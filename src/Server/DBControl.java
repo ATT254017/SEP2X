@@ -38,6 +38,7 @@ public class DBControl {
 			return;
 		}
 	}
+	
 	private void databaseDriverError()
 	{
 		throw new RuntimeException("Postgresql driver is not installed!");
@@ -48,6 +49,7 @@ public class DBControl {
 		//returns null if not exist
 		return null;
 	}
+	
 	public boolean registerAccount(Account account, String password)
 	{
 		return false;
