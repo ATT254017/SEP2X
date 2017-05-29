@@ -41,7 +41,7 @@ public class DBControl {
 	
 	private void databaseDriverError()
 	{
-		throw new RuntimeException("Postgresql driver is not installed!");
+		throw new RuntimeException("Postgresql driver is not installed DAMN IT!");
 	}
 	
 	public Account checkUserCredentials(String userName, String passwd)
