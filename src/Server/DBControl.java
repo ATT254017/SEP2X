@@ -148,9 +148,13 @@ public class DBControl {
 		String deleteAccountSQL = "DELETE FROM Account WHERE AccountID=" + "'" + account.getAccountID() + "';";
 		
 		try(Connection conn = connect();
-	              PreparedStatement pstmt = conn.prepareStatement(createAccountSQL,
+	              PreparedStatement pstmt = conn.prepareStatement(deleteAccountSQL,
 	                      Statement.RETURN_GENERATED_KEYS)) {
-			
+			int affectedRows = pstmt.executeUpdate();
+	          // check the affected rows 
+	          if (affectedRows == 0) {
+	              return true;
+	          }
 		} catch (SQLException ex) {
 	          System.out.println(ex.getMessage());
 	    }
