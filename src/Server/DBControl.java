@@ -12,9 +12,15 @@ import Model.*;
  */
 public class DBControl {
 	
+	private String connectionURI;
+	private String username;
+	private String password;
 
 	public DBControl(String connectionURI, String username, String password) throws SQLException
 	{
+		this.connectionURI = connectionURI;
+		this.username = username;
+		this.password = password;
 		try {
 			DriverManager.registerDriver((Driver) Class.forName("org.postgresql.Driver").newInstance()); //test if the class exists
 		} catch(ClassNotFoundException e) {
@@ -83,11 +89,9 @@ public class DBControl {
   }
    
    
-   private Connection connect()
+   private Connection connect() throws SQLException
    {
-	   Connection connection = DriverManager.getConnection(connectionURI, username, password);
-      // TODO Auto-generated method stub
-      return null;
+	   return DriverManager.getConnection(connectionURI, username, password);
    }
    
    public long insertPerson(Person person) {
