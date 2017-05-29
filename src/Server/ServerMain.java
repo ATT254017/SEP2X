@@ -11,8 +11,8 @@ public class ServerMain {
 	private NetServer networkServer;
 	private Map<String, Account> sessionIDs;
 
-	public ServerMain(int listenerPort) throws IOException, SQLException {
-		database = new DBControl(null, null, null);
+	public ServerMain(int listenerPort, String dbURL, String dbUsername, String dbPassword) throws IOException, SQLException {
+		database = new DBControl(dbURL, dbUsername, dbPassword);
 		networkServer = new NetServer(listenerPort);
 		sessionIDs = new HashMap<String, Account>();
 		

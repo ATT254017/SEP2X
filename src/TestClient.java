@@ -15,7 +15,7 @@ public class TestClient {
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 		
-		clientControl.signIn("myuser", "pwd", (status, blah) ->
+		/*clientControl.signIn("myuser", "pwd", (status, blah) ->
 		{
 			System.out.println(status);
 			System.out.println("args:");
@@ -23,7 +23,7 @@ public class TestClient {
 				for(int i = 0; i < blah.length; i++)
 					System.out.println(blah[i]);
 			
-		});
+		});*/
 		/*
 		clientControl.runServerMethod(Method.RegisterAccount, (status, blah) ->
 		{

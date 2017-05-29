@@ -1,9 +1,6 @@
 package Server;
 
 import java.sql.*;
-
-import com.sun.media.jfxmedia.locator.ConnectionHolder;
-
 import Model.*;
 
 
@@ -37,11 +34,77 @@ public class DBControl {
 			databaseDriverError();
 			return;
 		}
+		createDatabase();
 	}
 	private void databaseDriverError()
 	{
 		throw new RuntimeException("Postgresql driver is not installed!");
 	}
+	
+	private void createDatabase() throws SQLException
+	{
+		String schemaName = "SEP2XGROUP6";
+		String createSchema = 		"CREATE SCHEMA IF NOT EXISTS " + schemaName;
+		String createEnums = 		"DO $$" +
+									"BEGIN" + 
+									"	IF NOT EXISTS (SELECT * FROM pg_type WHERE typname = 'state') THEN" +
+									"		CREATE TYPE state AS ENUM ('Sold', 'In Stock');" + 
+									"	END IF;" +
+									"END$$;";
+		
+		String createTableAccount = "CREATE TABLE IF NOT EXISTS "+schemaName+".\"account\"("  +
+									"AccountID SERIAL," +
+									"Username VARCHAR(50) NOT NULL UNIQUE," +
+									"Password VARCHAR(100) NOT NULL," +
+									"Email VARCHAR(100)," +
+									"Name VARCHAR(100)," +
+									"Surname VARCHAR(100)," +
+									"Address VARCHAR(100)," +
+									"Phone VARCHAR(100)," + 
+									"IsFemale BOOLEAN," +
+									"Birthday DATE," +
+									"PRIMARY KEY(AccountID));";
+		
+		String createTableCategory ="CREATE TABLE IF NOT EXISTS "+schemaName+".\"category\"("  +
+									"CategoryID SERIAL," + 
+									"Category_name VARCHAR(50)," +
+									"Cat_description VARCHAR(250)," +
+									"Cat_picture VARCHAR(150)," + 
+									"PRIMARY KEY(CategoryID));";
+		
+		String createTableItem = 	"CREATE TABLE IF NOT EXISTS "+schemaName+".\"item\"("  +
+									"ItemID SERIAL," + 
+									"Item_name VARCHAR(100)," +
+									"Category SERIAL," + 
+									"Item_price DECIMAL," +
+									"Item_state state," + 
+									"Description VARCHAR(2000)," +
+									"Quantity INT,"+
+									"Seller SERIAL," +
+									"Sold_amount INT," +
+									"Image_source VARCHAR(150)," + 
+									"PRIMARY KEY(ItemID)," +
+									"FOREIGN KEY(Category) REFERENCES "+schemaName+".\"category\"(CategoryID)," + 
+									"FOREIGN KEY(Seller) REFERENCES "+schemaName+".\"account\"(AccountID));";
+				
+		
+		
+		try(	Connection connection = connect();
+				PreparedStatement schemaStatement = connection.prepareStatement(createSchema);
+				PreparedStatement enumsStatement = connection.prepareStatement(createEnums);
+				PreparedStatement accountTableStatement = connection.prepareStatement(createTableAccount);
+				PreparedStatement categoryTableStatement = connection.prepareStatement(createTableCategory);
+				PreparedStatement itemTableStatement = connection.prepareStatement(createTableItem))
+		{
+			schemaStatement.execute();
+			enumsStatement.execute();
+			accountTableStatement.execute();
+			categoryTableStatement.execute();
+			itemTableStatement.execute();
+		}
+	}
+	
+	
 	
 	public Account checkUserCredentials(String userName, String passwd)
 	{
@@ -160,9 +223,6 @@ public class DBControl {
       }
       return id;
   }
-   
-   
-   //close the connection
 
 	
 }
