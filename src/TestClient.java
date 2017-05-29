@@ -25,9 +25,17 @@ public class TestClient {
 		{
 			 System.out.println("MStatus: " + Status);
 			 System.out.println("RegStatus: " + derp);
+			 System.out.println();
+			 
+			 clientControl.signIn("myusername", "mypass", (stat, boo, str) ->
+			 {
+				 System.out.println("MStatus: " + stat);
+				 System.out.println("Logged in: " + boo);
+				 System.out.println("SessionID: " + str);
+			 });
 		});
 		
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 		
 		clientControl.disconnect();
 		/*clientControl.signIn("myuser", "pwd", (status, blah) ->

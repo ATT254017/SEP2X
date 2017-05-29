@@ -49,10 +49,11 @@ public class DBControl {
 	private void createDatabase() throws SQLException
 	{
 		String createSchema = 		"CREATE SCHEMA IF NOT EXISTS " + schemaName;
+		
 		String createEnums = 		"DO $$" +
 									"BEGIN" + 
 									"	IF NOT EXISTS (SELECT * FROM pg_type WHERE typname = 'state') THEN" +
-									"		CREATE TYPE state AS ENUM ('Sold', 'In Stock');" + 
+									"		CREATE TYPE State AS ENUM ('Sold', 'In Stock');" + 
 									"	END IF;" +
 									"END$$;";
 		
@@ -64,8 +65,8 @@ public class DBControl {
 									"Name VARCHAR(100)," +
 									"Surname VARCHAR(100)," +
 									"Address VARCHAR(100)," +
-									"Phone VARCHAR(100)," + 
-									"IsFemale BOOLEAN," +
+									"Phone INT," + 
+									"IsMale BOOLEAN," +
 									"Birthday DATE," +
 									"PRIMARY KEY(AccountID));";
 		
@@ -76,12 +77,12 @@ public class DBControl {
 									"Cat_picture VARCHAR(150)," + 
 									"PRIMARY KEY(CategoryID));";
 		
-		String createTableItem = 	"CREATE TABLE IF NOT EXISTS "+schemaName+".\"item\"("  +
+		String createTableItem = 	"CREATE TABLE IF NOT EXISTS \"item\"("  +
 									"ItemID SERIAL," + 
 									"Item_name VARCHAR(100)," +
 									"Category SERIAL," + 
 									"Item_price DECIMAL," +
-									"Item_state state," + 
+									"Item_state State," + 
 									"Description VARCHAR(2000)," +
 									"Quantity INT,"+
 									"Seller SERIAL," +
@@ -106,17 +107,38 @@ public class DBControl {
 			categoryTableStatement.execute();
 			itemTableStatement.execute();
 		}
+		catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	public Account checkUserCredentials(String userName, String passwd)
 	{
-		//returns null if not exist
-		return null;
+		String getAccountSQL = "SELECT * FROM \"account\" WHERE username = ? AND password = ?";
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(getAccountSQL))
+		{
+			statement.setString(1, userName);
+			statement.setString(2, passwd);
+			ResultSet resultSet = statement.executeQuery();
+			if(!resultSet.next())
+				return null; //no rows found
+			
+			return new Account(resultSet.getString("username"), resultSet.getString("email"), 
+					new Person(resultSet.getString("name"), resultSet.getString("surname"), resultSet.getString("address"), 
+							resultSet.getInt("phone"), resultSet.getBoolean("ismale"), LocalDate.ofEpochDay(resultSet.getDate("birthday").getTime())));
+		}
+		catch(SQLException ex)
+		{
+			ex.printStackTrace();
+			return null;
+		}
 	}
 	
 	public boolean registerAccount(Account account, String password)
 	{
-		String createAccountSQL = "INSERT INTO \"account\"(Username, Password, Email, Name, Surname, Address, Phone, IsFemale, Birthday)" 
+		String createAccountSQL = "INSERT INTO \"account\"(Username, Password, Email, Name, Surname, Address, Phone, IsMale, Birthday)" 
 	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try(Connection conn = connect();
@@ -147,14 +169,15 @@ public class DBControl {
 	}
 	
 	public boolean deleteAccount(Account account) {
-		String deleteAccountSQL = "DELETE FROM Account WHERE AccountID=" + "'" + account.getAccountID() + "';";
+		String deleteAccountSQL = "DELETE FROM Account WHERE Username = '?'";
 		
 		try(Connection conn = connect();
 	              PreparedStatement pstmt = conn.prepareStatement(deleteAccountSQL,
 	                      Statement.RETURN_GENERATED_KEYS)) {
+			pstmt.setString(1, account.getUserName());
 			int affectedRows = pstmt.executeUpdate();
 	          // check the affected rows 
-	          if (affectedRows == 0) {
+	          if (affectedRows == 1) {
 	              return true;
 	          }
 		} catch (SQLException ex) {
