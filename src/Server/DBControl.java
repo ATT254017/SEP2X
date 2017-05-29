@@ -50,8 +50,34 @@ public class DBControl {
 		return null;
 	}
 	
-	public boolean registerAccount(Account account, String password)
+	public boolean registerAccount(Account account, Person person, String password)
 	{
+		String createAccountSQL = "INSERT INTO Account(AccountID, Username, Password, Email, Name, Surname, Address, Phone, IsMale, Birthday)" 
+	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		
+		try(Connection conn = connect();
+	              PreparedStatement pstmt = conn.prepareStatement(createAccountSQL,
+	                      Statement.RETURN_GENERATED_KEYS)) {
+			
+			pstmt.setInt(1, account.getAccountID());
+			pstmt.setString(2, account.getUserName());
+			pstmt.setString(3, password);
+			pstmt.setString(4, account.getEmail());
+			pstmt.setString(5, person.getFirstName());
+			pstmt.setString(6, person.getLastName());
+			pstmt.setString(7, person.getAddress());
+			pstmt.setInt(8, person.getPhoneNumber());
+			pstmt.setBoolean(9, person.getIsMale());
+			pstmt.setString(10, person.getBirthday());
+			
+			int affectedRows = pstmt.executeUpdate();
+			
+			if (affectedRows == 1) {
+				return true;
+			}
+		} catch (SQLException ex) {
+	          System.out.println(ex.getMessage());
+	    }
 		return false;
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
 	}
@@ -130,7 +156,8 @@ public class DBControl {
       }
       return id;
   }
-   
+  
+   /*
    public long insertAccount(Account account) {
       String SQL = "INSERT INTO account(username,email) "
               + "VALUES(?,?)";
@@ -162,6 +189,7 @@ public class DBControl {
       }
       return id;
   }
+  */
    
    
    //close the connection
