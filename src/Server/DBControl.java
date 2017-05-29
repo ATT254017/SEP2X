@@ -1,6 +1,8 @@
 package Server;
 
 import java.sql.*;
+import java.time.LocalDate;
+
 import Model.*;
 
 
@@ -13,9 +15,12 @@ public class DBControl {
 	private String username;
 	private String password;
 
+	private String schemaName;
+
 	public DBControl(String connectionURI, String username, String password) throws SQLException
 	{
-		this.connectionURI = connectionURI;
+		this.schemaName = "SEP2XGROUP6";
+		this.connectionURI = connectionURI + "?searchpath=" + schemaName;
 		this.username = username;
 		this.password = password;
 		try {
@@ -43,7 +48,6 @@ public class DBControl {
 	
 	private void createDatabase() throws SQLException
 	{
-		String schemaName = "SEP2XGROUP6";
 		String createSchema = 		"CREATE SCHEMA IF NOT EXISTS " + schemaName;
 		String createEnums = 		"DO $$" +
 									"BEGIN" + 
@@ -104,8 +108,6 @@ public class DBControl {
 		}
 	}
 	
-	
-	
 	public Account checkUserCredentials(String userName, String passwd)
 	{
 		//returns null if not exist
@@ -114,23 +116,23 @@ public class DBControl {
 	
 	public boolean registerAccount(Account account, String password)
 	{
-		String createAccountSQL = "INSERT INTO Account(AccountID, Username, Password, Email, Name, Surname, Address, Phone, IsMale, Birthday)" 
-	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String createAccountSQL = "INSERT INTO "+schemaName+".\"account\"(Username, Password, Email, Name, Surname, Address, Phone, IsFemale, Birthday)" 
+	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try(Connection conn = connect();
 	              PreparedStatement pstmt = conn.prepareStatement(createAccountSQL,
-	                      Statement.RETURN_GENERATED_KEYS)) {
-			
-			pstmt.setInt(1, account.getAccountID());
-			pstmt.setString(2, account.getUserName());
-			pstmt.setString(3, password);
-			pstmt.setString(4, account.getEmail());
-			pstmt.setString(5, account.getPerson().getFirstName());
-			pstmt.setString(6,  account.getPerson().getLastName());
-			pstmt.setString(7,  account.getPerson().getAddress());
-			pstmt.setInt(8,  account.getPerson().getPhoneNumber());
-			pstmt.setBoolean(9,  account.getPerson().getIsMale());
-			pstmt.setString(10,  account.getPerson().getBirthday());
+	                      Statement.RETURN_GENERATED_KEYS)) 
+		{
+			//pstmt.setInt(1, account.getAccountID());
+			pstmt.setString(1, account.getUserName());
+			pstmt.setString(2, password);
+			pstmt.setString(3, account.getEmail());
+			pstmt.setString(4, account.getPerson().getFirstName());
+			pstmt.setString(5,  account.getPerson().getLastName());
+			pstmt.setString(6,  account.getPerson().getAddress());
+			pstmt.setInt(7,  account.getPerson().getPhoneNumber());
+			pstmt.setBoolean(8,  account.getPerson().getIsMale());
+			pstmt.setDate(9, new Date(account.getPerson().getBirthday().toEpochDay()));// birthday.getYear(), birthday.getMonthValue(), birthday.getDayOfMonth()));
 			
 			int affectedRows = pstmt.executeUpdate();
 			

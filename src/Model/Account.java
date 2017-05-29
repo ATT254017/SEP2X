@@ -11,11 +11,10 @@ public class Account implements Serializable{
     private String email;
     private Person person;
 
-    public Account(Integer accountID, String userName, String email, Person person) {
+    public Account(String userName, String email, Person person) {
         this.userName = userName;
         this.email = email;
         this.person = person;
-        this.accountID = accountID;
     }
     
     public void setAccountID(int accountID) {

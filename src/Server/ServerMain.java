@@ -97,8 +97,10 @@ public class ServerMain {
 		//output:
 		//0: RegisterAccountStatus - status
 		Object[] response = new Object[] { RegisterAccountStatus.UnknownError };
-		if(args.length == 1)
+		if(args.length == 2)
 		{
+			System.out.println(args[0]);
+			System.out.println(args[1]);
 			if(args[0] instanceof Account && args[1] instanceof String)
 			{
 				if(database.registerAccount((Account)args[0], (String)args[1]))

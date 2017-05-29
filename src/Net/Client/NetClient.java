@@ -18,6 +18,11 @@ public class NetClient {
 		socketHandler = new SocketHandler(socket);
 		this.responseTimeout = 5000;
 	}
+	
+	public void disconnect()
+	{
+		socketHandler.closeConnection();
+	}
 
 	public ServerResponse runServerMethod(String method, Object... args) {
 		int thisRequestID = requestNum++;

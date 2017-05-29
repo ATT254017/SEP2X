@@ -28,6 +28,11 @@ public class ClientControl
 	{
 		networkClient = new NetClient(host, port);
 	}
+	
+	public void disconnect()
+	{
+		networkClient.disconnect();
+	}
 
 	public static ClientControl getInstance()
 	{
@@ -46,17 +51,30 @@ public class ClientControl
 	
 	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
 	{
-		runServerMethod(Method.MakeOffer, (status, args) -> handler.handle(status, (Boolean)args[0]), item, offerPrice);
+		runServerMethod(Method.MakeOffer, (status, args) -> 
+		{
+			boolean arg1 = status != MethodStatus.TimedOut ? (Boolean)args[0] : false;
+			handler.handle(status, arg1);
+		}, item, offerPrice);
 	}
 
 	public void registerAccount(Account account, String password, RegisterAccountHandler handler)
 	{
-		runServerMethod(Method.RegisterAccount, (status, args) -> handler.handle(status, (RegisterAccountStatus)args[0]), account, password);
+		runServerMethod(Method.RegisterAccount, (status, args) -> 
+		{
+			RegisterAccountStatus arg1 = status != MethodStatus.TimedOut ? (RegisterAccountStatus)args[0] : null;
+			handler.handle(status, arg1);
+		}, account, password);
 	}
 
 	public void signIn(String username, String password, SignInResponseHandler handler)
 	{
-		runServerMethod(Method.SignIn, (status, args) -> handler.handle(status, (Boolean)args[0], (String)args[1]), username, password);
+		runServerMethod(Method.SignIn, (status, args) -> 
+		{
+			boolean arg1 = status != MethodStatus.TimedOut ? (Boolean)args[0] : false;
+			String arg2 = status != MethodStatus.TimedOut ? (String)args[1] : null;
+			handler.handle(status, arg1, arg2);
+		}, username, password);
 	}
 	
 	/*public void getAccount(String username, MethodResponseHandler handler)
