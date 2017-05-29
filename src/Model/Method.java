@@ -6,6 +6,7 @@ public enum Method {
 	CreateListing("CREATE_LISTING", true),
     GetAccount("GET_ACCOUNT", false),
     BuyItem("BUY_ITEM", true),
+    MakeOffer("MAKE_OFFER", true),
 	GetListings("GET_LISTINGS", false);
 	
     private final String value;

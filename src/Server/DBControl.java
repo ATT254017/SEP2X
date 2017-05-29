@@ -2,6 +2,8 @@ package Server;
 
 import java.sql.*;
 
+import com.sun.media.jfxmedia.locator.ConnectionHolder;
+
 import Model.*;
 
 
@@ -29,8 +31,6 @@ public class DBControl {
 			databaseDriverError();
 			return;
 		}
-		
-		
 	}
 	private void databaseDriverError()
 	{
@@ -85,6 +85,7 @@ public class DBControl {
    
    private Connection connect()
    {
+	   Connection connection = DriverManager.getConnection(connectionURI, username, password);
       // TODO Auto-generated method stub
       return null;
    }

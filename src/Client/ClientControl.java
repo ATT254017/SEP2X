@@ -2,10 +2,13 @@ package Client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 import Model.Account;
+import Model.Item;
 import Model.Method;
 import Model.MethodStatus;
+import Model.RegisterAccountStatus;
 import Net.Client.NetClient;
 import Net.Client.ResponseStatus;
 import Net.Client.ServerResponse;
@@ -19,9 +22,7 @@ public class ClientControl
 	private String userSessionID;
 
 	private ClientControl()
-	{
-		
-	}
+	{ }
 
 	public void setServerConnectionDetails(String host, int port) throws UnknownHostException, IOException
 	{
@@ -42,34 +43,36 @@ public class ClientControl
 		}
 		return instance;
 	}
-
-	public void registerAccount(Account account, String password, MethodResponseHandler handler)
+	
+	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
 	{
-		runServerMethod(Method.RegisterAccount, handler, account, password);
+		runServerMethod(Method.MakeOffer, (status, args) -> handler.handle(status, (Boolean)args[0]), item, offerPrice);
 	}
 
-	public void signIn(String username, String password, MethodResponseHandler handler)
+	public void registerAccount(Account account, String password, RegisterAccountHandler handler)
 	{
-		runServerMethod(Method.SignIn, handler, username, password);
+		runServerMethod(Method.RegisterAccount, (status, args) -> handler.handle(status, (RegisterAccountStatus)args[0]), account, password);
+	}
+
+	public void signIn(String username, String password, SignInResponseHandler handler)
+	{
+		runServerMethod(Method.SignIn, (status, args) -> handler.handle(status, (Boolean)args[0], (String)args[1]), username, password);
 	}
 	
-	public void getAccount(String username, MethodResponseHandler handler)
+	/*public void getAccount(String username, MethodResponseHandler handler)
 	{
 		runServerMethod(Method.GetAccount, handler, username);
-	}
+	}*/
 
-	public void runServerMethod(Method m, MethodResponseHandler responseHandler, Object... args)
+	private void runServerMethod(Method m, MethodResponseHandler responseHandler, Object... args)
 	{
 		Object[] args2 = args;
 		if (m.requiresLogin())
 		{
 			if (userSessionID != null)
 			{
-				args2 = new Object[args.length + 1];
-				for (int i = 0; i < args.length; i++)
-					args2[i + 1] = args[i];
-
-				args2[0] = userSessionID;
+				System.arraycopy(args, 0, args2, 1, args.length); 	// shift all elements up by 1
+				args2[0] = userSessionID; 							// to make room for the session ID
 			}
 			else
 			{

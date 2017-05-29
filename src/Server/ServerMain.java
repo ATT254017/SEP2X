@@ -15,24 +15,38 @@ public class ServerMain {
 		database = new DBControl(null, null, null);
 		networkServer = new NetServer(listenerPort);
 		sessionIDs = new HashMap<String, Account>();
+		
+		//No authentication:
 		networkServer.addServerMethod(Method.RegisterAccount.getValue(), a -> handleRegisterAccount(a));
-		networkServer.addServerMethod(Method.SignIn.getValue(), a -> handleLoginAccount(a));
+		networkServer.addServerMethod(Method.SignIn.getValue(), a -> handleSignIn(a));
+		//networkServer.addServerMethod(Method.GetAccount.getValue(), a -> handleLoginAccount(a));
+		networkServer.addServerMethod(Method.GetListings.getValue(), a -> handleGetListings(a));
+		
+		//Requires authentication:
 		networkServer.addServerMethod(Method.CreateListing.getValue(), a -> handleCreateListing(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleBuyItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
-		networkServer.addServerMethod(Method.GetAccount.getValue(), a -> handleLoginAccount(a));
-		networkServer.addServerMethod(Method.GetListings.getValue(), a -> handleGetListings(a));
+		networkServer.addServerMethod(Method.MakeOffer.getValue(), a -> handleMakeOffer(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 	}
 	
-	private Object[] handleGetListings(Object[] args) {
+	private Object[] handleMakeOffer(Object[] args, Account offeror)
+	{
 		// input:
-		// 0: search keyword: String
-		// 1: category
-		// if both the search keyword and category are null, get every listing that has been created
+		// 0: Item - item offeror wants to make an offer for.
+		// 1: double - the offered item price
+		
+		// output:
+		// 0: Boolean - was the offer successfully registered?
 		return null;
 	}
 	
 	private Object[] handleBuyItem(Object[] args, Account buyer)
 	{
+		// input:
+		// 0: Item - the item to be bought
+		// 1: int - the quantity of said item to be bought
+		
+		// output: 
+		// 0: int - actual quantity bought
 		return null;
 	}
 	
@@ -41,7 +55,15 @@ public class ServerMain {
 		return null;
 	}
 
-	private Object[] handleLoginAccount(Object[] args) {
+	private Object[] handleGetListings(Object[] args) {
+		// input:
+		// 0: search keyword: String
+		// 1: category
+		// if both the search keyword and category are null, get every listing that has been created
+		return null;
+	}
+	
+	private Object[] handleSignIn(Object[] args) {
 		// input:
 		// 0: String - Username
 		// 1: String - PasswordHash
