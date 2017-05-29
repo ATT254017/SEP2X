@@ -144,7 +144,7 @@ public class DBControl {
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
 	}
 	
-	public boolean deleteAccount(Account account, String password) {
+	public boolean deleteAccount(Account account) {
 		String deleteAccountSQL = "DELETE FROM Account WHERE AccountID=" + "'" + account.getAccountID() + "';";
 		
 		try(Connection conn = connect();
