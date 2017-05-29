@@ -112,7 +112,7 @@ public class DBControl {
 		return null;
 	}
 	
-	public boolean registerAccount(Account account, Person person, String password)
+	public boolean registerAccount(Account account, String password)
 	{
 		String createAccountSQL = "INSERT INTO Account(AccountID, Username, Password, Email, Name, Surname, Address, Phone, IsMale, Birthday)" 
 	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -125,12 +125,12 @@ public class DBControl {
 			pstmt.setString(2, account.getUserName());
 			pstmt.setString(3, password);
 			pstmt.setString(4, account.getEmail());
-			pstmt.setString(5, person.getFirstName());
-			pstmt.setString(6, person.getLastName());
-			pstmt.setString(7, person.getAddress());
-			pstmt.setInt(8, person.getPhoneNumber());
-			pstmt.setBoolean(9, person.getIsMale());
-			pstmt.setString(10, person.getBirthday());
+			pstmt.setString(5, account.getPerson().getFirstName());
+			pstmt.setString(6,  account.getPerson().getLastName());
+			pstmt.setString(7,  account.getPerson().getAddress());
+			pstmt.setInt(8,  account.getPerson().getPhoneNumber());
+			pstmt.setBoolean(9,  account.getPerson().getIsMale());
+			pstmt.setString(10,  account.getPerson().getBirthday());
 			
 			int affectedRows = pstmt.executeUpdate();
 			
