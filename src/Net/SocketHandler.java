@@ -12,10 +12,12 @@ public class SocketHandler implements Runnable {
 	private Thread runner;
 	private boolean running;
 	private ArrayList<DataReceivedAction> dataReceivedActionListeners;
+	private ArrayList<DisconnectedAction> disconnectedActionListeners;
 	
 	public SocketHandler(Socket connection) throws IOException {
 		running = true;
 		dataReceivedActionListeners = new ArrayList<>();
+		disconnectedActionListeners = new ArrayList<>();
 		outputStream = new ObjectOutputStream(connection.getOutputStream());
 		inputStream = new ObjectInputStream(connection.getInputStream());
 		runner = new Thread(this);
@@ -27,7 +29,7 @@ public class SocketHandler implements Runnable {
 		running = false;
 		try
 		{
-			inputStream.close();
+			inputStream.close(); //closing the stream should close the underlying socket
 		}
 		catch (IOException ex)	{}
 		try
@@ -42,12 +44,20 @@ public class SocketHandler implements Runnable {
 		outputStream.writeObject(message);
 	}
 	
-	public void addDataReceivedActionListener(DataReceivedAction dataReceivedAction) {
+	public void addDataReceivedListener(DataReceivedAction dataReceivedAction) {
 		dataReceivedActionListeners.add(dataReceivedAction);
 	}
 	
 	public void removeDataReceivedListener(DataReceivedAction dataReceivedAction) {
 		dataReceivedActionListeners.remove(dataReceivedAction);
+	}
+	
+	public void addDisconnectedListener(DisconnectedAction disconnectedAction) {
+		disconnectedActionListeners.add(disconnectedAction);
+	}
+	
+	public void removeDisconnectedListener(DisconnectedAction disconnectedAction) {
+		disconnectedActionListeners.remove(disconnectedAction);
 	}
 
 	@Override
@@ -58,19 +68,33 @@ public class SocketHandler implements Runnable {
 				msg = (NetMessage) inputStream.readObject();
 			} 
 			catch (IOException ex) {
-				return;
+				break;
 			}
 			catch(ClassNotFoundException ex){
-				return;
+				break;
 			}
 
 			//invoke event:
-			for (int i = dataReceivedActionListeners.size() - 1; i > -1; i--) { //subscriber may unsubscribe itself during invocation, so; loop backwards.
-				DataReceivedAction subscriber = dataReceivedActionListeners.get(i);
-				if (subscriber != null)
-					subscriber.dataReceived(this, msg);
-			}
+			invokeDataReceivedEvent(msg);
 		}
-		//Exception happened, should probably notify that the connection is closed.
+		//Exception happened, notify that the connection is closed:
+		invokeDisconnectedEvent();
+	}
+	private void invokeDataReceivedEvent(NetMessage msg)
+	{
+		for (int i = dataReceivedActionListeners.size() - 1; i > -1; i--) { //subscriber may unsubscribe itself during invocation, so; loop backwards.
+			DataReceivedAction subscriber = dataReceivedActionListeners.get(i);
+			if (subscriber != null)
+				subscriber.dataReceived(this, msg);
+		}
+	}
+	private void invokeDisconnectedEvent()
+	{
+		for(int i = disconnectedActionListeners.size() - 1; i > - 1; i--)
+		{
+			DisconnectedAction subscriber = disconnectedActionListeners.get(i);
+			if(subscriber != null)
+				subscriber.disconnected(this);
+		}
 	}
 }

@@ -20,7 +20,7 @@ public class DBControl {
 	public DBControl(String connectionURI, String username, String password) throws SQLException
 	{
 		this.schemaName = "SEP2XGROUP6";
-		this.connectionURI = connectionURI + "?searchpath=" + schemaName;
+		this.connectionURI = connectionURI + "?currentSchema=" + schemaName;
 		this.username = username;
 		this.password = password;
 		try {
@@ -116,7 +116,7 @@ public class DBControl {
 	
 	public boolean registerAccount(Account account, String password)
 	{
-		String createAccountSQL = "INSERT INTO "+schemaName+".\"account\"(Username, Password, Email, Name, Surname, Address, Phone, IsFemale, Birthday)" 
+		String createAccountSQL = "INSERT INTO \"account\"(Username, Password, Email, Name, Surname, Address, Phone, IsFemale, Birthday)" 
 	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		
 		try(Connection conn = connect();

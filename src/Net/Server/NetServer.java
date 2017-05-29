@@ -7,10 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import Net.DataReceivedAction;
+import Net.DisconnectedAction;
 import Net.NetMessage;
 import Net.SocketHandler;
 
-public class NetServer implements Runnable, DataReceivedAction {
+public class NetServer implements Runnable, DataReceivedAction, DisconnectedAction {
 	private boolean isConnected = true;
 	private Map<String, ServerMethodHandler> methodHandlers;
 	private ServerSocket listenerSocket;
@@ -31,7 +32,8 @@ public class NetServer implements Runnable, DataReceivedAction {
 			try {
 				Socket connectionSocket = listenerSocket.accept();
 				SocketHandler handlerConnection = new SocketHandler(connectionSocket);
-				handlerConnection.addDataReceivedActionListener(this);
+				handlerConnection.addDisconnectedListener(this);
+				handlerConnection.addDataReceivedListener(this);
 				clientConnections.add(handlerConnection);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -69,7 +71,6 @@ public class NetServer implements Runnable, DataReceivedAction {
 				try {
 					socket.send(response);
 				} catch (IOException e) {
-					e.printStackTrace();
 					return;
 				}
 
@@ -87,6 +88,14 @@ public class NetServer implements Runnable, DataReceivedAction {
 				break;
 		}
 		return temp.toArray(new Object[0]);
+	}
+
+	@Override
+	public void disconnected(SocketHandler source)
+	{
+		source.removeDisconnectedListener(this);
+		source.removeDataReceivedListener(this);
+		clientConnections.remove(source);		
 	}
 
 }

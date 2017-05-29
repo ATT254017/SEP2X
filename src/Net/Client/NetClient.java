@@ -27,7 +27,7 @@ public class NetClient {
 	public ServerResponse runServerMethod(String method, Object... args) {
 		int thisRequestID = requestNum++;
 		ServerResponse response = new ServerResponse(thisRequestID, responseTimeout);
-		socketHandler.addDataReceivedActionListener(response);
+		socketHandler.addDataReceivedListener(response);
 		
 		HashMap<String, Object> params = new HashMap<>();
 		params.put("REQUEST_ID", thisRequestID);
