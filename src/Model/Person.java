@@ -1,41 +1,37 @@
 package Model;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Created by Afonso on 5/25/2017.
  */
 public class Person implements Serializable {
-    private int personID;
     private String firstName;
     private String lastName;
     private String address;
     private int phoneNumber;
     private boolean isMale;
-    private int birthYear;
-    private int birthMonth;
-    private int birthDay;
+    private LocalDate birthDay;
 
-    public Person(int personID, String firstName, String lastName, String address, int phoneNumber, boolean isMale, int birthYear, int birthMonth, int birthDay) {
-        this.personID = personID;
+    public Person(String firstName, String lastName, String address, int phoneNumber, boolean isMale, LocalDate birthday) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.isMale = isMale;
-        this.birthYear = birthYear;
-        this.birthMonth = birthMonth;
-        this.birthYear = birthYear;
+        this.birthDay = birthday;
     }
-    
+   /* 
     public void setBirthday(int birthYear, int birthMonth, int birthDay) {
     	this.birthYear = birthYear;
         this.birthMonth = birthMonth;
         this.birthYear = birthYear;
-    }
+    }*/
     
-    public String getBirthday() {
-    	return birthYear + "-" + birthMonth + "-" + birthDay;
+    public LocalDate getBirthday() {
+    	return birthDay;//return birthYear + "-" + birthMonth + "-" + birthDay;
     }
 
     public void setFirstName(String firstName) {

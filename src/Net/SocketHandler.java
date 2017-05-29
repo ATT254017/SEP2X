@@ -1,6 +1,5 @@
 package Net;
 
-import Net.Client.StatusListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,14 +10,32 @@ public class SocketHandler implements Runnable {
 	private ObjectInputStream inputStream;
 	private ObjectOutputStream outputStream;
 	private Thread runner;
+	private boolean running;
 	private ArrayList<DataReceivedAction> dataReceivedActionListeners;
 	
 	public SocketHandler(Socket connection) throws IOException {
+		running = true;
 		dataReceivedActionListeners = new ArrayList<>();
 		outputStream = new ObjectOutputStream(connection.getOutputStream());
 		inputStream = new ObjectInputStream(connection.getInputStream());
 		runner = new Thread(this);
 		runner.start();
+	}
+	
+	public void closeConnection()
+	{
+		running = false;
+		try
+		{
+			inputStream.close();
+		}
+		catch (IOException ex)	{}
+		try
+		{
+			outputStream.close();
+		}
+		catch(IOException ex) {}
+		
 	}
 	
 	public void send(NetMessage message) throws IOException {
@@ -35,7 +52,7 @@ public class SocketHandler implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (running) {
 			NetMessage msg = null;
 			try {
 				msg = (NetMessage) inputStream.readObject();

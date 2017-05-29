@@ -64,6 +64,7 @@ public class TimeOut {
     public void checkThread() {
         synchronized (thread) {
             if (!thread.isAlive()) {
+                thread.setDaemon(true);
                 thread.start();
             }
         }

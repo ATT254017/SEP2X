@@ -1,7 +1,10 @@
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
 
 import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
+import com.sun.org.apache.xerces.internal.util.Status;
+import com.sun.xml.internal.ws.transport.http.DeploymentDescriptorParser;
 
 import Client.*;
 import Model.Account;
@@ -15,6 +18,18 @@ public class TestClient {
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 		
+		
+		clientControl.registerAccount(new Account("myusername", "myemail@email.com", 
+				new Person("firstname", "lastName", "address", 88888888, true, LocalDate.now()))
+				, "mypass", (Status , derp) ->
+		{
+			 System.out.println("MStatus: " + Status);
+			 System.out.println("RegStatus: " + derp);
+		});
+		
+		Thread.sleep(5000);
+		
+		clientControl.disconnect();
 		/*clientControl.signIn("myuser", "pwd", (status, blah) ->
 		{
 			System.out.println(status);
