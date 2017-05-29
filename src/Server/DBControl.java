@@ -146,6 +146,24 @@ public class DBControl {
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
 	}
 	
+	public boolean deleteAccount(Account account, String password) {
+		String deleteAccountSQL = "DELETE FROM Account WHERE AccountID=" + "'" + account.getAccountID() + "';";
+		
+		try(Connection conn = connect();
+	              PreparedStatement pstmt = conn.prepareStatement(deleteAccountSQL,
+	                      Statement.RETURN_GENERATED_KEYS)) {
+			int affectedRows = pstmt.executeUpdate();
+	          // check the affected rows 
+	          if (affectedRows == 0) {
+	              return true;
+	          }
+		} catch (SQLException ex) {
+	          System.out.println(ex.getMessage());
+	    }
+		
+		return false;
+	}
+	
 	public long insertItem(Item item) {
       String SQL = "INSERT INTO item(itemid, item_name, item_price, description)"
               + "VALUES(?,?,?,?)";
