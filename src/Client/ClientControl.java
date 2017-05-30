@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import Model.Account;
+import Model.BuyItemStatus;
 import Model.Category;
 import Model.Item;
 import Model.Method;
@@ -64,6 +65,14 @@ public class ClientControl
 		}, account, password);
 	}
 
+	public void buyItem(Item item, int quantity, BuyItemHandler handler) {
+		runServerMethod(Method.BuyItem, (status, args) ->
+		{
+			BuyItemStatus arg1 = (status != MethodStatus.TimedOut ? (BuyItemStatus)args[0] : null);
+			handler.handle(status, arg1);
+		}, item, quantity);
+	}
+	
 	public void signIn(String username, String password, SignInResponseHandler handler)
 	{
 		runServerMethod(Method.SignIn, (status, args) -> 
