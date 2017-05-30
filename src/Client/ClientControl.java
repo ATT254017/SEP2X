@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 
 import Model.Account;
+import Model.Category;
 import Model.Item;
 import Model.Method;
 import Model.MethodStatus;
@@ -37,15 +38,11 @@ public class ClientControl
 	public static ClientControl getInstance()
 	{
 		if (instance == null)
-		{
 			synchronized (initInstanceLock)
 			{
 				if (instance == null)
-				{
 					instance = new ClientControl();
-				}
 			}
-		}
 		return instance;
 	}
 	
@@ -58,7 +55,7 @@ public class ClientControl
 		}, item, offerPrice);
 	}
 
-	public void registerAccount(Account account, String password, RegisterAccountHandler handler)
+	public void registerAccount(Account account, String password, RegisterAccountResponseHandler handler)
 	{
 		runServerMethod(Method.RegisterAccount, (status, args) -> 
 		{
@@ -75,6 +72,11 @@ public class ClientControl
 			String arg2 = status != MethodStatus.TimedOut ? (String)args[1] : null;
 			handler.handle(status, arg1, arg2);
 		}, username, password);
+	}
+	
+	public void getCategories(Category parent, GetCategoriesResponseHandler handler)
+	{
+		
 	}
 	
 	/*public void getAccount(String username, MethodResponseHandler handler)

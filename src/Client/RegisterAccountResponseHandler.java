@@ -3,7 +3,7 @@ package Client;
 import Model.MethodStatus;
 import Model.RegisterAccountStatus;
 
-public interface RegisterAccountHandler
+public interface RegisterAccountResponseHandler
 {
 	void handle(MethodStatus mStatus, RegisterAccountStatus rStatus);
 }

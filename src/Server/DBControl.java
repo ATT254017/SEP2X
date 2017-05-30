@@ -43,7 +43,7 @@ public class DBControl {
 	}
 	private void databaseDriverError()
 	{
-		throw new RuntimeException("Postgresql driver is not installed!");
+		throw new RuntimeException("Postgresql jdbc driver is not included in the project! Download at jdbc.postgresql.org");
 	}
 	
 	private void createDatabase() throws SQLException
