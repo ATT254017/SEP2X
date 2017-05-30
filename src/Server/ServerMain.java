@@ -120,9 +120,13 @@ public class ServerMain {
 		// 0: Item - the item to be bought
 		// 1: int - the quantity of said item to be bought
 		Object[] response = new Object[]{BuyItemStatus.Success};
-		/*if () {
-			
-		}*/
+		if (args.length == 2) {
+			System.out.println(args[0]);
+			System.out.println(args[1]);
+			if (args[0] instanceof Item && args[1] instanceof Integer) {
+				
+			}
+		}
 		// output: 
 		// 0: int - actual quantity bought
 		System.out.println(buyer.getUserName() + " wants to buy an item");
