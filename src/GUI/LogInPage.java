@@ -17,23 +17,17 @@ import javafx.stage.Stage;
 
 import java.awt.*;
 
-public class LogInPage extends Application
+public class LogInPage
 {
-
-   public static void main(String[] args)
-   {
-      launch(args);
-   }
 
    Stage window;
    Scene scene;
    Button button;
 
-   @Override
-   public void start(Stage primaryStage)
+   public void display()
    {
-      window = primaryStage;
-      //window.initModality(Modality.APPLICATION_MODAL);
+      window = new Stage();
+      window.initModality(Modality.APPLICATION_MODAL);
       window.setTitle("Log In");
 
       //Title
@@ -104,6 +98,6 @@ public class LogInPage extends Application
       window.setScene(scene);
 
       //window.showAndWait();
-      window.show();
+      window.showAndWait();
    }
 }
