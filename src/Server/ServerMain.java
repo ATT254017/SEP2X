@@ -31,6 +31,9 @@ public class ServerMain {
 	
 	private Object[] handleGetCategories(Object[] args)
 	{
+		//input:
+		//0: 
+		
 		return null;
 	}
 	
@@ -38,42 +41,6 @@ public class ServerMain {
 	{
 		return null;
 	}
-	
-	private Object[] handleMakeOffer(Object[] args, Account offeror)
-	{
-		// input:
-		// 0: Item - item offeror wants to make an offer for.
-		// 1: double - the offered item price
-		
-		// output:
-		// 0: Boolean - was the offer successfully registered?
-		System.out.println(offeror.getUserName() + " wants to make an offer");
-		return new Object[] { false };
-	}
-	
-	private Object[] handleBuyItem(Object[] args, Account buyer)
-	{
-		// input:
-		// 0: Item - the item to be bought
-		// 1: int - the quantity of said item to be bought
-		
-		// output: 
-		// 0: int - actual quantity bought
-		return null;
-	}
-	
-	private Object[] handleSellItem(Object[] args, Account owner)
-	{
-		return null;
-	}
-
-	/*private Object[] handleGetListings(Object[] args) {
-		// input:
-		// 0: search keyword: String
-		// 1: category
-		// if both the search keyword and category are null, get every listing that has been created
-		return null;
-	}*/
 	
 	private Object[] handleSignIn(Object[] args) {
 		// input:
@@ -127,6 +94,35 @@ public class ServerMain {
 		}
 		return response;
 	}
+
+	private Object[] handleMakeOffer(Object[] args, Account offeror)
+	{
+		// input:
+		// 0: Item - item offeror wants to make an offer for.
+		// 1: double - the offered item price
+		
+		// output:
+		// 0: Boolean - was the offer successfully registered?
+		System.out.println(offeror.getUserName() + " wants to make an offer");
+		return new Object[] { false };
+	}
+	
+	private Object[] handleBuyItem(Object[] args, Account buyer)
+	{
+		// input:
+		// 0: Item - the item to be bought
+		// 1: int - the quantity of said item to be bought
+		
+		// output: 
+		// 0: int - actual quantity bought
+		return null;
+	}
+	
+	private Object[] handleSellItem(Object[] args, Account owner)
+	{
+		return null;
+	}
+	
 
 	private Account getAuthenticatedAccount(Object[] args)
 	{
