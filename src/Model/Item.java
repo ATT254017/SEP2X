@@ -10,14 +10,24 @@ public class Item implements Serializable{
     private String itemName;
     private double itemPrice;
     private String description;
+    private int quantity;
     private ItemState state;
 
-    public Item(int itemID, String itemName, double itemPrice, String description, ItemState state) {
+    public Item(int itemID, String itemName, double itemPrice, String description, ItemState state, int quantity) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.description = description;
         this.state = state;
+        this.quantity = quantity;
+    }
+    
+    public void changeQuantity(int quantity) {
+    	this.quantity = quantity;
+    }
+    
+    public int getQuantity() {
+    	return quantity;
     }
     
     public void changeItemState(ItemState state) {

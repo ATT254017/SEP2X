@@ -46,7 +46,12 @@ public class TestClient {
 				 System.out.println("Logged in: " + boo);
 				 System.out.println("SessionID: " + str);
 				 
-				 clientControl.makeOffer(new Item(999, "itemName", 345, "description", ItemState.Sold), 234, (ee, rr) ->
+				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 1, (status, state) ->
+				 {
+					System.out.println("buy item: " + status); 
+				 });
+				 
+				 clientControl.makeOffer(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 234, (ee, rr) ->
 				 {
 					 System.out.println("make offer: " + ee);
 				 });
