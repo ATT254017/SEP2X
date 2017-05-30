@@ -20,12 +20,23 @@ public class ServerMain {
 		networkServer.addServerMethod(Method.RegisterAccount.getValue(), a -> handleRegisterAccount(a));
 		networkServer.addServerMethod(Method.SignIn.getValue(), a -> handleSignIn(a));
 		//networkServer.addServerMethod(Method.GetAccount.getValue(), a -> handleLoginAccount(a));
-		networkServer.addServerMethod(Method.GetListings.getValue(), a -> handleGetListings(a));
+		networkServer.addServerMethod(Method.GetItems.getValue(), a -> handleGetItems(a));
+		networkServer.addServerMethod(Method.GetCategories.getValue(), a -> handleGetCategories(a));
 		
 		//Requires authentication:
-		networkServer.addServerMethod(Method.CreateListing.getValue(), a -> handleCreateListing(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.SellItem.getValue(), a -> handleSellItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleBuyItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.MakeOffer.getValue(), a -> handleMakeOffer(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
+	}
+	
+	private Object[] handleGetCategories(Object[] args)
+	{
+		return null;
+	}
+	
+	private Object[] handleGetItems(Object[] args)
+	{
+		return null;
 	}
 	
 	private Object[] handleMakeOffer(Object[] args, Account offeror)
@@ -36,7 +47,8 @@ public class ServerMain {
 		
 		// output:
 		// 0: Boolean - was the offer successfully registered?
-		return null;
+		System.out.println(offeror.getUserName() + " wants to make an offer");
+		return new Object[] { false };
 	}
 	
 	private Object[] handleBuyItem(Object[] args, Account buyer)
@@ -50,18 +62,18 @@ public class ServerMain {
 		return null;
 	}
 	
-	private Object[] handleCreateListing(Object[] args, Account owner)
+	private Object[] handleSellItem(Object[] args, Account owner)
 	{
 		return null;
 	}
 
-	private Object[] handleGetListings(Object[] args) {
+	/*private Object[] handleGetListings(Object[] args) {
 		// input:
 		// 0: search keyword: String
 		// 1: category
 		// if both the search keyword and category are null, get every listing that has been created
 		return null;
-	}
+	}*/
 	
 	private Object[] handleSignIn(Object[] args) {
 		// input:

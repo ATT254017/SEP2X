@@ -1,9 +1,11 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * Created by Afonso on 5/25/2017.
  */
-public class Item {
+public class Item implements Serializable{
     private int itemID;
     private String itemName;
     private double itemPrice;

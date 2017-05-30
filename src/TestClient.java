@@ -8,6 +8,8 @@ import com.sun.xml.internal.ws.transport.http.DeploymentDescriptorParser;
 
 import Client.*;
 import Model.Account;
+import Model.Item;
+import Model.ItemState;
 import Model.Method;
 import Model.Person;
 
@@ -32,6 +34,11 @@ public class TestClient {
 				 System.out.println("MStatus: " + stat);
 				 System.out.println("Logged in: " + boo);
 				 System.out.println("SessionID: " + str);
+				 
+				 clientControl.makeOffer(new Item(999, "itemName", 345, "description", ItemState.Sold), 234, (ee, rr) ->
+				 {
+					 System.out.println("make offer: " + ee);
+				 });
 			 });
 		});
 		

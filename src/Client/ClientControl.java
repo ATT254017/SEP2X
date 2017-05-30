@@ -89,6 +89,7 @@ public class ClientControl
 		{
 			if (userSessionID != null)
 			{
+				args2 = new Object[args.length + 1];
 				System.arraycopy(args, 0, args2, 1, args.length); 	// shift all elements up by 1
 				args2[0] = userSessionID; 							// to make room for the session ID
 			}
