@@ -111,7 +111,7 @@ public class DBControl {
 		
 		String createTableCategory ="CREATE TABLE IF NOT EXISTS "+schemaName+".category("  +
 									"CategoryID SERIAL," + 
-									"Category_name VARCHAR(50)," +
+									"Category_name VARCHAR(50) UNIQUE," +
 									"Cat_description VARCHAR(250)," +
 									"Cat_picture VARCHAR(150)," + 
 									"Cat_parent SERIAL," +
@@ -212,7 +212,14 @@ public class DBControl {
 	
 	public void insertCategory(Category category)
 	{
-		String sql = "INSERT INTO category";
+		"CategoryID SERIAL," + 
+				"Category_name VARCHAR(50)," +
+				"Cat_description VARCHAR(250)," +
+				"Cat_picture VARCHAR(150)," + 
+				"Cat_parent SERIAL," +
+				"FOREIGN KEY(Cat_parent) REFERENCES category(CategoryID)," + 
+				"PRIMARY KEY(CategoryID));";
+		String sql = "INSERT INTO category(CategoryID, ";
 	}
 	
 	public boolean registerAccount(Account account, String password)

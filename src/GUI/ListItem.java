@@ -10,6 +10,8 @@ import javafx.scene.shape.Rectangle;
 
 import javax.swing.text.html.ListView;
 
+import Model.Item;
+
 
 public class ListItem extends VBox
 {
