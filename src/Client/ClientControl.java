@@ -3,6 +3,7 @@ package Client;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.List;
 
 import Model.Account;
 import Model.Category;
@@ -76,7 +77,11 @@ public class ClientControl
 	
 	public void getCategories(Category parent, GetCategoriesResponseHandler handler)
 	{
-		
+		runServerMethod(Method.GetCategories, (status, args) ->
+		{
+			List<Category> arg1 = status != MethodStatus.TimedOut ? (List<Category>)args[0] : null;
+			handler.handle(status, arg1);
+		}, parent);
 	}
 	
 	/*public void getAccount(String username, MethodResponseHandler handler)

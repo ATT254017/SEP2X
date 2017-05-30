@@ -32,9 +32,16 @@ public class ServerMain {
 	private Object[] handleGetCategories(Object[] args)
 	{
 		//input:
-		//0: 
+		//0: Category - the category which is the parent to the returned categories, if null all parent-less categories are returned.
 		
-		return null;
+		//output: 
+		//0: List<Category> - the categories found
+		Category category = null;
+		if(args.length == 1)
+			if(args[0] instanceof Category)
+				category = (Category)args[0];
+		
+		return new Object[] { database.getCategories(category) };
 	}
 	
 	private Object[] handleGetItems(Object[] args)

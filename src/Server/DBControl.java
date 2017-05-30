@@ -2,6 +2,8 @@ package Server;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 
 import Model.*;
 
@@ -15,12 +17,14 @@ public class DBControl {
 	private String username;
 	private String password;
 
+	private String databaseName;
 	private String schemaName;
 
 	public DBControl(String connectionURI, String username, String password) throws SQLException
 	{
-		this.schemaName = "SEP2XGROUP6";
-		this.connectionURI = connectionURI + "?currentSchema=" + schemaName;
+		this.databaseName = "sep2xgroup6_db";
+		this.schemaName = "sep2xgroup6";
+		this.connectionURI = connectionURI;
 		this.username = username;
 		this.password = password;
 		try {
@@ -39,21 +43,54 @@ public class DBControl {
 			databaseDriverError();
 			return;
 		}
-		createDatabase();
+		if(!databaseExists())
+			createDatabase();
+		
+		this.connectionURI += databaseName + "?currentSchema=" + schemaName;;
+		
+		populateDatabase();
 	}
 	private void databaseDriverError()
 	{
 		throw new RuntimeException("Postgresql jdbc driver is not included in the project! Download at jdbc.postgresql.org");
 	}
 	
-	private void createDatabase() throws SQLException
+	private boolean databaseExists()
+	{
+		String sql = "SELECT 1 FROM pg_catalog.pg_database where datname = ?;";
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql);)
+		{
+			statement.setString(1, databaseName);
+			ResultSet res = statement.executeQuery();
+			return res.next();
+		}
+		catch(SQLException ex)
+		{
+			return false;
+		}
+	}
+	private void createDatabase()
+	{
+		String sql = "CREATE DATABASE " + databaseName;
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.execute();
+		}
+		catch(SQLException ex)
+		{
+			return;
+		}
+	}
+	private void populateDatabase() throws SQLException
 	{
 		String createSchema = 		"CREATE SCHEMA IF NOT EXISTS " + schemaName;
 		
 		String createEnums = 		"DO $$" +
 									"BEGIN" + 
 									"	IF NOT EXISTS (SELECT * FROM pg_type WHERE typname = 'state') THEN" +
-									"		CREATE TYPE State AS ENUM ('Sold', 'In Stock');" + 
+									"		CREATE TYPE "+schemaName+".state AS ENUM ('Sold', 'In Stock');" + 
 									"	END IF;" +
 									"END$$;";
 		
@@ -70,11 +107,13 @@ public class DBControl {
 									"Birthday DATE," +
 									"PRIMARY KEY(AccountID));";
 		
-		String createTableCategory ="CREATE TABLE IF NOT EXISTS "+schemaName+".\"category\"("  +
+		String createTableCategory ="CREATE TABLE IF NOT EXISTS "+schemaName+".category("  +
 									"CategoryID SERIAL," + 
 									"Category_name VARCHAR(50)," +
 									"Cat_description VARCHAR(250)," +
 									"Cat_picture VARCHAR(150)," + 
+									"Cat_parent SERIAL," +
+									"FOREIGN KEY(Cat_parent) REFERENCES category(CategoryID)," + 
 									"PRIMARY KEY(CategoryID));";
 		
 		String createTableItem = 	"CREATE TABLE IF NOT EXISTS \"item\"("  +
@@ -82,14 +121,14 @@ public class DBControl {
 									"Item_name VARCHAR(100)," +
 									"Category SERIAL," + 
 									"Item_price DECIMAL," +
-									"Item_state State," + 
+									"Item_state \"state\"," + 
 									"Description VARCHAR(2000)," +
 									"Quantity INT,"+
 									"Seller SERIAL," +
 									"Sold_amount INT," +
 									"Image_source VARCHAR(150)," + 
 									"PRIMARY KEY(ItemID)," +
-									"FOREIGN KEY(Category) REFERENCES "+schemaName+".\"category\"(CategoryID)," + 
+									"FOREIGN KEY(Category) REFERENCES "+schemaName+".category(CategoryID)," + 
 									"FOREIGN KEY(Seller) REFERENCES "+schemaName+".\"account\"(AccountID));";
 				
 		
@@ -113,6 +152,39 @@ public class DBControl {
 		}
 	}
 	
+	public List<Category> getCategories(Category category)
+	{
+		//if category is null, return all top-level categories (categories without parents)
+		//else return all children of the specified category
+		List<Category> list = new LinkedList<>();
+		String sql = "";
+		if(category != null)
+			sql = "SELECT * FROM category WHERE Cat_parent = ?";
+		else
+			sql = "SELECT * FROM category WHERE Cat_parent IS NULL";
+		
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			if(category != null)
+				statement.setInt(1, category.getCategoryID());
+			
+			ResultSet resultSet = statement.executeQuery();
+			while(resultSet.next())
+			{
+				Category cat = new Category(resultSet.getInt("categoryID"), resultSet.getString("category_name"));
+				resultSet.getInt("Cat_parent");
+				cat.setHasParent(!resultSet.wasNull());
+				cat.setParent(category);
+				cat.setCategoryDescription(resultSet.getString("cat_description"));
+				list.add(cat);
+			}
+		}
+		catch (Exception e) {
+		}
+		return list;
+	}
+	
 	public Account checkUserCredentials(String userName, String passwd)
 	{
 		String getAccountSQL = "SELECT * FROM \"account\" WHERE username = ? AND password = ?";
@@ -134,6 +206,11 @@ public class DBControl {
 			ex.printStackTrace();
 			return null;
 		}
+	}
+	
+	public void insertCategory(Category category)
+	{
+		String sql = "INSERT INTO category";
 	}
 	
 	public boolean registerAccount(Account account, String password)

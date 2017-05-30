@@ -8,9 +8,11 @@ import com.sun.xml.internal.ws.transport.http.DeploymentDescriptorParser;
 
 import Client.*;
 import Model.Account;
+import Model.Category;
 import Model.Item;
 import Model.ItemState;
 import Model.Method;
+import Model.MethodStatus;
 import Model.Person;
 
 public class TestClient {
@@ -20,6 +22,15 @@ public class TestClient {
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 		
+		clientControl.getCategories(null, (status, list) ->
+		{
+			System.out.println(status);
+			if(status == MethodStatus.Success)
+				for(Category category : list)
+					System.out.println(category.getCategoryName());
+		});
+		
+		/*
 		
 		clientControl.registerAccount(new Account("myusername", "myemail@email.com", 
 				new Person("firstname", "lastName", "address", 88888888, true, LocalDate.now()))
@@ -41,7 +52,7 @@ public class TestClient {
 				 });
 			 });
 		});
-		
+		*/
 		Thread.sleep(2000);
 		
 		clientControl.disconnect();
