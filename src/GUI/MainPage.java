@@ -2,12 +2,16 @@ package GUI;/**
  * Created by filip on 26/05/2017.
  */
 
+import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -16,10 +20,12 @@ import javafx.stage.Stage;
 
 public class MainPage extends Application
 {
+   private ClientControl controller;
    private Stage window;
    private Scene scene;
    //main page = true, search results = false;
    private boolean state;
+   private boolean logedIn;
 
    public static void main(String[] args)
    {
@@ -32,6 +38,13 @@ public class MainPage extends Application
       window = primaryStage;
       window.setTitle("JavaFx");
       state = true;
+      logedIn = false;
+      controller = ClientControl.getInstance();
+      LogInPage logInPage = new LogInPage();
+
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //Top
@@ -99,7 +112,7 @@ public class MainPage extends Application
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //Toggle center scene
-     titleButton1.setOnAction(event ->
+      /*titleButton1.setOnAction(event ->
       {
          if(state)
          {
@@ -111,7 +124,21 @@ public class MainPage extends Application
             scrollwindow.setContent(r1);
             toggleState();
          }
+      });*/
+
+      //Open log in page
+      titleButton1.setOnAction(event ->
+      {
+         if(logedIn)
+         {
+            System.out.println("nope");
+         }
+         else
+         {
+            logInPage.display();
+         }
       });
+
       //Change window scenes
      titleButton2.setOnAction(event ->
      {
@@ -139,32 +166,27 @@ public class MainPage extends Application
          layout.setCenter(center);
          layout.setLeft(left);
          layout.setRight(right);
-         layout.setPadding(new Insets(25, 50, 50, 50));
+      layout.setPadding(new Insets(25, 50, 50, 50));
 
       scene = new Scene(layout, 1280, 960);
       window.setScene(scene);
       window.show();
-   }
+      }
 
-   private void toggleState()
-   {
+private void toggleState()
+      {
       if (state)
       {
-         state = false;
+      state = false;
       }
       else
       {
-         state = true;
+      state = true;
       }
-   }
+      }
 
-   public void print(String text)
-   {
+public void print(String text)
+      {
       System.out.println(text);
-   }
-
-   public void changeScene()
-   {
-
-   }
-}
+      }
+      }
