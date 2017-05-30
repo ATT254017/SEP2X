@@ -42,6 +42,7 @@ public class Category
 	public void setParent(Category parent)
 	{
 		this.parent = parent;
+		setHasParent(parent != null);
 	}
 
 	public boolean hasParent()
