@@ -3,6 +3,8 @@ package Server;
 import java.sql.*;
 import java.time.LocalDate;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
+
 import Model.*;
 
 
@@ -188,7 +190,7 @@ public class DBControl {
 	}
 	
 	public long insertItem(Item item) {
-      String SQL = "INSERT INTO item(itemid, item_name, item_price, description)"
+      String SQL = "INSERT INTO item(itemid, item_name, item_price, description, quantity)"
               + "VALUES(?,?,?,?)";
 
       long id = 0;
@@ -201,6 +203,7 @@ public class DBControl {
           pstmt.setString(2, item.getItemName());
           pstmt.setDouble(3, item.getItemPrice());
           pstmt.setString(4, item.getDescription());
+          pstmt.setInt(5, item.getQuantity());
           
 
           int affectedRows = pstmt.executeUpdate();
@@ -220,7 +223,25 @@ public class DBControl {
       }
       return id;
   }
-   
+	
+	public boolean removeItem(Item item) {
+		String deleteAccountSQL = "DELETE FROM Account WHERE itemid = '?'";
+		
+		try(Connection conn = connect();
+	              PreparedStatement pstmt = conn.prepareStatement(deleteAccountSQL,
+	                      Statement.RETURN_GENERATED_KEYS)) {
+			pstmt.setInt(1, item.getItemID());
+			int affectedRows = pstmt.executeUpdate();
+	          // check the affected rows 
+	          if (affectedRows == 1) {
+	              return true;
+	          }
+		} catch (SQLException ex) {
+	          System.out.println(ex.getMessage());
+	    }
+		
+		return false;
+	}
    
    private Connection connect() throws SQLException
    {
