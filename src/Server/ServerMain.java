@@ -36,12 +36,16 @@ public class ServerMain {
 		
 		//output: 
 		//0: List<Category> - the categories found
+		System.out.println("client wants to get categories");
 		Category category = null;
 		if(args.length == 1)
 			if(args[0] instanceof Category)
 				category = (Category)args[0];
 		
-		return new Object[] { database.getCategories(category) };
+		System.out.println(System.nanoTime());
+		Object[] ret =  new Object[] { database.getCategories(category) };
+		System.out.println(System.nanoTime());
+		return ret;
 	}
 	
 	private Object[] handleGetItems(Object[] args)

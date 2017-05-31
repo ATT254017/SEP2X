@@ -14,11 +14,19 @@ import Model.ItemState;
 import Model.Method;
 import Model.MethodStatus;
 import Model.Person;
+import Net.Client.TimeOut;
 
 public class TestClient {
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		
+		/*
+		TimeOut timeOut = new TimeOut(50000);
+		long starttime = System.nanoTime();
+		timeOut.addTimeOutEventListener(() -> System.out.println("Timed out after: " + (System.nanoTime() - starttime) / 1e6));
+		
+		Thread.sleep(200000);
+		*/
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 		

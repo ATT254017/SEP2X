@@ -61,6 +61,7 @@ public class DBControl {
 
 	private void defaultCategories()
 	{
+		insertCategory("Subcat of Antiques", "", getCategory("Antiques"));
 		insertCategory("Antiques", "", null);
 		insertCategory("Art", "", null);
 		insertCategory("Baby", "", null);
@@ -187,6 +188,47 @@ public class DBControl {
 		}
 	}
 	
+	public Category getCategory(String categoryName)
+	{
+		String sql = "with recursive category_tree as ("+
+						"select categoryid, cat_parent, category_name, cat_description" +
+						"from category"+
+						"where category_name = ?"+
+						"union all"+
+						"select parent.categoryid, parent.cat_parent, parent.category_name, parent.cat_description"+
+						"from category parent"+
+						"join category_tree child on parent.categoryid = child.cat_parent)"+
+						"select * from category_tree;";
+		
+		try(Connection connection = connect();
+				PreparedStatement statement = connection.prepareStatement(sql))
+			{
+			statement.setString(1, categoryName);
+			ResultSet resultSet = statement.executeQuery();
+			if(!resultSet.next())
+				return null;
+			
+			Category category = new Category(resultSet.getInt("categoryid"), resultSet.getString("category_name"));
+			category.setCategoryDescription(resultSet.getString("cat_description"));
+			
+			Category child = category;
+			while(resultSet.next()) //the entire parent tree will be on the next rows.
+			{
+				Category parent = new Category(resultSet.getInt("categoryid"), resultSet.getString("category_name"));
+				parent.setCategoryDescription(resultSet.getString("cat_description"));
+				child.setParent(parent);
+				child = parent;
+			}
+			
+			return category;
+			}
+		catch(SQLException ex)
+		{
+			return null;
+		}
+	}
+	
+	
 	public List<Category> getCategories(Category category)
 	{
 		//if category is null, return all top-level categories (categories without parents)
@@ -268,7 +310,6 @@ public class DBControl {
 		}
 		catch(Exception ex)
 		{
-			ex.printStackTrace();
 			return null;
 		}
 	}
