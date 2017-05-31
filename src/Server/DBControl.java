@@ -169,13 +169,13 @@ public class DBControl {
 		
 		String createSalesTable =	"CREATE TABLE IF NOT EXISTS \"sales\"("	 +
 									"SalesID SERIAL," +
-									"BuyerID SERIAL" +
-									"ItemID SERIAL" +
+									"BuyerID SERIAL," +
+									"ItemID SERIAL," +
 									"QuantityBought INT," +
 									"TotalAmount DECIMAL(5, 2)," +
 									"PRIMARY KEY(SalesID)," +
 									"FOREIGN KEY(BuyerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
-									"FOREIGN KEY(ItemID) REFERENCES "+schemaName+".\"item\"(ItemID);";
+									"FOREIGN KEY(ItemID) REFERENCES "+schemaName+".\"item\"(ItemID));";
 				
 		
 		
