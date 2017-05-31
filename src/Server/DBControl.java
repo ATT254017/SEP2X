@@ -132,6 +132,16 @@ public class DBControl {
 									"PRIMARY KEY(ItemID)," +
 									"FOREIGN KEY(Category) REFERENCES "+schemaName+".category(CategoryID)," + 
 									"FOREIGN KEY(Seller) REFERENCES "+schemaName+".\"account\"(AccountID));";
+		
+		String createSalesTable =	"CREATE TABLE IF NOT EXISTS \"sales\"("	 +
+									"SalesID SERIAL," +
+									"BuyerID SERIAL" +
+									"ItemID SERIAL" +
+									"QuantityBought INT," +
+									"TotalAmount INT," +
+									"PRIMARY KEY(SalesID)," +
+									"FOREIGN KEY(BuyerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
+									"FOREIGN KEY(ItemID) REFERENCES "+schemaName+".\"item\"(ItemID);";
 				
 		
 		
@@ -140,13 +150,15 @@ public class DBControl {
 				PreparedStatement enumsStatement = connection.prepareStatement(createEnums);
 				PreparedStatement accountTableStatement = connection.prepareStatement(createTableAccount);
 				PreparedStatement categoryTableStatement = connection.prepareStatement(createTableCategory);
-				PreparedStatement itemTableStatement = connection.prepareStatement(createTableItem))
+				PreparedStatement itemTableStatement = connection.prepareStatement(createTableItem);
+				PreparedStatement salesTableStatement = connection.prepareStatement(createSalesTable))
 		{
 			schemaStatement.execute();
 			enumsStatement.execute();
 			accountTableStatement.execute();
 			categoryTableStatement.execute();
 			itemTableStatement.execute();
+			salesTableStatement.execute();
 		}
 		catch(SQLException ex)
 		{
@@ -252,6 +264,10 @@ public class DBControl {
 	    }
 		return false;
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
+	}
+	
+	public boolean buyItem(Account buyer, Item item, int quantity) {
+		
 	}
 	
 	public boolean deleteAccount(Account account) {
