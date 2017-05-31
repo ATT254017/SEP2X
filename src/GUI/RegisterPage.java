@@ -32,7 +32,7 @@ public class RegisterPage
       //Title
       Label title = new Label("Register Account");
       title.setMaxWidth(Double.MAX_VALUE);
-      title.setFont(new Font("Verdana", 74));
+      title.setFont(new Font("Verdana", 60));
       title.setAlignment(Pos.CENTER);
       title.setPadding(new Insets(50, 0, 50, 0));
 
@@ -43,9 +43,10 @@ public class RegisterPage
       TextField usernameInput = new TextField();
       usernameInput.setPrefWidth(400);
       usernameInput.setPrefHeight(30);
+      usernameInput.setPromptText("Username");
+      usernameInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       usernameBox.setPadding(new Insets(0, 0, 25, 0));
-      usernameInput.setPromptText("Username");
       usernameBox.getChildren().addAll(usernameInput);
 
       //Password field
@@ -55,9 +56,10 @@ public class RegisterPage
       TextField passwordInput = new TextField();
       passwordInput.setPrefWidth(400);
       passwordInput.setPrefHeight(30);
+      passwordInput.setPromptText("Password");
+      passwordInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       passwordBox.setPadding(new Insets(0, 0, 25, 0));
-      passwordInput.setPromptText("Password");
       passwordBox.getChildren().addAll(passwordInput);
 
       //Email field
@@ -67,9 +69,10 @@ public class RegisterPage
       TextField emailInput = new TextField();
       emailInput.setPrefWidth(400);
       emailInput.setPrefHeight(30);
+      emailInput.setPromptText("Email");
+      emailInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       emailBox.setPadding(new Insets(0, 0, 25, 0));
-      emailInput.setPromptText("Email");
       emailBox.getChildren().addAll(emailInput);
 
       //First & Last name field
@@ -79,10 +82,12 @@ public class RegisterPage
       TextField firstNameInput = new TextField();
       firstNameInput.setPrefWidth(195);
       firstNameInput.setPrefHeight(30);
+      firstNameInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       TextField lastNameInput = new TextField();
       lastNameInput.setPrefWidth(195);
       lastNameInput.setPrefHeight(30);
+      lastNameInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       nameBox.setPadding(new Insets(0, 0, 0, 0));
       firstNameInput.setPromptText("First name");
@@ -96,9 +101,10 @@ public class RegisterPage
       TextField addressInput = new TextField();
       addressInput.setPrefWidth(400);
       addressInput.setPrefHeight(30);
+      addressInput.setPromptText("Address");
+      addressInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       addressBox.setPadding(new Insets(0, 0, 25, 0));
-      addressInput.setPromptText("Address");
       addressBox.getChildren().addAll(addressInput);
 
       //Phone number field
@@ -108,9 +114,10 @@ public class RegisterPage
       TextField phoneNumberInput = new TextField();
       phoneNumberInput.setPrefWidth(400);
       phoneNumberInput.setPrefHeight(30);
+      phoneNumberInput.setPromptText("Phone Number");
+      phoneNumberInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       phoneNumberBox.setPadding(new Insets(0, 0, 25, 0));
-      phoneNumberInput.setPromptText("Phone Number");
       phoneNumberBox.getChildren().addAll(addressInput);
 
       //Sex and birthday field
@@ -123,25 +130,35 @@ public class RegisterPage
       genderSelector.getItems().add("Male");
       genderSelector.getItems().add("Female");
       genderSelector.setValue("Male");
-      genderSelector.get
+
+      HBox genderbox = new HBox(3);
+      genderbox.setAlignment(Pos.CENTER);
+      genderbox.setPadding(new Insets(0, 15, 0,0 ));
+      genderbox.getChildren().addAll(gender, genderSelector);
+
+
+      Label birthday = new Label("Birthday");
 
       TextField dayInput = new TextField();
       dayInput.setPrefWidth(60);
       dayInput.setPrefHeight(30);
       dayInput.setPromptText("DD");
+      dayInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       TextField monthInput = new TextField();
       monthInput.setPrefWidth(60);
       monthInput.setPrefHeight(30);
       monthInput.setPromptText("MM");
+      monthInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       TextField yearInput = new TextField();
       yearInput.setPrefWidth(60);
       yearInput.setPrefHeight(30);
       yearInput.setPromptText("YYYY");
+      yearInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       snhBox.setPadding(new Insets(0, 0, 25, 0));
-      snhBox.getChildren().addAll(gender, genderSelector, dayInput, monthInput, yearInput);
+      snhBox.getChildren().addAll(genderbox, birthday, dayInput, monthInput, yearInput);
 
 
 
@@ -152,28 +169,27 @@ public class RegisterPage
 
 
 
-      //Log in Button
-      Button logInButton = new Button("Log in");
-      logInButton.setFont(new Font("Verdana", 30));
-      logInButton.setMaxWidth(200);
-
-      //Register
-      Label registerLabel = new Label("Don't have an account");
-      registerLabel.setFont(new Font("Verdana", 30));
-      registerLabel.setPadding(new Insets(80, 0, 20, 0));
-
+      //Register Button
       Button registerButton = new Button("Register");
-      registerButton.setFont(new Font("Verdana", 30));
-      registerButton.setMaxWidth(200);
+      registerButton.setFont(new Font("Verdana", 24));
+      registerButton.setMaxWidth(190);
 
+      //Cancel button
+      Button cancelButton = new Button("Cancel");
+      cancelButton.setFont(new Font("Verdana", 24));
+      cancelButton.setMaxWidth(190);
 
+      HBox buttonbox = new HBox(50);
+      buttonbox.setPadding(new Insets(50, 0, 0, 0));
+      buttonbox.setAlignment(Pos.CENTER);
+      buttonbox.getChildren().addAll(registerButton, cancelButton);
 
 
 
 
       //Center
       VBox center = new VBox();
-      center.getChildren().addAll(title, usernameBox, passwordBox, emailBox, nameBox, addressBox, phoneNumberBox, snhBox, logInButton, registerLabel, registerButton);
+      center.getChildren().addAll(title, usernameBox, passwordBox, emailBox, nameBox, addressBox, phoneNumberBox, snhBox, buttonbox);
       center.setAlignment(Pos.TOP_CENTER);
       center.setMinWidth(480);
 
@@ -189,7 +205,7 @@ public class RegisterPage
       layout.setRight(right);
 
       //Scene and window
-      scene = new Scene(layout, 750, 750);
+      scene = new Scene(layout, 600, 700);
       window.setScene(scene);
 
       //window.showAndWait();
