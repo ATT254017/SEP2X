@@ -26,6 +26,9 @@ public class LogInPage
    private Stage window;
    private Scene scene;
    private RegisterPage register;
+   private TextField passwordInput;
+   private TextField usernameInput;
+   private Label errorMessage;
 
    public LogInPage(MainPage mainPage, RegisterPage register)
    {
@@ -50,7 +53,7 @@ public class LogInPage
       HBox usernameBox = new HBox();
       usernameBox.setAlignment(Pos.CENTER);
 
-      TextField usernameInput = new TextField();
+      usernameInput = new TextField();
       usernameInput.setPrefWidth(400);
       usernameInput.setPrefHeight(50);
       usernameInput.setFont(new Font("Arial", 18));
@@ -64,7 +67,7 @@ public class LogInPage
       HBox passwordBox = new HBox();
       passwordBox.setAlignment(Pos.CENTER);
 
-      TextField passwordInput = new TextField();
+      passwordInput = new TextField();
       passwordInput.setPrefWidth(400);
       passwordInput.setPrefHeight(50);
       passwordInput.setFont(new Font("Arial", 18));
@@ -75,7 +78,7 @@ public class LogInPage
       passwordBox.getChildren().addAll(passwordInput);
 
       //Error label
-      Label errorMessage = new Label("");
+      errorMessage = new Label("");
       errorMessage.setVisible(false);
 
       //Log in Button
@@ -143,6 +146,8 @@ public class LogInPage
          }
          else
          {
+            usernameInput.setStyle("-fx-border-color: red;");
+            passwordInput.setStyle("-fx-border-color: red;");
 
          }
       });
