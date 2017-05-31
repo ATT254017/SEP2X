@@ -40,14 +40,14 @@ public class TestClient {
 					{
 						clientControl.getCategories(category, (status2, list2) ->
 						{
-							if(status2 == MethodStatus.Success)
+							if(status2 == MethodStatus.SuccessfulInvocation)
 								for(Category category2 : list2)
 								{
 									if(category2.hasChildren())
 									{
 										clientControl.getCategories(category2, (status3, list3) ->
 										{
-											if(status3 == MethodStatus.Success)
+											if(status3 == MethodStatus.SuccessfulInvocation)
 												for(Category category3 : list3)
 												{
 													System.out.println(category3.getParent().getParent().getCategoryName() + " haschild: " + category3.getParent().getParent().hasChildren());
