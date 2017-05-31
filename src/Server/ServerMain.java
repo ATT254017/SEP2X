@@ -152,6 +152,13 @@ public class ServerMain {
 	
 	private Object[] handleSellItem(Object[] args, Account owner)
 	{
+		//input:
+		//0: Item - the item the user wants to sell
+		
+		//output:
+		//0: boolean - successful or not
+		
+		
 		return null;
 	}
 	

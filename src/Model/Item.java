@@ -12,6 +12,7 @@ public class Item implements Serializable{
     private String description;
     private int quantity;
     private ItemState state;
+    private Category itemCategory;
 
     public Item(int itemID, String itemName, double itemPrice, String description, ItemState state, int quantity) {
         this.itemID = itemID;
@@ -22,7 +23,20 @@ public class Item implements Serializable{
         this.quantity = quantity;
     }
     
-    public void changeQuantity(int quantity) {
+    
+    public Category getItemCategory()
+	{
+		return itemCategory;
+	}
+
+
+	public void setItemCategory(Category itemCategory)
+	{
+		this.itemCategory = itemCategory;
+	}
+
+
+	public void changeQuantity(int quantity) {
     	this.quantity = quantity;
     }
     
