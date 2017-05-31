@@ -138,7 +138,7 @@ public class ServerMain {
 					} 
 					else 
 					{
-						System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED AXCEEDED");
+						System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED EXCEEDED");
 					}
 				}
 				else
@@ -154,12 +154,27 @@ public class ServerMain {
 	{
 		//input:
 		//0: Item - the item the user wants to sell
-		
+		Object[] response = new Object[] {InsertItemStatus.InvalidInput};
+		if (args.length == 1) {
+			System.out.println(args[0]);
+			if (args[0] instanceof Item) {
+				if (database.insertItem((Item) args[0], owner)) {
+					response[0] = InsertItemStatus.Success;
+					System.out.println(owner.getUserName() + " successfully sold an item");
+					return response;
+				}
+				else
+				{
+					System.out.println(owner.getUserName() + " unsuccessfully sold an item: InvalidInput");
+				} 
+			} else {
+					System.out.println("Response is not an instanceof Item");
+				}
+		}
 		//output:
 		//0: boolean - successful or not
 		
-		
-		return null;
+		return response;
 	}
 	
 
