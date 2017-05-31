@@ -1,7 +1,7 @@
 package Model;
 
 public enum MethodStatus {
-	Success,
+	SuccessfulInvocation,
 	Unauthorized,
 	TimedOut,
 	UnknownError

@@ -2,6 +2,7 @@ package GUI;/**
  * Created by filip on 24/05/2017.
  */
 
+import Client.ClientControl;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,15 +15,26 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import sun.applet.Main;
 
 import java.awt.*;
 
 public class LogInPage
 {
 
-   Stage window;
-   Scene scene;
-   Button button;
+   private MainPage mainPage;
+   private Stage window;
+   private Scene scene;
+   private RegisterPage register;
+   private TextField passwordInput;
+   private TextField usernameInput;
+   private Label errorMessage;
+
+   public LogInPage(MainPage mainPage, RegisterPage register)
+   {
+      this.mainPage = mainPage;
+      this.register = register;
+   }
 
    public void display()
    {
@@ -31,18 +43,22 @@ public class LogInPage
       window.setTitle("Log In");
 
       //Title
-      Label title = new Label("Marketplace");
+      Label title = new Label("Log in");
       title.setMaxWidth(Double.MAX_VALUE);
-      title.setFont(new Font("Verdana", 96));
+      title.setFont(new Font("Verdana", 60));
       title.setAlignment(Pos.CENTER);
-      title.setPadding(new Insets(100, 0, 50, 0));
+      title.setPadding(new Insets(50, 0, 75, 0));
 
       //Username field
       HBox usernameBox = new HBox();
       usernameBox.setAlignment(Pos.CENTER);
-      TextField usernameInput = new TextField();
+
+      usernameInput = new TextField();
       usernameInput.setPrefWidth(400);
-      usernameInput.setPrefHeight(40);
+      usernameInput.setPrefHeight(50);
+      usernameInput.setFont(new Font("Arial", 18));
+      usernameInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
+
       usernameBox.setPadding(new Insets(0, 0, 45, 0));
       usernameInput.setPromptText("Username");
       usernameBox.getChildren().addAll(usernameInput);
@@ -50,26 +66,45 @@ public class LogInPage
       //Password field
       HBox passwordBox = new HBox();
       passwordBox.setAlignment(Pos.CENTER);
-      TextField passwordInput = new TextField();
+
+      passwordInput = new TextField();
       passwordInput.setPrefWidth(400);
-      passwordInput.setPrefHeight(40);
+      passwordInput.setPrefHeight(50);
+      passwordInput.setFont(new Font("Arial", 18));
+      passwordInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
+
       passwordBox.setPadding(new Insets(0, 0, 55, 0));
       passwordInput.setPromptText("Password");
       passwordBox.getChildren().addAll(passwordInput);
+
+      //Error label
+      errorMessage = new Label("");
+      errorMessage.setVisible(false);
 
       //Log in Button
       Button logInButton = new Button("Log in");
       logInButton.setFont(new Font("Verdana", 30));
       logInButton.setMaxWidth(200);
+      logInButton.setOnAction(event ->
+      {
+         login(usernameInput.getText(), passwordInput.getText());
+      });
 
       //Register
       Label registerLabel = new Label("Don't have an account");
       registerLabel.setFont(new Font("Verdana", 30));
-      registerLabel.setPadding(new Insets(80, 0, 20, 0));
+      registerLabel.setPadding(new Insets(50, 0, 30, 0));
 
       Button registerButton = new Button("Register");
       registerButton.setFont(new Font("Verdana", 30));
       registerButton.setMaxWidth(200);
+
+      registerButton.setOnAction(event ->
+      {
+         register.display();
+         window.close();
+
+      });
 
 
 
@@ -94,10 +129,27 @@ public class LogInPage
       layout.setRight(right);
 
       //Scene and window
-      scene = new Scene(layout, 700, 750);
+      scene = new Scene(layout, 600, 700);
       window.setScene(scene);
 
       //window.showAndWait();
       window.showAndWait();
+   }
+
+   private void login(String username, String password)
+   {
+      ClientControl.getInstance().signIn(username, password, (status, isSignedIn, sessionID) ->
+      {
+         if(isSignedIn)
+         {
+
+         }
+         else
+         {
+            usernameInput.setStyle("-fx-border-color: red;");
+            passwordInput.setStyle("-fx-border-color: red;");
+
+         }
+      });
    }
 }

@@ -33,7 +33,7 @@ public class TestClient {
 		clientControl.getCategories(null, (status, list) ->
 		{
 			System.out.println(status);
-			if(status == MethodStatus.Success)
+			if(status == MethodStatus.SuccessfulInvocation)
 				for(Category category : list)
 				{
 					if(category.hasChildren())
@@ -71,7 +71,6 @@ public class TestClient {
 				}
 		});
 		
-		/*
 		
 		clientControl.registerAccount(new Account("myusername", "myemail@email.com", 
 				new Person("firstname", "lastName", "address", 88888888, true, LocalDate.now()))
@@ -87,9 +86,10 @@ public class TestClient {
 				 System.out.println("Logged in: " + boo);
 				 System.out.println("SessionID: " + str);
 				 
-				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 1, (status, state) ->
+				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 5, (status, state) ->
 				 {
 					System.out.println("buy item: " + status); 
+					System.out.println(state);
 				 });
 				 
 				 clientControl.makeOffer(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 234, (ee, rr) ->
@@ -98,7 +98,7 @@ public class TestClient {
 				 });
 			 });
 		});
-		*/
+		
 		Thread.sleep(2000);
 		
 		clientControl.disconnect();

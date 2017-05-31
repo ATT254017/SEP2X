@@ -135,14 +135,14 @@ public class ClientControl
 							if (rspArgs[0] instanceof Boolean && (boolean) rspArgs[0])
 							{
 								userSessionID = (String) rspArgs[1];
-								status = MethodStatus.Success;
+								status = MethodStatus.SuccessfulInvocation;
 							}
 							else
 								status = MethodStatus.Unauthorized;
 						}
 					}
 					else
-						status = MethodStatus.Success;
+						status = MethodStatus.SuccessfulInvocation;
 					
 					if(m.requiresLogin())
 					{

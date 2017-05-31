@@ -40,7 +40,8 @@ public class MainPage extends Application
       state = true;
       logedIn = false;
       controller = ClientControl.getInstance();
-      LogInPage logInPage = new LogInPage();
+      RegisterPage registerPage = new RegisterPage();
+      LogInPage logInPage = new LogInPage(this, registerPage);
 
 
 
@@ -73,6 +74,7 @@ public class MainPage extends Application
          //Search bar
          TextField searchBar = new TextField();
          searchBar.setPromptText("Search");
+         searchBar.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       VBox top = new VBox();
       top.setAlignment(Pos.CENTER);
@@ -111,6 +113,25 @@ public class MainPage extends Application
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      //Open log in page
+      titleButton1.setOnAction(event ->
+      {
+         if(logedIn)
+         {
+            System.out.println("nope");
+         }
+         else
+         {
+            logInPage.display();
+         }
+      });
+
+      //Open register page
+      titleButton2.setOnAction(event ->
+      {
+         registerPage.display();
+      });
+
       //Toggle center scene
       /*titleButton1.setOnAction(event ->
       {
@@ -126,20 +147,8 @@ public class MainPage extends Application
          }
       });*/
 
-      //Open log in page
-      titleButton1.setOnAction(event ->
-      {
-         if(logedIn)
-         {
-            System.out.println("nope");
-         }
-         else
-         {
-            logInPage.display();
-         }
-      });
-
       //Change window scenes
+     /*
      titleButton2.setOnAction(event ->
      {
         if(state)
@@ -151,6 +160,7 @@ public class MainPage extends Application
            r2.addBlankItem();
         }
      });
+     */
 
 
 
