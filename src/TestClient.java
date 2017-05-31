@@ -86,10 +86,14 @@ public class TestClient {
 				 System.out.println("Logged in: " + boo);
 				 System.out.println("SessionID: " + str);
 				 
-				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 5, (status, state) ->
+				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 1, (status, state) ->
 				 {
-					System.out.println("buy item: " + status); 
-					System.out.println(state);
+					System.out.println("buy item: " + status + " - " + state);
+				 });
+				 
+				 clientControl.buyItem(new Item(666, "itemName", 345, "description", ItemState.Sold, 1), 1, (status, state) ->
+				 {
+					System.out.println("buy item: " + status + " - " + state);
 				 });
 				 
 				 clientControl.makeOffer(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 234, (ee, rr) ->
