@@ -41,7 +41,7 @@ public class MainPage extends Application
       logedIn = false;
       controller = ClientControl.getInstance();
       RegisterPage registerPage = new RegisterPage();
-      LogInPage logInPage = new LogInPage(registerPage);
+      LogInPage logInPage = new LogInPage(this, registerPage);
 
 
 
@@ -74,6 +74,7 @@ public class MainPage extends Application
          //Search bar
          TextField searchBar = new TextField();
          searchBar.setPromptText("Search");
+         searchBar.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       VBox top = new VBox();
       top.setAlignment(Pos.CENTER);
