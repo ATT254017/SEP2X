@@ -2,19 +2,14 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
 
-import com.sun.jndi.url.iiopname.iiopnameURLContextFactory;
-import com.sun.org.apache.xerces.internal.util.Status;
-import com.sun.xml.internal.ws.transport.http.DeploymentDescriptorParser;
 
 import Client.*;
 import Model.Account;
 import Model.Category;
 import Model.Item;
 import Model.ItemState;
-import Model.Method;
 import Model.MethodStatus;
 import Model.Person;
-import Net.Client.TimeOut;
 
 public class TestClient {
 
