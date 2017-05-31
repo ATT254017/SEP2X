@@ -128,13 +128,17 @@ public class ServerMain {
 			System.out.println(args[0]);
 			System.out.println(args[1]);
 			if (args[0] instanceof Item && args[1] instanceof Integer) {
-				
+				if(database.buyItem(buyer, (Item) args[0], (int) args[1]))
+					System.out.println(buyer.getUserName() + " successfully bought an item");
+					return response;
+			} else {
+				System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED AXCEEDED");
+				response[0] = BuyItemStatus.AllowedQuantityExceeded;
 			}
 		}
 		// output: 
 		// 0: int - actual quantity bought
-		System.out.println(buyer.getUserName() + " wants to buy an item");
-		return new Object[]{BuyItemStatus.Success};
+		return response;
 	}
 	
 	private Object[] handleSellItem(Object[] args, Account owner)

@@ -172,7 +172,7 @@ public class DBControl {
 									"BuyerID SERIAL" +
 									"ItemID SERIAL" +
 									"QuantityBought INT," +
-									"TotalAmount INT," +
+									"TotalAmount DECIMAL(5, 2)," +
 									"PRIMARY KEY(SalesID)," +
 									"FOREIGN KEY(BuyerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
 									"FOREIGN KEY(ItemID) REFERENCES "+schemaName+".\"item\"(ItemID);";
@@ -359,7 +359,39 @@ public class DBControl {
 	}
 	
 	public boolean buyItem(Account buyer, Item item, int quantity) {
+		String buyItemSQL = "INSERT INTO \"sales\"(BuyerID, ItemID, QuantityBought, TotalAmount)" +
+							"VALUES(?, ?, ?, ?)";
+		String checkForErrorsSQL = "SELECT COUNT(QuantityBought) FROM \"sales\" WHERE ItemID = ?";
 		
+		try(Connection conn = connect();
+	              PreparedStatement pstmt = conn.prepareStatement(buyItemSQL,
+	                      Statement.RETURN_GENERATED_KEYS);
+	            		  PreparedStatement pstmt2 = conn.prepareStatement(checkForErrorsSQL)) 
+		{
+			pstmt2.setInt(1, item.getItemID());
+			pstmt.setInt(1, buyer.getAccountID());
+			pstmt.setInt(2, item.getItemID());
+			pstmt.setInt(3, quantity);
+			pstmt.setDouble(4, item.getItemPrice() * quantity);
+			
+			ResultSet result = pstmt2.executeQuery();
+			int soldAmount = 0;
+			
+			if(result.next()) {
+				soldAmount = result.getInt(1);
+			}
+			
+			if (quantity <= item.getQuantity() - soldAmount) 
+				{
+					pstmt.executeUpdate();
+					return true; // i have more stuff to sell
+				} else {
+				return false; // all sold out
+			}
+		} catch (SQLException ex) {
+	          System.out.println(ex.getMessage());
+	    }
+		return false;
 	}
 	
 	public boolean deleteAccount(Account account) {

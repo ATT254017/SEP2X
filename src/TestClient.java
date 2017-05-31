@@ -38,7 +38,6 @@ public class TestClient {
 					System.out.println(category.getCategoryName());
 		});
 		
-		/*
 		
 		clientControl.registerAccount(new Account("myusername", "myemail@email.com", 
 				new Person("firstname", "lastName", "address", 88888888, true, LocalDate.now()))
@@ -65,7 +64,7 @@ public class TestClient {
 				 });
 			 });
 		});
-		*/
+		
 		Thread.sleep(2000);
 		
 		clientControl.disconnect();
