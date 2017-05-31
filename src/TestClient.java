@@ -33,7 +33,7 @@ public class TestClient {
 		clientControl.getCategories(null, (status, list) ->
 		{
 			System.out.println(status);
-			if(status == MethodStatus.Success)
+			if(status == MethodStatus.SuccessfulInvocation)
 				for(Category category : list)
 					System.out.println(category.getCategoryName());
 		});
@@ -53,9 +53,10 @@ public class TestClient {
 				 System.out.println("Logged in: " + boo);
 				 System.out.println("SessionID: " + str);
 				 
-				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 1, (status, state) ->
+				 clientControl.buyItem(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 5, (status, state) ->
 				 {
 					System.out.println("buy item: " + status); 
+					System.out.println(state);
 				 });
 				 
 				 clientControl.makeOffer(new Item(999, "itemName", 345, "description", ItemState.Sold, 1), 234, (ee, rr) ->

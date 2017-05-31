@@ -123,17 +123,17 @@ public class ServerMain {
 		// input:
 		// 0: Item - the item to be bought
 		// 1: int - the quantity of said item to be bought
-		Object[] response = new Object[]{BuyItemStatus.Success};
+		Object[] response = new Object[]{BuyItemStatus.AllowedQuantityExceeded};
 		if (args.length == 2) {
 			System.out.println(args[0]);
 			System.out.println(args[1]);
 			if (args[0] instanceof Item && args[1] instanceof Integer) {
 				if(database.buyItem(buyer, (Item) args[0], (int) args[1]))
+					response[0] = BuyItemStatus.Success;
 					System.out.println(buyer.getUserName() + " successfully bought an item");
 					return response;
 			} else {
 				System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED AXCEEDED");
-				response[0] = BuyItemStatus.AllowedQuantityExceeded;
 			}
 		}
 		// output: 
