@@ -20,9 +20,14 @@ import java.awt.*;
 public class LogInPage
 {
 
-   Stage window;
-   Scene scene;
-   Button button;
+   private Stage window;
+   private Scene scene;
+   private RegisterPage register;
+
+   public LogInPage(RegisterPage register)
+   {
+      this.register = register;
+   }
 
    public void display()
    {
@@ -40,9 +45,11 @@ public class LogInPage
       //Username field
       HBox usernameBox = new HBox();
       usernameBox.setAlignment(Pos.CENTER);
+
       TextField usernameInput = new TextField();
       usernameInput.setPrefWidth(400);
       usernameInput.setPrefHeight(40);
+
       usernameBox.setPadding(new Insets(0, 0, 45, 0));
       usernameInput.setPromptText("Username");
       usernameBox.getChildren().addAll(usernameInput);
@@ -50,9 +57,11 @@ public class LogInPage
       //Password field
       HBox passwordBox = new HBox();
       passwordBox.setAlignment(Pos.CENTER);
+
       TextField passwordInput = new TextField();
       passwordInput.setPrefWidth(400);
       passwordInput.setPrefHeight(40);
+
       passwordBox.setPadding(new Insets(0, 0, 55, 0));
       passwordInput.setPromptText("Password");
       passwordBox.getChildren().addAll(passwordInput);
@@ -70,6 +79,13 @@ public class LogInPage
       Button registerButton = new Button("Register");
       registerButton.setFont(new Font("Verdana", 30));
       registerButton.setMaxWidth(200);
+
+      registerButton.setOnAction(event ->
+      {
+         register.display();
+         window.close();
+
+      });
 
 
 
