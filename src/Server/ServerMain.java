@@ -128,12 +128,21 @@ public class ServerMain {
 			System.out.println(args[0]);
 			System.out.println(args[1]);
 			if (args[0] instanceof Item && args[1] instanceof Integer) {
-				if(database.buyItem(buyer, (Item) args[0], (int) args[1]))
-					response[0] = BuyItemStatus.Success;
-					System.out.println(buyer.getUserName() + " successfully bought an item");
-					return response;
-			} else {
-				System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED AXCEEDED");
+				if(database.itemExists((Item) args[0]))
+				{
+					if(database.buyItem(buyer, (Item) args[0], (int) args[1]))
+					{
+						response[0] = BuyItemStatus.Success;
+						System.out.println(buyer.getUserName() + " successfully bought an item");
+						return response;
+					} 
+					else 
+					{
+						System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED AXCEEDED");
+					}
+				}
+				else
+					System.out.println("Item doesn't exist");
 			}
 		}
 		// output: 

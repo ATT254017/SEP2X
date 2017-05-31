@@ -24,7 +24,7 @@ public class TestClient {
 		*/
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
-		
+		/*
 		clientControl.getCategories(null, (status, list) ->
 		{
 			System.out.println(status);
@@ -64,10 +64,10 @@ public class TestClient {
 					System.out.println(category.getCategoryName() + " haschild: " + category.hasChildren());
 					
 				}
-		});
+		});*/
 		
 		
-		clientControl.registerAccount(new Account("myusername", "myemail@email.com", 
+		clientControl.registerAccount(new Account(332, "myusername", "myemail@email.com", 
 				new Person("firstname", "lastName", "address", 88888888, true, LocalDate.now()))
 				, "mypass", (Status , derp) ->
 		{

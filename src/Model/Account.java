@@ -11,15 +11,16 @@ public class Account implements Serializable{
     private String email;
     private Person person;
 
-    public Account(String userName, String email, Person person) {
+    public Account(int accountID, String userName, String email, Person person) {
+    	this.accountID = accountID;
         this.userName = userName;
         this.email = email;
         this.person = person;
     }
-    
+    /*
     public void setAccountID(int accountID) {
     	this.accountID = accountID;
-    }
+    }*/
     
     public int getAccountID() {
     	return accountID;

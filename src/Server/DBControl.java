@@ -287,9 +287,10 @@ public class DBControl {
 			if(!resultSet.next())
 				return null; //no rows found
 			
-			return new Account(resultSet.getString("username"), resultSet.getString("email"), 
+			return new Account(resultSet.getInt("accountid"), resultSet.getString("username"), resultSet.getString("email"), 
 					new Person(resultSet.getString("name"), resultSet.getString("surname"), resultSet.getString("address"), 
 							resultSet.getInt("phone"), resultSet.getBoolean("ismale"), LocalDate.ofEpochDay(resultSet.getDate("birthday").getTime())));
+			
 		}
 		catch(SQLException ex)
 		{
@@ -357,6 +358,22 @@ public class DBControl {
 	    }
 		return false;
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
+	}
+	
+	public boolean itemExists(Item item)
+	{
+		String sql = "SELECT EXISTS (SELECT 1 from sep2xgroup6.item where itemid = ?) as exists";
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setInt(1, item.getItemID());
+			ResultSet resultSet = statement.executeQuery();
+			return resultSet.next() && resultSet.getBoolean(1);
+		}
+		catch(SQLException ex)
+		{
+			return false;
+		}
 	}
 	
 	public boolean buyItem(Account buyer, Item item, int quantity) {
