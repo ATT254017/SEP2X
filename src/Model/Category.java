@@ -1,6 +1,8 @@
 package Model;
 
-public class Category
+import java.io.Serializable;
+
+public class Category implements Serializable
 {
 	private int categoryID; 
 	private String categoryName;
@@ -42,6 +44,7 @@ public class Category
 	public void setParent(Category parent)
 	{
 		this.parent = parent;
+		setHasParent(parent != null);
 	}
 
 	public boolean hasParent()

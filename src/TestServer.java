@@ -4,14 +4,12 @@ import java.sql.SQLException;
 import Server.*;
 public class TestServer {
 
-	public static void main(String[] args) throws IOException, SQLException {
+	public static void main(String[] args) throws IOException, SQLException 
+	{
 		
-<<<<<<< HEAD
 		ServerMain serverMain = new ServerMain(9999, "jdbc:postgresql://localhost:5432/", "postgres", "Qwerty1234!!");
-=======
-		ServerMain serverMain = new ServerMain(9999, "jdbc:postgresql://localhost:5432/postgres", "postgres", "benedictcumberbatch");
->>>>>>> branch 'master' of https://github.com/ATT254017/SEP2X.git
-		
+
+	
 		/*NetServer server = new NetServer(9999);
 		System.out.println("Server started");
 		server.addServerMethod("Method1", new ServerMethodHandler() {

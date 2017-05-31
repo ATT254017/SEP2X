@@ -1,5 +1,6 @@
 package Server;
 
+import java.security.cert.CertificateEncodingException;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -51,10 +52,43 @@ public class DBControl {
 		this.connectionURI += databaseName + "?currentSchema=" + schemaName;;
 		
 		populateDatabase();
+		defaultCategories();
 	}
 	private void databaseDriverError()
 	{
 		throw new RuntimeException("Postgresql jdbc driver is not included in the project! Download at jdbc.postgresql.org");
+	}
+
+	private void defaultCategories()
+	{
+		insertCategory("Subcat of Antiques", "", getCategory("Antiques"));
+		insertCategory("Antiques", "", null);
+		insertCategory("Art", "", null);
+		insertCategory("Baby", "", null);
+		insertCategory("Books", "", null);
+		insertCategory("Business & Industrial", "", null);
+		insertCategory("Cameras & Photo", "", null);
+		insertCategory("Cell Phones & Accessories", "", null);
+		insertCategory("Clothing, Shoes & Accessories", "", null);
+		insertCategory("Coins & Paper Money", "", null);
+		insertCategory("Collectibles", "", null);
+		insertCategory("Computers/Tablets & Networking", "", insertCategory("Consumer Electronics", "", null));
+		insertCategory("Crafts", "", null);
+		insertCategory("Dolls & Bears", "", null);
+		insertCategory("DVDs & Movies", "", null);
+		insertCategory("Motors", "", null);
+		insertCategory("Gift Cards & Coupons", "", null);
+		insertCategory("Health & Beauty", "", null);
+		insertCategory("Home & Garden", "", null);
+		insertCategory("Jewelry & Watches", "", null);
+		insertCategory("Music", "", null);
+		insertCategory("Musical Instruments & Gear", "", null);
+		insertCategory("Pet Supplies", "", null);
+		insertCategory("Specialty Services", "", null);
+		insertCategory("Sporting Goods", "", null);
+		insertCategory("Tickets & Experiences", "", null);
+		insertCategory("Toys & Hobbies", "", null);
+		insertCategory("Video Games & Consoles", "", null);
 	}
 	
 	private boolean databaseExists()
@@ -114,7 +148,7 @@ public class DBControl {
 									"Category_name VARCHAR(50) UNIQUE," +
 									"Cat_description VARCHAR(250)," +
 									"Cat_picture VARCHAR(150)," + 
-									"Cat_parent SERIAL," +
+									"Cat_parent int," +
 									"FOREIGN KEY(Cat_parent) REFERENCES category(CategoryID)," + 
 									"PRIMARY KEY(CategoryID));";
 		
@@ -165,6 +199,47 @@ public class DBControl {
 			ex.printStackTrace();
 		}
 	}
+	
+	public Category getCategory(String categoryName)
+	{
+		String sql = "with recursive category_tree as ("+
+						"select categoryid, cat_parent, category_name, cat_description" +
+						"from category"+
+						"where category_name = ?"+
+						"union all"+
+						"select parent.categoryid, parent.cat_parent, parent.category_name, parent.cat_description"+
+						"from category parent"+
+						"join category_tree child on parent.categoryid = child.cat_parent)"+
+						"select * from category_tree;";
+		
+		try(Connection connection = connect();
+				PreparedStatement statement = connection.prepareStatement(sql))
+			{
+			statement.setString(1, categoryName);
+			ResultSet resultSet = statement.executeQuery();
+			if(!resultSet.next())
+				return null;
+			
+			Category category = new Category(resultSet.getInt("categoryid"), resultSet.getString("category_name"));
+			category.setCategoryDescription(resultSet.getString("cat_description"));
+			
+			Category child = category;
+			while(resultSet.next()) //the entire parent tree will be on the next rows.
+			{
+				Category parent = new Category(resultSet.getInt("categoryid"), resultSet.getString("category_name"));
+				parent.setCategoryDescription(resultSet.getString("cat_description"));
+				child.setParent(parent);
+				child = parent;
+			}
+			
+			return category;
+			}
+		catch(SQLException ex)
+		{
+			return null;
+		}
+	}
+	
 	
 	public List<Category> getCategories(Category category)
 	{
@@ -222,16 +297,33 @@ public class DBControl {
 		}
 	}
 	
-	public void insertCategory(Category category)
+	public Category insertCategory(String categoryName, String categoryDescription, Category parent)
 	{
-		"CategoryID SERIAL," + 
-				"Category_name VARCHAR(50)," +
-				"Cat_description VARCHAR(250)," +
-				"Cat_picture VARCHAR(150)," + 
-				"Cat_parent SERIAL," +
-				"FOREIGN KEY(Cat_parent) REFERENCES category(CategoryID)," + 
-				"PRIMARY KEY(CategoryID));";
-		String sql = "INSERT INTO category(CategoryID, ";
+		String sql = "INSERT INTO category(Category_name, Cat_description, Cat_parent) VALUES (?, ?, ?)";
+		
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS))
+		{
+			statement.setString(1, categoryName);
+			statement.setString(2, categoryDescription);
+			if(parent != null)
+				statement.setInt(3, parent.getCategoryID());
+			else
+				statement.setNull(3, java.sql.Types.INTEGER);
+			
+			statement.executeUpdate();
+			ResultSet rSet = statement.getGeneratedKeys();
+			rSet.next();
+			int pkey = rSet.getInt("categoryid");
+			Category cat = new Category(pkey, categoryName);
+			cat.setCategoryDescription(categoryDescription);
+			cat.setParent(parent);
+			return cat;
+		}
+		catch(Exception ex)
+		{
+			return null;
+		}
 	}
 	
 	public boolean registerAccount(Account account, String password)

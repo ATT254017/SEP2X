@@ -1,8 +1,10 @@
 package Net;
 
 import java.io.IOException;
+import java.io.NotSerializableException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.WriteAbortedException;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -67,6 +69,10 @@ public class SocketHandler implements Runnable {
 			try {
 				msg = (NetMessage) inputStream.readObject();
 			} 
+			catch(WriteAbortedException ex) {
+				ex.printStackTrace(); //forgetting to implement Serializable is annoying
+				break;
+			}
 			catch (IOException ex) {
 				break;
 			}

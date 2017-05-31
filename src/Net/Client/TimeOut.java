@@ -39,7 +39,7 @@ public class TimeOut {
         {
         	timeOuts.add(this);
         }
-        timer = LocalDateTime.now().plusNanos(timeOut * 1000000);
+        timer = LocalDateTime.now().plusNanos((long)(timeOut * 1e6));
         checkThread();
     }
 
