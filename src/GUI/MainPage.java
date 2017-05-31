@@ -5,18 +5,19 @@ package GUI;/**
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 
 public class MainPage extends Application
 {
@@ -26,6 +27,10 @@ public class MainPage extends Application
    //main page = true, search results = false;
    private boolean state;
    private boolean logedIn;
+
+   private ScrollPane scrollwindow;
+   private ItemListPane r1;
+   private ItemListPane r2;
 
    public static void main(String[] args)
    {
@@ -40,6 +45,14 @@ public class MainPage extends Application
       state = true;
       logedIn = false;
       controller = ClientControl.getInstance();
+      try
+      {
+         controller.setServerConnectionDetails("localhost", 9999);
+      }
+      catch (Exception e)
+      {
+         System.out.println("Error: no connection!");
+      }
       RegisterPage registerPage = new RegisterPage();
       LogInPage logInPage = new LogInPage(this, registerPage);
 
@@ -67,18 +80,46 @@ public class MainPage extends Application
 
          //Title & buttons row
          HBox titleBar = new HBox();
-         titleBar.setAlignment(Pos.CENTER);
          titleBar.getChildren().addAll(title, buttonBox);
          titleBar.setPadding(new Insets(0,0,20,0));
 
          //Search bar
          TextField searchBar = new TextField();
          searchBar.setPromptText("Search");
+         searchBar.setPrefWidth(1000);
          searchBar.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
+
+         //Search category box
+         ChoiceBox<String> categoryList = new ChoiceBox<>();
+         categoryList.getItems().add("Categories");
+         categoryList.setValue("Categories");
+
+         ClientControl.getInstance().getCategories(null, (status, categories) ->
+         {
+            for(int i = 0; i <  categories.size(); i++)
+            {
+               categoryList.getItems().add(categories.get(i).getCategoryName());
+            }
+         });
+
+
+         categoryList.getSelectionModel().selectedItemProperty().addListener( (v, oldValue, newValue) ->
+         {
+            if(!(newValue.equals("Categories")))
+            {
+               System.out.println(newValue);
+            }
+         });
+
+         HBox searchBox = new HBox(5);
+         searchBox.setPrefWidth(Double.MAX_VALUE);
+         searchBox.setAlignment(Pos.CENTER_LEFT);
+         searchBox.getChildren().addAll(searchBar, categoryList);
+
 
       VBox top = new VBox();
       top.setAlignment(Pos.CENTER);
-      top.getChildren().addAll(titleBar, searchBar);
+      top.getChildren().addAll(titleBar, searchBox);
       top.setPadding(new Insets(0,30,20,30));
 
 
@@ -92,11 +133,11 @@ public class MainPage extends Application
 
 
          //Scroll window
-         ItemListPane r1 = new ItemListPane();
-         ItemListPane r2 = new ItemListPane();
+         r1 = new ItemListPane();
+         r2 = new ItemListPane();
 
 
-         ScrollPane scrollwindow = new ScrollPane();
+         scrollwindow = new ScrollPane();
          scrollwindow.setContent(r1);
 
       VBox center = new VBox();
@@ -132,6 +173,18 @@ public class MainPage extends Application
          registerPage.display();
       });
 
+      searchBar.setOnKeyPressed(new EventHandler<KeyEvent>()
+      {
+         @Override
+         public void handle(KeyEvent ke)
+         {
+            if (ke.getCode().equals(KeyCode.ENTER))
+            {
+               search();
+            }
+         }
+      });
+
       //Toggle center scene
       /*titleButton1.setOnAction(event ->
       {
@@ -147,20 +200,7 @@ public class MainPage extends Application
          }
       });*/
 
-      //Change window scenes
-     /*
-     titleButton2.setOnAction(event ->
-     {
-        if(state)
-        {
-           r1.addBlankItem();
-        }
-        else
-        {
-           r2.addBlankItem();
-        }
-     });
-     */
+
 
 
 
@@ -183,7 +223,27 @@ public class MainPage extends Application
       window.show();
       }
 
-private void toggleState()
+   private void search()
+   {
+      //controller.
+      changeList();
+   }
+
+   private void changeList()
+   {
+      if(state)
+      {
+         scrollwindow.setContent(r2);
+         toggleState();
+      }
+      else
+      {
+         scrollwindow.setContent(r1);
+         toggleState();
+      }
+   }
+
+   private void toggleState()
       {
       if (state)
       {
