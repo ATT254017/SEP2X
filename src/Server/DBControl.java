@@ -234,11 +234,11 @@ public class DBControl {
 		//if category is null, return all top-level categories (categories without parents)
 		//else return all children of the specified category
 		List<Category> list = new LinkedList<>();
-		String sql = "";
+		String sql = "select *, EXISTS(SELECT 1 FROM category d where d.cat_parent = c.categoryid) AS haschild  from category c where c.cat_parent %s";
 		if(category != null)
-			sql = "SELECT * FROM category WHERE Cat_parent = ?";
+			sql = String.format(sql, "= ?");
 		else
-			sql = "SELECT * FROM category WHERE Cat_parent IS NULL";
+			sql = String.format(sql, "IS NULL");
 		
 		try(Connection connection = connect();
 			PreparedStatement statement = connection.prepareStatement(sql))
@@ -250,8 +250,9 @@ public class DBControl {
 			while(resultSet.next())
 			{
 				Category cat = new Category(resultSet.getInt("categoryID"), resultSet.getString("category_name"));
-				resultSet.getInt("Cat_parent");
-				cat.setHasParent(!resultSet.wasNull());
+				//resultSet.getInt("Cat_parent");
+				//cat.setHasParent(!resultSet.wasNull());
+				cat.setHasChildren(resultSet.getBoolean("haschild"));
 				cat.setParent(category);
 				cat.setCategoryDescription(resultSet.getString("cat_description"));
 				list.add(cat);

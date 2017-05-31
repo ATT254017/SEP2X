@@ -35,7 +35,40 @@ public class TestClient {
 			System.out.println(status);
 			if(status == MethodStatus.Success)
 				for(Category category : list)
-					System.out.println(category.getCategoryName());
+				{
+					if(category.hasChildren())
+					{
+						clientControl.getCategories(category, (status2, list2) ->
+						{
+							if(status2 == MethodStatus.Success)
+								for(Category category2 : list2)
+								{
+									if(category2.hasChildren())
+									{
+										clientControl.getCategories(category2, (status3, list3) ->
+										{
+											if(status3 == MethodStatus.Success)
+												for(Category category3 : list3)
+												{
+													System.out.println(category3.getParent().getParent().getCategoryName() + " haschild: " + category3.getParent().getParent().hasChildren());
+													System.out.println("\t CHILD: " + category3.getParent().getCategoryName() + " haschild: " + category3.getParent().hasChildren());
+													System.out.println("\t\t CHILD:" + category3.getCategoryName() + " haschild: " + category3.hasChildren());
+												}
+										});
+									}
+									else
+									{
+										System.out.println(category2.getParent().getCategoryName() + " haschild: " + category2.getParent().hasChildren());
+										System.out.println("\t CHILD: " + category2.getCategoryName());
+									}
+								}
+							
+						});
+					}
+					else
+					System.out.println(category.getCategoryName() + " haschild: " + category.hasChildren());
+					
+				}
 		});
 		
 		/*
