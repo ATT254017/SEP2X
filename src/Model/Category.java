@@ -9,6 +9,7 @@ public class Category implements Serializable
 	private String categoryDescription;
 	private Category parent;
 	private boolean hasParent;
+	private boolean hasChildren;
 	
 	public Category(int categoryID, String categoryName)
 	{
@@ -44,16 +45,22 @@ public class Category implements Serializable
 	public void setParent(Category parent)
 	{
 		this.parent = parent;
-		setHasParent(parent != null);
+		this.hasParent = parent != null;
 	}
 
 	public boolean hasParent()
 	{
 		return hasParent;
 	}
-
-	public void setHasParent(boolean hasParent)
+	
+	public void setHasChildren(boolean hasChildren)
 	{
-		this.hasParent = hasParent;
+		this.hasChildren = hasChildren;
 	}
+	
+	public boolean hasChildren()
+	{
+		return this.hasChildren;
+	}
+
 }
