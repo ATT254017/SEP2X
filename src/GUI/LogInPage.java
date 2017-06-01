@@ -4,6 +4,7 @@ package GUI;/**
 
 import Client.ClientControl;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -143,17 +144,22 @@ public class LogInPage
       ClientControl.getInstance()
             .signIn(username, password, (status, isSignedIn, sessionID) ->
             {
-               if (isSignedIn)
-               {
+               Platform.runLater(() ->
+                     {
+                           mainPage.signIn();
+                           /*if (isSignedIn)
+                           {
+                              mainPage.loginIn();
+                           }
+                           else
+                           {
+                              usernameInput.setStyle("-fx-border-color: red;");
+                              passwordInput.setStyle("-fx-border-color: red;");
+                              errorMessage.setVisible(true);
 
-               }
-               else
-               {
-                  usernameInput.setStyle("-fx-border-color: red;");
-                  passwordInput.setStyle("-fx-border-color: red;");
-                  errorMessage.setVisible(true);
-
-               }
+                           }*/
+                     }
+               );
             });
    }
 }
