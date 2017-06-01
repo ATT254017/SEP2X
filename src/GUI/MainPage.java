@@ -53,7 +53,6 @@ public class MainPage extends Application
     private EventHandler<ActionEvent> signoutAction = event -> ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
     private EventHandler<ActionEvent> registerPageAction = event -> registerPage.display();
     
-
    public static void main(String[] args)
    {
       launch(args);
