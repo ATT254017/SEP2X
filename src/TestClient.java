@@ -62,9 +62,8 @@ public class TestClient
 						{
 							System.out.println(stat + " - " + state);
 						});*/
-						System.out.println();
-					}
-				});*/
+					//}
+				//});
 					/*clientControl.getItems(new Category(0, "Art"), "turd", (itemsStatus, list) ->
 					{
 						if (status == MethodStatus.SuccessfulInvocation)
