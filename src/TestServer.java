@@ -8,7 +8,7 @@ public class TestServer {
 	{
 		
 		
-		ServerMain serverMain = new ServerMain(9999, "jdbc:postgresql://localhost:5432/", "postgres", "Qwerty1234!!");
+		ServerMain serverMain = new ServerMain(9999, "jdbc:postgresql://localhost:5432/", "postgres", "benedictcumberbatch");
 
 	
 		/*NetServer server = new NetServer(9999);
