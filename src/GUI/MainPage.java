@@ -56,108 +56,96 @@ public class MainPage extends Application
       RegisterPage registerPage = new RegisterPage();
       LogInPage logInPage = new LogInPage(this, registerPage);
 
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //Top
 
-         //Title
-         Label title = new Label("Marketplace");
-         title.setMaxWidth(Double.MAX_VALUE);
-         title.setFont(new Font("Verdana", 65));
-         title.setAlignment(Pos.CENTER);
-         title.setPadding(new Insets(0, 150, 0, 300));
+      //Title
+      Label title = new Label("Marketplace");
+      title.setMaxWidth(Double.MAX_VALUE);
+      title.setFont(new Font("Verdana", 65));
+      title.setAlignment(Pos.CENTER);
+      title.setPadding(new Insets(0, 150, 0, 300));
 
-         //Buttons
-         Button titleButton1 = new Button("Sign in");
-         Button titleButton2 = new Button("Register");
+      //Buttons
+      Button titleButton1 = new Button("Sign in");
+      Button titleButton2 = new Button("Register");
 
-         HBox buttonBox = new HBox(10);
-         buttonBox.getChildren().addAll(titleButton1, titleButton2);
-         buttonBox.setPadding(new Insets(35,0,0,0));
+      HBox buttonBox = new HBox(10);
+      buttonBox.getChildren().addAll(titleButton1, titleButton2);
+      buttonBox.setPadding(new Insets(35, 0, 0, 0));
 
-         //Title & buttons row
-         HBox titleBar = new HBox();
-         titleBar.getChildren().addAll(title, buttonBox);
-         titleBar.setPadding(new Insets(0,0,20,0));
+      //Title & buttons row
+      HBox titleBar = new HBox();
+      titleBar.getChildren().addAll(title, buttonBox);
+      titleBar.setPadding(new Insets(0, 0, 20, 0));
 
-         //Search bar
-         TextField searchBar = new TextField();
-         searchBar.setPromptText("Search");
-         searchBar.setPrefWidth(1000);
-         searchBar.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
+      //Search bar
+      TextField searchBar = new TextField();
+      searchBar.setPromptText("Search");
+      searchBar.setPrefWidth(1000);
+      searchBar.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
-         //Search category box
-         ChoiceBox<String> categoryList = new ChoiceBox<>();
-         categoryList.getItems().add("Categories");
-         categoryList.setValue("Categories");
+      //Search category box
+      ChoiceBox<String> categoryList = new ChoiceBox<>();
+      categoryList.getItems().add("Categories");
+      categoryList.setValue("Categories");
 
-         ClientControl.getInstance().getCategories(null, (status, categories) ->
+      ClientControl.getInstance().getCategories(null, (status, categories) ->
+      {
+         for (int i = 0; i < categories.size(); i++)
          {
-            for(int i = 0; i <  categories.size(); i++)
+            categoryList.getItems().add(categories.get(i).getCategoryName());
+         }
+      });
+
+      categoryList.getSelectionModel().selectedItemProperty()
+            .addListener((v, oldValue, newValue) ->
             {
-               categoryList.getItems().add(categories.get(i).getCategoryName());
-            }
-         });
+               if (!(newValue.equals("Categories")))
+               {
+                  System.out.println(newValue);
+               }
+            });
 
-
-         categoryList.getSelectionModel().selectedItemProperty().addListener( (v, oldValue, newValue) ->
-         {
-            if(!(newValue.equals("Categories")))
-            {
-               System.out.println(newValue);
-            }
-         });
-
-         HBox searchBox = new HBox(5);
-         searchBox.setPrefWidth(Double.MAX_VALUE);
-         searchBox.setAlignment(Pos.CENTER_LEFT);
-         searchBox.getChildren().addAll(searchBar, categoryList);
-
+      HBox searchBox = new HBox(5);
+      searchBox.setPrefWidth(Double.MAX_VALUE);
+      searchBox.setAlignment(Pos.CENTER_LEFT);
+      searchBox.getChildren().addAll(searchBar, categoryList);
 
       VBox top = new VBox();
       top.setAlignment(Pos.CENTER);
       top.getChildren().addAll(titleBar, searchBox);
-      top.setPadding(new Insets(0,30,20,30));
+      top.setPadding(new Insets(0, 30, 20, 30));
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //Center
 
-         //Menu bar
-         MenubarMain menuBar = new MenubarMain(this);
+      //Menu bar
+      MenubarMain menuBar = new MenubarMain(this);
 
+      //Scroll window
+      r1 = new ItemListPane();
+      r2 = new ItemListPane();
 
-
-         //Scroll window
-         r1 = new ItemListPane();
-         r2 = new ItemListPane();
-
-
-         scrollwindow = new ScrollPane();
-         scrollwindow.setContent(r1);
+      scrollwindow = new ScrollPane();
+      scrollwindow.setContent(r1);
 
       VBox center = new VBox();
       center.getChildren().addAll(menuBar, scrollwindow);
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //Left & Right
-         VBox left = new VBox();
-         VBox right = new VBox();
+      VBox left = new VBox();
+      VBox right = new VBox();
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //Open log in page
       titleButton1.setOnAction(event ->
       {
-         if(logedIn)
+         if (logedIn)
          {
             System.out.println("nope");
          }
@@ -180,7 +168,7 @@ public class MainPage extends Application
          {
             if (ke.getCode().equals(KeyCode.ENTER))
             {
-               search();
+               search(searchBar);
             }
          }
       });
@@ -200,38 +188,36 @@ public class MainPage extends Application
          }
       });*/
 
-
-
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+      ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //Layout
-         BorderPane layout = new BorderPane();
-         layout.setTop(top);
-         layout.setCenter(center);
-         layout.setLeft(left);
-         layout.setRight(right);
+      BorderPane layout = new BorderPane();
+      layout.setTop(top);
+      layout.setCenter(center);
+      layout.setLeft(left);
+      layout.setRight(right);
       layout.setPadding(new Insets(25, 50, 50, 50));
 
       scene = new Scene(layout, 1280, 960);
       window.setScene(scene);
       window.show();
-      }
+   }
 
-   private void search()
+   private void search(TextField searchbar)
+
    {
-      //controller.
-      changeList();
+      if (!(searchbar.getText().equals("")) || !(searchbar.getText() != null))
+      {
+         //controller.
+         changeList();
+      }
+      System.out.println(searchbar.getText());
+
    }
 
    private void changeList()
    {
-      if(state)
+      if (state)
       {
          scrollwindow.setContent(r2);
          toggleState();
@@ -244,19 +230,19 @@ public class MainPage extends Application
    }
 
    private void toggleState()
-      {
+   {
       if (state)
       {
-      state = false;
+         state = false;
       }
       else
       {
-      state = true;
+         state = true;
       }
-      }
+   }
 
-public void print(String text)
-      {
+   public void print(String text)
+   {
       System.out.println(text);
-      }
-      }
+   }
+}

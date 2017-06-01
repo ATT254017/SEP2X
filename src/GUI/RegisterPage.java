@@ -107,7 +107,8 @@ public class RegisterPage
       firstNameInput = new TextField();
       firstNameInput.setPrefWidth(195);
       firstNameInput.setPrefHeight(30);
-      firstNameInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
+      firstNameInput
+            .setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       lastNameInput = new TextField();
       lastNameInput.setPrefWidth(195);
@@ -140,7 +141,8 @@ public class RegisterPage
       phoneNumberInput.setPrefWidth(400);
       phoneNumberInput.setPrefHeight(30);
       phoneNumberInput.setPromptText("Phone Number");
-      phoneNumberInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
+      phoneNumberInput
+            .setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       phoneNumberBox.setPadding(new Insets(0, 0, 25, 0));
       phoneNumberBox.getChildren().addAll(phoneNumberInput);
@@ -158,7 +160,7 @@ public class RegisterPage
 
       HBox genderbox = new HBox(3);
       genderbox.setAlignment(Pos.CENTER);
-      genderbox.setPadding(new Insets(0, 15, 0,0 ));
+      genderbox.setPadding(new Insets(0, 15, 0, 0));
       genderbox.getChildren().addAll(gender, genderSelector);
 
       //Birthday
@@ -183,23 +185,14 @@ public class RegisterPage
       yearInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       snhBox.setPadding(new Insets(0, 0, 25, 0));
-      snhBox.getChildren().addAll(genderbox, birthday, dayInput, monthInput, yearInput);
-
-
-
-
-
-
-
-
-
+      snhBox.getChildren()
+            .addAll(genderbox, birthday, dayInput, monthInput, yearInput);
 
       //Register Button
       Button registerButton = new Button("Register");
       registerButton.setFont(new Font("Verdana", 24));
       registerButton.setMaxWidth(190);
       registerButton.setOnAction(event -> checkRegistration());
-
 
       //Cancel button
       Button cancelButton = new Button("Cancel");
@@ -215,12 +208,12 @@ public class RegisterPage
       buttonbox.setAlignment(Pos.CENTER);
       buttonbox.getChildren().addAll(registerButton, cancelButton);
 
-
-
-
       //Center
       VBox center = new VBox();
-      center.getChildren().addAll(title, errorMessage, errorMessage2, usernameBox, passwordBox, emailBox, nameBox, addressBox, phoneNumberBox, snhBox, buttonbox);
+      center.getChildren()
+            .addAll(title, errorMessage, errorMessage2, usernameBox,
+                  passwordBox, emailBox, nameBox, addressBox, phoneNumberBox,
+                  snhBox, buttonbox);
       center.setAlignment(Pos.TOP_CENTER);
       center.setMinWidth(480);
 
@@ -262,43 +255,49 @@ public class RegisterPage
    {
       boolean correct = false;
 
-      if(usernameInput.getText().equals("") || usernameInput.getText().equals(null))
+      if (usernameInput.getText().equals("") || usernameInput.getText()
+            .equals(null))
       {
          usernameInput.setStyle("-fx-border-color: red;");
          correct = true;
       }
 
-      if(passwordInput.getText().equals("") || passwordInput.getText().equals(null))
+      if (passwordInput.getText().equals("") || passwordInput.getText()
+            .equals(null))
       {
          passwordInput.setStyle("-fx-border-color: red;");
          correct = true;
       }
 
-      if(emailInput.getText().equals("") || emailInput.getText().equals(null))
+      if (emailInput.getText().equals("") || emailInput.getText().equals(null))
       {
          emailInput.setStyle("-fx-border-color: red;");
          correct = true;
       }
 
-      if(firstNameInput.getText().equals("") || firstNameInput.getText().equals(null))
+      if (firstNameInput.getText().equals("") || firstNameInput.getText()
+            .equals(null))
       {
          firstNameInput.setStyle("-fx-border-color: red;");
          correct = true;
       }
 
-      if(lastNameInput.getText().equals("") || lastNameInput.getText().equals(null))
+      if (lastNameInput.getText().equals("") || lastNameInput.getText()
+            .equals(null))
       {
          lastNameInput.setStyle("-fx-border-color: red;");
          correct = true;
       }
 
-      if(addressInput.getText().equals("") || addressInput.getText().equals(null))
+      if (addressInput.getText().equals("") || addressInput.getText()
+            .equals(null))
       {
          addressInput.setStyle("-fx-border-color: red;");
          correct = true;
       }
 
-      if(phoneNumberInput.getText().equals("") || phoneNumberInput.getText().equals(null))
+      if (phoneNumberInput.getText().equals("") || phoneNumberInput.getText()
+            .equals(null))
       {
          phoneNumberInput.setStyle("-fx-border-color: red;");
          correct = true;
@@ -316,7 +315,7 @@ public class RegisterPage
          }
       }
 
-      if(dayInput.getText().equals("") || dayInput.getText().equals(null))
+      if (dayInput.getText().equals("") || dayInput.getText().equals(null))
       {
          dayInput.setStyle("-fx-border-color: red;");
          correct = true;
@@ -334,7 +333,7 @@ public class RegisterPage
          }
       }
 
-      if(monthInput.getText().equals("") || monthInput.getText().equals(null))
+      if (monthInput.getText().equals("") || monthInput.getText().equals(null))
       {
          monthInput.setStyle("-fx-border-color: red;");
          correct = true;
@@ -352,8 +351,7 @@ public class RegisterPage
          }
       }
 
-
-      if(yearInput.getText().equals("") || yearInput.getText().equals(null))
+      if (yearInput.getText().equals("") || yearInput.getText().equals(null))
       {
          yearInput.setStyle("-fx-border-color: red;");
          correct = true;
@@ -370,7 +368,6 @@ public class RegisterPage
             correct = true;
          }
       }
-
 
    }
 }

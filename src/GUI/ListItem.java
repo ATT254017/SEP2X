@@ -18,12 +18,12 @@ public class ListItem extends VBox
 {
    private Item item;
 
-   public ListItem()
+   public ListItem(Item item)
    {
       Font font1 = new Font("Arial", 37);
       Font font2 = new Font("Arial", 28);
       //this.item = item;
-      setPadding(new Insets(10,0,10,0));
+      setPadding(new Insets(10, 0, 10, 0));
 
       //Left
       Rectangle r1 = new Rectangle(50, 200);
@@ -33,25 +33,26 @@ public class ListItem extends VBox
 
       //Right
 
-         Label name = new Label("Name");
-         name.setFont(font1);
-         name.setPadding(new Insets(0, 0, 10, 0));
+      Label name = new Label(item.getItemName());
+      name.setFont(font1);
+      name.setPadding(new Insets(0, 0, 10, 0));
 
-         Rectangle underline = new Rectangle(985, 2);
-         underline.setFill(Color.valueOf("#BBBBBB"));
+      Rectangle underline = new Rectangle(985, 2);
+      underline.setFill(Color.valueOf("#BBBBBB"));
 
-         Label price = new Label("Price");
-         price.setPadding(new Insets(5,0,5,0));
-         price.setFont(font2);
-         Label location = new Label("Location");
-         location.setPadding(new Insets(5,0,5,0));
-         location.setFont(font2);
-         Label condition = new Label("Condition");
-         condition.setPadding(new Insets(5,0,5,0));
-         condition.setFont(font2);
+      Label price = new Label("" + item.getItemPrice());
+      price.setPadding(new Insets(5, 0, 5, 0));
+      price.setFont(font2);
+      Label location = new Label("" + item.getQuantity());
+      location.setPadding(new Insets(5, 0, 5, 0));
+      location.setFont(font2);
+
+      Label state = new Label(item.getItemState());
+      state.setPadding(new Insets(5, 0, 5, 0));
+      state.setFont(font2);
 
       VBox box2 = new VBox(5);
-      box2.getChildren().addAll(name, underline, price, location, condition);
+      box2.getChildren().addAll(name, underline, price, location, state);
       box2.setPadding(new Insets(0, 10, 20, 20));
       box2.setMaxWidth(Double.MAX_VALUE);
 
@@ -63,7 +64,6 @@ public class ListItem extends VBox
       box.setPadding(new Insets(5, 0, 5, 0));
 
       getChildren().addAll(box, underline2);
-
 
    }
 }

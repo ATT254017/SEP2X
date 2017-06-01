@@ -2,7 +2,8 @@ package GUI;/**
  * Created by filip on 29/05/2017.
  */
 
-
+import Model.*;
+import Model.ItemState;
 import javafx.collections.ObservableList;
 import javafx.geometry.*;
 import javafx.geometry.Insets;
@@ -17,15 +18,15 @@ public class ItemListPane extends VBox
 {
    ItemListPane()
    {
-      setPadding(new Insets(10,10, 0, 10));
+      setPadding(new Insets(10, 10, 0, 10));
 
    }
 
    public ListItem[] getItemArray()
    {
-      ObservableList<Node> items= this.getChildren();
+      ObservableList<Node> items = this.getChildren();
       ListItem[] out = new ListItem[items.size()];
-      for(int i = 0; i < out.length; i++)
+      for (int i = 0; i < out.length; i++)
       {
          out[i] = (ListItem) items.get(i);
       }
@@ -39,7 +40,6 @@ public class ItemListPane extends VBox
       getChildren().addAll(itemArray);
    }
 
-
    public void addItem(ListItem item)
    {
       getChildren().add(item);
@@ -47,9 +47,10 @@ public class ItemListPane extends VBox
 
    public void addBlankItem()
    {
-      getChildren().add(new ListItem());
+      getChildren().add(new ListItem(
+            new Item(0, "Blank item", 0.00, "No description", ItemState.Sold,
+                  0)));
    }
-
 
    public void getFeaturedItems()
    {

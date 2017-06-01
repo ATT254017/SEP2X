@@ -52,7 +52,6 @@ public class LogInPage
       title.setAlignment(Pos.CENTER);
       title.setPadding(new Insets(50, 0, 75, 0));
 
-
       //Error label
       errorMessage = new Label("Username and password are incorrect");
       errorMessage.setTextFill(Color.web("#FF0000"));
@@ -112,14 +111,11 @@ public class LogInPage
 
       });
 
-
-
-
-
-
       //Center
       VBox center = new VBox();
-      center.getChildren().addAll(title, errorMessage, usernameBox, passwordBox, logInButton, registerLabel, registerButton);
+      center.getChildren()
+            .addAll(title, errorMessage, usernameBox, passwordBox, logInButton,
+                  registerLabel, registerButton);
       center.setAlignment(Pos.TOP_CENTER);
       center.setMinWidth(480);
 
@@ -144,19 +140,20 @@ public class LogInPage
 
    private void login(String username, String password)
    {
-      ClientControl.getInstance().signIn(username, password, (status, isSignedIn, sessionID) ->
-      {
-         if(isSignedIn)
-         {
+      ClientControl.getInstance()
+            .signIn(username, password, (status, isSignedIn, sessionID) ->
+            {
+               if (isSignedIn)
+               {
 
-         }
-         else
-         {
-            usernameInput.setStyle("-fx-border-color: red;");
-            passwordInput.setStyle("-fx-border-color: red;");
-            errorMessage.setVisible(true);
+               }
+               else
+               {
+                  usernameInput.setStyle("-fx-border-color: red;");
+                  passwordInput.setStyle("-fx-border-color: red;");
+                  errorMessage.setVisible(true);
 
-         }
-      });
+               }
+            });
    }
 }
