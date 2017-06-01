@@ -70,8 +70,8 @@ public class DBControl {
 		Person hans = new Person("Hans", "Hansen", "", 38213851, true, LocalDate.of(1987, 10, 7));
 		
 		Account jAccount = insertAccount("awesome1337", "john@gmail.com", john, "youllneverguess13");
-		Account pAccount = insertAccount("cakeisalie", "peter@hotmail.com", john, "icanhazcake?");
-		Account hAccount = insertAccount("pineapplemastah", "hans@outlook.com", john, "theyreawesomel0l");
+		Account pAccount = insertAccount("cakeisalie", "peter@hotmail.com", peter, "icanhazcake?");
+		Account hAccount = insertAccount("pineapplemastah", "hans@outlook.com", hans, "theyreawesomel0l");
 		
 		Category antiques = insertCategory("Antiques", "", null);
 		Category art = insertCategory("Art", "", null);
@@ -454,7 +454,7 @@ public class DBControl {
 		}
 	}
 	
-	public synchronized boolean buyItem(Account buyer, Item item, int quantity) { //basic synchronization; we don't two purchases happening at the same time - We might end up with selling something that has already been sold.
+	public synchronized boolean buyItem(Account buyer, Item item, int quantity) { //basic synchronization; we don't want two purchases happening at the same time - We might end up with selling something that has already been sold.
 		String buyItemSQL = "INSERT INTO \"sales\"(BuyerID, ItemID, QuantityBought, TotalAmount)" +
 							"VALUES(?, ?, ?, ?)";
 		String checkForErrorsSQL = "SELECT COALESCE(SUM(QuantityBought), 0) FROM \"sales\" WHERE ItemID = ?";
