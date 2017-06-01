@@ -4,7 +4,9 @@ package GUI;/**
 
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
+import Model.Category;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.event.WeakEventHandler;
@@ -157,18 +159,31 @@ public class MainPage extends Application
       {
          if (logedIn)
          {
-            System.out.println("nope");
+            //Sell item
+            System.out.println("Open sell item");
          }
          else
          {
+            //Log in
             logInPage.display();
+            System.out.println("Open log in");
          }
       });
 
       //Open register page
       titleButton2.setOnAction(event ->
       {
-         registerPage.display();
+         if (logedIn)
+         {
+            //Sell item
+            System.out.println("Open sell item");
+         }
+         else
+         {
+            //Open register page
+            registerPage.display();
+         }
+
       });
 
       searchBar.setOnKeyPressed(new EventHandler<KeyEvent>()
@@ -231,19 +246,68 @@ public class MainPage extends Application
       if (!(searchbar.getText().equals("")) || !(searchbar.getText() != null))
       {
 
-         changeList();
-      }
-      System.out.println(searchbar.getText());
+            //call server for list
+            ClientControl.getInstance().getItems(new Category(0, categoryBox.getSelectionModel().getSelectedItem().toString()),
+                  searchbar.getText(), null, ((status, items) ->
+            {
+               Platform.runLater(() ->
+               {
+                  //clear searchList
+                  searchList.getChildren().clear();
 
+                  //add new items to searchList
+                  for (int i = 0; i < items.size(); i++)
+                  {
+                     searchList.addItem(items.get(i));
+                  }
+
+                  //change to search list
+                  changeToSearch();
+               });
+            }));
+
+            System.out.println("search method: " + searchbar.getText());
+
+
+      }
    }
 
    public void searchCategory(String category)
 
    {
-      //
+      //call server for list
+      ClientControl.getInstance().getItems(new Category(0, category), null, null, (status, items) ->
+      {
+         Platform.runLater(() ->
+         {
+            //clear searchList
+            searchList.getChildren().clear();
+
+            //add new items to searchList
+            for(int i = 0; i < items.size(); i++)
+            {
+               searchList.addItem(items.get(i));
+            }
+
+            //change to search list
+            changeToSearch();
+         });
+
+      });
+
+
+
       changeList();
       System.out.println("Search category: " + category);
 
+   }
+
+   private void changeToSearch()
+   {
+      if(isMain)
+      {
+         changeList();
+      }
    }
 
    private void changeList()
@@ -251,12 +315,12 @@ public class MainPage extends Application
       if (isMain)
       {
          scrollwindow.setContent(searchList);
-         toggleState();
+         isMain = false;
       }
       else
       {
          scrollwindow.setContent(featuredList);
-         toggleState();
+         isMain = true;
       }
    }
 

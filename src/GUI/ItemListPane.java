@@ -40,9 +40,9 @@ public class ItemListPane extends VBox
       getChildren().addAll(itemArray);
    }
 
-   public void addItem(ListItem item)
+   public void addItem(Item item)
    {
-      getChildren().add(item);
+      getChildren().add(new ListItem(item));
    }
 
    public void addBlankItem()

@@ -24,7 +24,15 @@ public class MenubarMain extends HBox
       {
          for (int i = 0; i < categories.size(); i++)
          {
-            categoryList.getItems().add(categories.get(i).getCategoryName());
+            if(categories.get(i).hasParent())
+            {
+               categoryList.getItems().add("-" + categories.get(i).getCategoryName());
+            }
+            else
+            {
+               categoryList.getItems().add(categories.get(i).getCategoryName());
+            }
+
          }
       });
 
@@ -33,8 +41,8 @@ public class MenubarMain extends HBox
             {
                if (!(newValue.equals("Categories")))
                {
-                     //Category search
-                     this.parent.searchCategory(newValue);
+                  //Category search
+                  this.parent.searchCategory(newValue);
                }
             });
 
