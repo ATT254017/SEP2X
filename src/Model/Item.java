@@ -10,19 +10,31 @@ public class Item implements Serializable{
     private String itemName;
     private double itemPrice;
     private String description;
-    private int quantity;
+    private int initialQuantity;
+    private int currentRemainingQuantity;
     //private ItemState state;
     private Category itemCategory;
     private Account seller;
 
-    public Item(int itemID, String itemName, double itemPrice, int quantity) {
+    public Item(int itemID, String itemName, double itemPrice, int initialQuantity) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
-        this.quantity = quantity;
+        this.initialQuantity = initialQuantity;
     }
     
-    public Account getSeller()
+    public int getCurrentRemainingQuantity()
+	{
+		return currentRemainingQuantity;
+	}
+
+	public Item setCurrentRemainingQuantity(int currentRemainingQuantity)
+	{
+		this.currentRemainingQuantity = currentRemainingQuantity;
+		return this;
+	}
+
+	public Account getSeller()
     {
     	return seller;
     }
@@ -46,13 +58,8 @@ public class Item implements Serializable{
 		return this;
 	}
 
-
-	public void changeQuantity(int quantity) {
-    	this.quantity = quantity;
-    }
-    
-    public int getQuantity() {
-    	return quantity;
+    public int getInitialQuantity() {
+    	return initialQuantity;
     }
   /*  
     public void changeItemState(ItemState state) {

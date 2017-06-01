@@ -25,18 +25,37 @@ public class TestClient {
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 		
-		
-		clientControl.getItems(null, "TURd", (status, list) ->
+		clientControl.signIn("cakeisalie", "icanhazcake?", (status, loginSuccess, q) ->
 		{
-			if(status == MethodStatus.SuccessfulInvocation)
-				for(Item item : list)
+			if(loginSuccess)
+			{
+				System.out.println("logged in");
+				
+				clientControl.getItems(null, "", (itemsStatus, list) ->
 				{
-					System.out.println("ITEM: " + item.getItemName());
-					System.out.println("Category: " + item.getItemCategory().getCategoryName());
-					System.out.println("Seller: " + item.getSeller().getUserName());
-					
-				}
-		}); 
+					if(status == MethodStatus.SuccessfulInvocation)
+					{
+						/*clientControl.buyItem(list.get(0), 1, (st, b) ->
+						{
+							System.out.println(st);
+							System.out.println(b);
+						});*/
+						System.out.println();
+						for(Item item : list)
+						{
+							System.out.println("ITEM: " + item.getItemName());
+							System.out.println("Category: " + item.getItemCategory().getCategoryName());
+							System.out.println("Seller: " + item.getSeller().getUserName());
+							System.out.println("remain: " + item.getCurrentRemainingQuantity());
+							
+						}
+					}
+				}); 
+				
+			}
+		});
+		
+		
 		/*
 		clientControl.getCategories(null, (status, list) ->
 		{

@@ -1,6 +1,6 @@
 package Model;
 
 public enum BuyItemStatus {
-	Success,
+	SuccessfullyBought,
 	AllowedQuantityExceeded
 }

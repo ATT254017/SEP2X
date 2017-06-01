@@ -225,7 +225,8 @@ public class DBControl {
 	{
 		List<Item> result = new LinkedList<>();
 		int i = 1;
-		String sql = "select * from item join account on seller = accountid join category on category = categoryid ";
+		String sql = "select *, (i.quantity - (SELECT COALESCE(SUM(QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) as remainingQuantity from item i join account on seller = accountid join category on category = categoryid ";
+		boolean stringPredicate = false;
 		if(category != null)
 		{
 			sql += "where ";
@@ -233,6 +234,7 @@ public class DBControl {
 		}
 		if(searchPredicate != null && !searchPredicate.equals(""))
 		{
+			stringPredicate = true;
 			if(category != null)
 			{
 				sql += " AND ";
@@ -251,7 +253,7 @@ public class DBControl {
 			else if(category != null)
 				statement.setString(1, category.getCategoryName());
 			
-			if(searchPredicate != null)
+			if(stringPredicate)
 			{
 				searchPredicate = "%" + searchPredicate.toLowerCase() + "%";
 				statement.setString(i, searchPredicate);
@@ -265,7 +267,8 @@ public class DBControl {
 				result.add(new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"), resultSet.getInt("quantity"))
 						.setDescription(resultSet.getString("description"))
 						.setItemCategory(category == null ? getCategory(resultSet.getString("category_name")) : category)
-						.setSeller(getAccountFromRS(resultSet)));
+						.setSeller(getAccountFromRS(resultSet))
+						.setCurrentRemainingQuantity(resultSet.getInt("remainingQuantity")));
 			}
 			return result;
 		}
@@ -453,10 +456,10 @@ public class DBControl {
 		}
 	}
 	
-	public boolean buyItem(Account buyer, Item item, int quantity) {
+	public synchronized boolean buyItem(Account buyer, Item item, int quantity) { //basic synchronization; we don't two purchases happening at the same time - We might end up with selling something that has already been sold.
 		String buyItemSQL = "INSERT INTO \"sales\"(BuyerID, ItemID, QuantityBought, TotalAmount)" +
 							"VALUES(?, ?, ?, ?)";
-		String checkForErrorsSQL = "SELECT COUNT(QuantityBought) FROM \"sales\" WHERE ItemID = ?";
+		String checkForErrorsSQL = "SELECT COALESCE(SUM(QuantityBought), 0) FROM \"sales\" WHERE ItemID = ?";
 		
 		try(Connection conn = connect();
 	              PreparedStatement pstmt = conn.prepareStatement(buyItemSQL,
@@ -476,7 +479,7 @@ public class DBControl {
 				soldAmount = result.getInt(1);
 			}
 			
-			if (quantity <= item.getQuantity() - soldAmount) 
+			if (quantity <= item.getInitialQuantity() - soldAmount) 
 				{
 					pstmt.executeUpdate();
 					return true; // i have more stuff to sell

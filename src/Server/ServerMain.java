@@ -152,7 +152,7 @@ public class ServerMain {
 				{
 					if(database.buyItem(buyer, (Item) args[0], (int) args[1]))
 					{
-						response[0] = BuyItemStatus.Success;
+						response[0] = BuyItemStatus.SuccessfullyBought;
 						System.out.println(buyer.getUserName() + " successfully bought an item");
 						return response;
 					} 
