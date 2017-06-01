@@ -35,7 +35,6 @@ public class TestClient
 			clientControl.makeOffer(new Item(999, "itemName", 345, 1), 10, (stat, isOfferPlaced) ->
 			{
 				System.out.println(stat + " - " + isOfferPlaced);
-				System.out.println("An offer has been made!");
 			});
 			
 			clientControl.getItems((status2, list) ->
