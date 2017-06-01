@@ -4,6 +4,7 @@ package GUI;/**
 
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
+import Model.Account;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -21,6 +22,8 @@ import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 
 public class MainPage extends Application
 {
+   private boolean isSignedIn;
+
    private ClientControl controller;
    private Stage window;
    private Scene scene;
@@ -31,6 +34,9 @@ public class MainPage extends Application
    private ScrollPane scrollwindow;
    private ItemListPane r1;
    private ItemListPane r2;
+
+   private Button titleButton1;
+   private Button titleButton2;
 
    public static void main(String[] args)
    {
@@ -44,6 +50,7 @@ public class MainPage extends Application
       window.setTitle("JavaFx");
       state = true;
       logedIn = false;
+      isSignedIn = false;
       controller = ClientControl.getInstance();
       try
       {
@@ -67,8 +74,8 @@ public class MainPage extends Application
       title.setPadding(new Insets(0, 150, 0, 300));
 
       //Buttons
-      Button titleButton1 = new Button("Sign in");
-      Button titleButton2 = new Button("Register");
+      titleButton1 = new Button("Sign in");
+      titleButton2 = new Button("Register");
 
       HBox buttonBox = new HBox(10);
       buttonBox.getChildren().addAll(titleButton1, titleButton2);
@@ -126,6 +133,7 @@ public class MainPage extends Application
 
       //Scroll window
       r1 = new ItemListPane();
+      r1.addBlankItem();
       r2 = new ItemListPane();
 
       scrollwindow = new ScrollPane();
@@ -239,6 +247,20 @@ public class MainPage extends Application
       {
          state = true;
       }
+   }
+
+   public void signIn()
+   {
+      titleButton1.setText("Sell Item");
+      titleButton2.setText("Sign Out");
+      isSignedIn = true;
+   }
+
+   public void signOut()
+   {
+      titleButton1.setText("Sign In");
+      titleButton2.setText("Register");
+      isSignedIn = false;
    }
 
    public void print(String text)
