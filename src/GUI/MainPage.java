@@ -1,10 +1,12 @@
 package GUI;/**
  * Created by filip on 26/05/2017.
  */
+import com.sun.security.ntlm.Client;
 
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.event.WeakEventHandler;
@@ -19,6 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 
 public class MainPage extends Application
 {
@@ -38,6 +41,18 @@ public class MainPage extends Application
 
    private Button titleButton1;
    private Button titleButton2;
+   
+   private LogInPage logInPage;
+   private RegisterPage registerPage;
+   private EventHandler<ActionEvent> loginWindowAction = event ->
+   {
+       if (!logedIn)
+    	   logInPage.display();
+    };
+    private EventHandler<ActionEvent> sellItemWindowAction = event -> System.out.println("Open sell item window");
+    private EventHandler<ActionEvent> signoutAction = event -> ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
+    private EventHandler<ActionEvent> registerPageAction = event -> registerPage.display();
+    
 
    public static void main(String[] args)
    {
@@ -61,8 +76,8 @@ public class MainPage extends Application
       {
          System.out.println("Error: no connection!");
       }
-      RegisterPage registerPage = new RegisterPage();
-      LogInPage logInPage = new LogInPage(this, registerPage);
+      registerPage = new RegisterPage();
+      logInPage = new LogInPage(this, registerPage);
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //Top
@@ -152,24 +167,12 @@ public class MainPage extends Application
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+      
       //Open log in page
-      titleButton1.setOnAction(event ->
-      {
-         if (logedIn)
-         {
-            System.out.println("nope");
-         }
-         else
-         {
-            logInPage.display();
-         }
-      });
+      titleButton1.setOnAction(loginWindowAction);
 
       //Open register page
-      titleButton2.setOnAction(event ->
-      {
-         registerPage.display();
-      });
+      titleButton2.setOnAction(registerPageAction);
 
       searchBar.setOnKeyPressed(new EventHandler<KeyEvent>()
       {
@@ -274,13 +277,19 @@ public class MainPage extends Application
 
    public void signIn()
    {
+	   //changes the button functionalities
+	   titleButton1.setOnAction(sellItemWindowAction);
+	   titleButton2.setOnAction(signoutAction);
       titleButton1.setText("Sell Item");
       titleButton2.setText("Sign Out");
       isSignedIn = true;
+      
    }
 
    public void signOut()
    {
+	   titleButton1.setOnAction(loginWindowAction);
+	   titleButton2.setOnAction(registerPageAction);
       titleButton1.setText("Sign In");
       titleButton2.setText("Register");
       isSignedIn = false;

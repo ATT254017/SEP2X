@@ -141,6 +141,7 @@ public class LogInPage
 
    private void login(String username, String password)
    {
+	   errorMessage.setVisible(true);
 	   errorMessage.setText("Please wait..");
       ClientControl.getInstance()
             .signIn(username, password, (status, isSignedIn, sessionID) ->
@@ -148,10 +149,9 @@ public class LogInPage
                Platform.runLater(() ->
                      {
                     	 if(isSignedIn)
+                    	 {
                     		   errorMessage.setText("Successfully authenticated!");
-                    	 else
-                    		   errorMessage.setText("Username or password is incorrect");
-                    		 
+                    	
                            mainPage.signIn();
                            /*if (isSignedIn)
                            {
@@ -164,6 +164,13 @@ public class LogInPage
                               errorMessage.setVisible(true);
 
                            }*/
+                           
+                           window.close();
+                    	 }
+                    	 else
+                  		   errorMessage.setText("Username or password is incorrect");
+                  		 
+                           
                      });
             });
    }
