@@ -8,7 +8,9 @@ public enum Method {
     BuyItem("BUY_ITEM", true),
     MakeOffer("MAKE_OFFER", true),
 	GetItems("GET_ITEMS", false),
-	GetCategories("GET_CATEGORIES", false);
+	GetCategories("GET_CATEGORIES", false),
+	SignOut("SIGN_OUT", true),
+	GetBuyHistory("GET_BUY_HISTORY", true);
 	
     private final String value;
     private final boolean loginRequired;

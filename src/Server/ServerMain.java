@@ -30,6 +30,8 @@ public class ServerMain {
 		networkServer.addServerMethod(Method.SellItem.getValue(), a -> handleSellItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleBuyItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.MakeOffer.getValue(), a -> handleMakeOffer(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.SignOut.getValue(), a -> handleSignOut(a, getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.GetBuyHistory.getValue(), a -> handleGetBuyHistory(a, getAuthenticatedAccount(a)));
 	}
 	
 	private Object[] handleGetCategories(Object[] args)
@@ -83,13 +85,9 @@ public class ServerMain {
 
 		Object[] response = new Object[2];
 		response[0] = false;
-		System.out.println("recv:");
-		for(int i = 0; i < args.length; i++) System.out.println(args[i]);
-		System.out.println("end");
 		if (args.length == 2) {
 			if (args[0] instanceof String && args[1] instanceof String) {
 				Account theAccount = database.checkUserCredentials((String) args[0], (String) args[1]);
-				System.out.println(theAccount);
 				if (theAccount != null) {
 					response[0] = true;
 					String session = UUID.randomUUID().toString();
@@ -124,6 +122,11 @@ public class ServerMain {
 			}
 		}
 		return response;
+	}
+	
+	private Object[] handleGetBuyHistory(Object[] args, Account account)
+	{
+		return null;
 	}
 
 	private Object[] handleMakeOffer(Object[] args, Account offeror)
@@ -199,6 +202,15 @@ public class ServerMain {
 		//0: boolean - successful or not
 		
 		return response;
+	}
+	
+	private Object[] handleSignOut(Object[] args, Account account)
+	{
+		if(account != null)
+		{
+			sessionIDs.remove((String)args[0]);
+		}
+		return null;
 	}
 	
 
