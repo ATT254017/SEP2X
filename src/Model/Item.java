@@ -12,7 +12,7 @@ public class Item implements Serializable{
     private String description;
     private int initialQuantity;
     private int currentRemainingQuantity;
-    //private ItemState state;
+    private ItemState state;
     private Category itemCategory;
     private Account seller;
 
@@ -21,6 +21,8 @@ public class Item implements Serializable{
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.initialQuantity = initialQuantity;
+        if(initialQuantity > 0)
+        	state = ItemState.InStock;
     }
     
     public int getCurrentRemainingQuantity()
@@ -31,6 +33,8 @@ public class Item implements Serializable{
 	public Item setCurrentRemainingQuantity(int currentRemainingQuantity)
 	{
 		this.currentRemainingQuantity = currentRemainingQuantity;
+		if(state != ItemState.Cancelled)
+			state = currentRemainingQuantity > 0 ? ItemState.InStock : ItemState.SoldOut;
 		return this;
 	}
 
@@ -61,14 +65,15 @@ public class Item implements Serializable{
     public int getInitialQuantity() {
     	return initialQuantity;
     }
-  /*  
-    public void changeItemState(ItemState state) {
+  
+    public Item setItemState(ItemState state) {
     	this.state = state;
+    	return this;
     }
     
-    public String getItemState() {
-    	return this.state.getValue();
-    }*/
+    public ItemState getItemState() {
+    	return this.state;
+    }
 
     public int getItemID() {
         return itemID;

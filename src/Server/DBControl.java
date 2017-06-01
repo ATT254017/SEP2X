@@ -143,9 +143,10 @@ public class DBControl {
 		String createEnums = 		"DO $$" +
 									"BEGIN" + 
 									"	IF NOT EXISTS (SELECT * FROM pg_type WHERE typname = 'state') THEN" +
-									"		CREATE TYPE "+schemaName+".state AS ENUM ('Sold', 'In Stock');" + 
+									"		CREATE TYPE "+schemaName+".state AS ENUM ('Sold out', 'In Stock', 'Cancelled', 'Undefined');" + 
 									"	END IF;" +
 									"END$$;";
+		
 		
 		String createTableAccount = "CREATE TABLE IF NOT EXISTS "+schemaName+".\"account\"("  +
 									"AccountID SERIAL," +
@@ -175,8 +176,9 @@ public class DBControl {
 									"Category SERIAL," + 
 									"Item_price DECIMAL," +
 									"Description VARCHAR(2000)," +
-									"Quantity INT,"+
+									"Quantity INT," +
 									"Seller SERIAL," +
+									"ItemState state default 'In Stock', "+
 									"Image_source VARCHAR(150)," + 
 									"PRIMARY KEY(ItemID)," +
 									"FOREIGN KEY(Category) REFERENCES "+schemaName+".category(CategoryID)," + 
@@ -318,7 +320,8 @@ public class DBControl {
 		.setDescription(resultSet.getString("description"))
 		.setItemCategory(getCategory(resultSet.getString("category_name")))
 		.setSeller(getAccountFromRS(resultSet))
-		.setCurrentRemainingQuantity(resultSet.getInt("remainingQuantity"));
+		.setCurrentRemainingQuantity(resultSet.getInt("remainingQuantity"))
+		.setItemState(ItemState.getEnum(resultSet.getString("itemstate")));
 	}
 	
 	public Category getCategory(String categoryName)
@@ -534,6 +537,44 @@ public class DBControl {
 			return false;
 		}
 	}
+	public boolean itemBuyable(Item item)
+	{
+		String sql = "SELECT EXISTS (SELECT 1 from sep2xgroup6.item where itemid = ? AND itemstate = 'In Stock')";
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setInt(1, item.getItemID());
+			ResultSet resultSet = statement.executeQuery();
+			return resultSet.next() && resultSet.getBoolean(1);
+		}
+		catch(SQLException ex)
+		{
+			return false;
+		}
+	}
+	
+	public boolean updateItemState(Item item, ItemState state)
+	{
+		String sql = "UPDATE item set itemstate = ?::state where itemid = ?";
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setString(1, state.getValue());
+			statement.setInt(2, item.getItemID());
+
+			int affectedRows = statement.executeUpdate();
+			
+			if(affectedRows == 1)
+				return true;
+			
+		}
+		catch(SQLException ex)
+		{
+			ex.printStackTrace();
+		}
+		return false;
+		
+	}
 	
 	public synchronized boolean buyItem(Account buyer, Item item, int quantity) { //basic synchronization; we don't want two purchases happening at the same time - We might end up with selling something that has already been sold.
 		String buyItemSQL = "INSERT INTO \"sales\"(BuyerID, ItemID, QuantityBought, TotalAmount, BuyTime)" +
@@ -620,7 +661,7 @@ public class DBControl {
       return null;
   }
 	
-	public boolean removeItem(Item item) {
+/*	public boolean removeItem(Item item) {
 		String deleteAccountSQL = "DELETE FROM Account WHERE itemid = '?'";
 		
 		try(Connection conn = connect();
@@ -638,6 +679,7 @@ public class DBControl {
 		
 		return false;
 	}
+	*/
    
    private Connection connect() throws SQLException
    {

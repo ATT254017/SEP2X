@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
-import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
-
 import Net.Server.*;
 import Model.*;
 
@@ -33,7 +31,9 @@ public class ServerMain {
 		networkServer.addServerMethod(Method.SignOut.getValue(), a -> handleSignOut(a, getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.GetBuyHistory.getValue(), a -> handleGetBuyHistory(a, getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.GetOwnedItems.getValue(), a -> handleGetItems(new Object[] { null, null, getAuthenticatedAccount(a) }));
+		networkServer.addServerMethod(Method.CancelSellItem.getValue(), a -> handleCancelSellItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 	}
+	
 	
 	private Object[] handleGetCategories(Object[] args)
 	{
@@ -126,6 +126,24 @@ public class ServerMain {
 		}
 		return response;
 	}
+
+	private Object[] handleCancelSellItem(Object[] args, Account seller)
+	{
+		//input:
+		//0: Item - the item to cancel sale of
+		
+		//output:
+		//0: CancelSellItemStatus - success or not
+		
+		Object[] result = new Object[] { CancelSellItemStatus.ItemNotFound };
+		
+		if(seller != null && args.length == 1 && args[0] instanceof Item)
+		{
+			if(database.updateItemState((Item)args[0], ItemState.Cancelled))
+				result[0] = CancelSellItemStatus.ItemSaleCancelled;
+		}
+		return result;
+	}
 	
 	private Object[] handleGetBuyHistory(Object[] args, Account buyer)
 	{
@@ -153,28 +171,19 @@ public class ServerMain {
 		// 1: int - the quantity of said item to be bought
 		Object[] response = new Object[]{BuyItemStatus.AllowedQuantityExceeded};
 		if (args.length == 2) {
-			System.out.println(args[0]);
-			System.out.println(args[1]);
+
 			if (args[0] instanceof Item && args[1] instanceof Integer) {
-				if(database.itemExists((Item) args[0]))
+				if(database.itemBuyable((Item) args[0]))
 				{
 					if(database.buyItem(buyer, (Item) args[0], (int) args[1]))
-					{
 						response[0] = BuyItemStatus.SuccessfullyBought;
-						System.out.println(buyer.getUserName() + " successfully bought an item");
-						return response;
-					} 
 					else 
-					{
-						System.out.println(buyer.getUserName() + " unsuccessfully bought an item: AMOUNT ALLOWED EXCEEDED");
-					}
+						response[0] = BuyItemStatus.AllowedQuantityExceeded;
 				}
 				else
-					System.out.println("Item doesn't exist");
+					response[0] = BuyItemStatus.ItemNotFoundOrCancelled;
 			}
 		}
-		// output: 
-		// 0: int - actual quantity bought
 		return response;
 	}
 	

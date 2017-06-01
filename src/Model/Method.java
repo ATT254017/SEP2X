@@ -11,7 +11,8 @@ public enum Method {
 	GetCategories("GET_CATEGORIES", false),
 	SignOut("SIGN_OUT", true),
 	GetBuyHistory("GET_BUY_HISTORY", true),
-	GetOwnedItems("GET_OWNED_ITEMS",true);
+	GetOwnedItems("GET_OWNED_ITEMS",true),
+	CancelSellItem("CANCEL_SELL_ITEM", true);
 	
     private final String value;
     private final boolean loginRequired;

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import Model.Account;
 import Model.BuyItemStatus;
+import Model.CancelSellItemStatus;
 import Model.Category;
 import Model.InsertItemStatus;
 import Model.Item;
@@ -79,6 +80,16 @@ public class ClientControl
 			handler.handle(status, arg1);
 		}, category, searchPredicate, owner);
 	}
+	
+	public void cancelSellItem(Item item, CancelSellItemResponseHandler handler)
+	{
+		runServerMethod(Method.CancelSellItem, (status,  args) -> 
+		{
+			CancelSellItemStatus arg1 = status == MethodStatus.SuccessfulInvocation ? (CancelSellItemStatus) args[0] : null;
+			handler.handle(status, arg1);
+		}, item);
+	}
+	
 	
 	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
 	{

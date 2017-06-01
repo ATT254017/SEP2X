@@ -30,15 +30,24 @@ public class TestClient
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 
-		clientControl.signIn("pineapplemastah", "theyreawesomel0l", (status, loginSuccess, q) ->
+		clientControl.signIn("awesome1337", "youllneverguess13", (status, loginSuccess, q) ->
 		{
 			clientControl.getItems((status2, list) ->
 			{
 				for(Item item : list)
 				{
 					System.out.println(item.getItemName());
+
+					
+					System.out.println(item.getItemState());
+					/*clientControl.cancelSellItem(item, (status3, blah)->
+					{
+						System.out.println(status3);
+						System.out.println(blah);
+					});*/
 				}
 			});
+			
 			
 			if (loginSuccess)
 			{
