@@ -278,14 +278,14 @@ public class DBControl {
 	
 	public Category getCategory(String categoryName)
 	{
-		String sql = "with recursive category_tree as ("+
-						"select categoryid, cat_parent, category_name, cat_description" +
-						"from category"+
-						"where category_name = ?"+
-						"union all"+
-						"select parent.categoryid, parent.cat_parent, parent.category_name, parent.cat_description"+
-						"from category parent"+
-						"join category_tree child on parent.categoryid = child.cat_parent)"+
+		String sql =	"with recursive category_tree as ("+
+							"select categoryid, cat_parent, category_name, cat_description " +
+							"from category "+
+							"where category_name = ? "+
+							"union all "+
+							"select parent.categoryid, parent.cat_parent, parent.category_name, parent.cat_description "+
+							"from category parent "+
+							"join category_tree child on parent.categoryid = child.cat_parent) "+
 						"select * from category_tree;";
 		
 		try(Connection connection = connect();
