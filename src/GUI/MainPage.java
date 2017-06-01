@@ -6,6 +6,8 @@ import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
+import javafx.event.WeakEventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -205,6 +207,8 @@ public class MainPage extends Application
       layout.setLeft(left);
       layout.setRight(right);
       layout.setPadding(new Insets(25, 50, 50, 50));
+      
+      window.setOnCloseRequest(W -> ClientControl.getInstance().disconnect());
 
       scene = new Scene(layout, 1280, 960);
       window.setScene(scene);

@@ -11,6 +11,11 @@ public class ServerMain {
 	private DBControl database;
 	private NetServer networkServer;
 	private Map<String, Account> sessionIDs;
+	
+	public static void main(String[] args) throws IOException, SQLException
+	{
+		new ServerMain(9999, "jdbc:postgresql://localhost:5432/", "postgres", "Qwerty1234!!");
+	}
 
 	public ServerMain(int listenerPort, String dbURL, String dbUsername, String dbPassword) throws IOException, SQLException {
 		database = new DBControl(dbURL, dbUsername, dbPassword);
