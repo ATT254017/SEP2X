@@ -40,19 +40,19 @@ public class ListItem extends VBox
       Rectangle underline = new Rectangle(985, 2);
       underline.setFill(Color.valueOf("#BBBBBB"));
 
-      Label price = new Label("" + item.getItemPrice());
+      Label price = new Label("Price: " + item.getItemPrice() + "dkk");
       price.setPadding(new Insets(5, 0, 5, 0));
       price.setFont(font2);
-      Label location = new Label("" + item.getQuantity());
-      location.setPadding(new Insets(5, 0, 5, 0));
-      location.setFont(font2);
+      Label quantity = new Label("Quantity: " + item.getCurrentRemainingQuantity());
+      quantity.setPadding(new Insets(5, 0, 5, 0));
+      quantity.setFont(font2);
 
-      Label state = new Label(item.getItemState());
-      state.setPadding(new Insets(5, 0, 5, 0));
-      state.setFont(font2);
+      Label category = new Label("category" + item.getItemCategory().getCategoryName());
+      category.setPadding(new Insets(5, 0, 5, 0));
+      category.setFont(font2);
 
       VBox box2 = new VBox(5);
-      box2.getChildren().addAll(name, underline, price, location, state);
+      box2.getChildren().addAll(name, underline, price, quantity, category);
       box2.setPadding(new Insets(0, 10, 20, 20));
       box2.setMaxWidth(Double.MAX_VALUE);
 
