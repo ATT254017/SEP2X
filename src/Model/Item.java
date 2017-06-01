@@ -15,11 +15,10 @@ public class Item implements Serializable{
     private Category itemCategory;
     private Account seller;
 
-    public Item(int itemID, String itemName, double itemPrice, String description, int quantity) {
+    public Item(int itemID, String itemName, double itemPrice, int quantity) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
-        this.description = description;
         this.quantity = quantity;
     }
     

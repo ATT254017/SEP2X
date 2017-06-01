@@ -12,6 +12,7 @@ import Model.InsertItemStatus;
 import Model.Item;
 import Model.Method;
 import Model.MethodStatus;
+import Model.Person;
 import Model.RegisterAccountStatus;
 import Net.Client.NetClient;
 import Net.Client.ResponseStatus;
@@ -67,13 +68,13 @@ public class ClientControl
 		}, item, offerPrice);
 	}
 
-	public void registerAccount(Account account, String password, RegisterAccountResponseHandler handler)
+	public void registerAccount(String username, String email, Person person, String password, RegisterAccountResponseHandler handler)
 	{
 		runServerMethod(Method.RegisterAccount, (status, args) -> 
 		{
 			RegisterAccountStatus arg1 = status != MethodStatus.TimedOut ? (RegisterAccountStatus)args[0] : null;
 			handler.handle(status, arg1);
-		}, account, password);
+		}, username, email, person, password);
 	}
 
 	public void buyItem(Item item, int quantity, BuyItemHandler handler) {

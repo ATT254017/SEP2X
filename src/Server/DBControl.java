@@ -48,23 +48,33 @@ public class DBControl {
 			return;
 		}
 		if(!databaseExists())
+		{
 			createDatabase();
+			this.connectionURI += databaseName + "?currentSchema=" + schemaName;;
+			populateDatabase();
+			defaultData();
+		}
+		else
+			this.connectionURI += databaseName + "?currentSchema=" + schemaName;;
 		
-		this.connectionURI += databaseName + "?currentSchema=" + schemaName;;
-		
-		populateDatabase();
-		defaultCategories();
 	}
 	private void databaseDriverError()
 	{
 		throw new RuntimeException("Postgresql jdbc driver is not included in the project! Download at jdbc.postgresql.org");
 	}
 
-	private void defaultCategories()
+	private void defaultData()
 	{
-		insertCategory("Subcat of Antiques", "", getCategory("Antiques"));
-		insertCategory("Antiques", "", null);
-		insertCategory("Art", "", null);
+		Person john = new Person("John", "Johnsson", "", 84216854, true, LocalDate.of(1975, 3, 15));
+		Person peter = new Person("Peter", "Petersson", "", 14291208, true, LocalDate.of(1968, 1, 23));
+		Person hans = new Person("Hans", "Hansen", "", 38213851, true, LocalDate.of(1987, 10, 7));
+		
+		Account jAccount = insertAccount("awesome1337", "john@gmail.com", john, "youllneverguess13");
+		Account pAccount = insertAccount("cakeisalie", "peter@hotmail.com", john, "icanhazcake?");
+		Account hAccount = insertAccount("pineapplemastah", "hans@outlook.com", john, "theyreawesomel0l");
+		
+		Category antiques = insertCategory("Antiques", "", null);
+		Category art = insertCategory("Art", "", null);
 		insertCategory("Baby", "", null);
 		insertCategory("Books", "", null);
 		insertCategory("Business & Industrial", "", null);
@@ -73,7 +83,7 @@ public class DBControl {
 		insertCategory("Clothing, Shoes & Accessories", "", null);
 		insertCategory("Coins & Paper Money", "", null);
 		insertCategory("Collectibles", "", null);
-		insertCategory("Computers/Tablets & Networking", "", insertCategory("Consumer Electronics", "", null));
+		Category ctn = insertCategory("Computers/Tablets & Networking", "", insertCategory("Consumer Electronics", "", null));
 		insertCategory("Crafts", "", null);
 		insertCategory("Dolls & Bears", "", null);
 		insertCategory("DVDs & Movies", "", null);
@@ -90,6 +100,9 @@ public class DBControl {
 		insertCategory("Tickets & Experiences", "", null);
 		insertCategory("Toys & Hobbies", "", null);
 		insertCategory("Video Games & Consoles", "", null);
+		
+		insertItem("Turd Sandwitch", "It's grreeeaaat!", 7, 99.95, art, jAccount);
+		insertItem("My awesome laptop", "you know it's da' shit!", 1, 3995.95, ctn, hAccount);
 	}
 	
 	private boolean databaseExists()
@@ -249,9 +262,10 @@ public class DBControl {
 			
 			while(resultSet.next())
 			{
-				result.add(new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"),
-						resultSet.getString("description"), resultSet.getInt("quantity")).setDescription(resultSet.getString("description"))
-						.setItemCategory(category == null ? getCategory(resultSet.getString("category_name")) : category).setSeller(getAccountFromRS(resultSet)));
+				result.add(new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"), resultSet.getInt("quantity"))
+						.setDescription(resultSet.getString("description"))
+						.setItemCategory(category == null ? getCategory(resultSet.getString("category_name")) : category)
+						.setSeller(getAccountFromRS(resultSet)));
 			}
 			return result;
 		}
@@ -301,7 +315,6 @@ public class DBControl {
 			return null;
 		}
 	}
-	
 	
 	public List<Category> getCategories(Category category)
 	{
@@ -390,7 +403,7 @@ public class DBControl {
 		}
 	}
 	
-	public boolean registerAccount(Account account, String password)
+	public Account insertAccount(String username, String email, Person person, String password)
 	{
 		String createAccountSQL = "INSERT INTO \"account\"(Username, Password, Email, Name, Surname, Address, Phone, IsMale, Birthday)" 
 	+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -399,26 +412,28 @@ public class DBControl {
 	              PreparedStatement pstmt = conn.prepareStatement(createAccountSQL,
 	                      Statement.RETURN_GENERATED_KEYS)) 
 		{
-			//pstmt.setInt(1, account.getAccountID());
-			pstmt.setString(1, account.getUserName());
+			pstmt.setString(1, username);
 			pstmt.setString(2, password);
-			pstmt.setString(3, account.getEmail());
-			pstmt.setString(4, account.getPerson().getFirstName());
-			pstmt.setString(5,  account.getPerson().getLastName());
-			pstmt.setString(6,  account.getPerson().getAddress());
-			pstmt.setInt(7,  account.getPerson().getPhoneNumber());
-			pstmt.setBoolean(8,  account.getPerson().getIsMale());
-			pstmt.setDate(9, new Date(account.getPerson().getBirthday().toEpochDay()));// birthday.getYear(), birthday.getMonthValue(), birthday.getDayOfMonth()));
+			pstmt.setString(3, email);
+			pstmt.setString(4, person.getFirstName());
+			pstmt.setString(5,  person.getLastName());
+			pstmt.setString(6,  person.getAddress());
+			pstmt.setInt(7,  person.getPhoneNumber());
+			pstmt.setBoolean(8,  person.getIsMale());
+			pstmt.setDate(9, new Date(person.getBirthday().toEpochDay()));
 			
 			int affectedRows = pstmt.executeUpdate();
 			
-			if (affectedRows == 1) {
-				return true;
+			if (affectedRows > 0) {
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+	                  if (rs.next())
+	                	  return new Account(rs.getInt(1), username, email, person);
+				}
 			}
 		} catch (SQLException ex) {
 	          System.out.println(ex.getMessage());
 	    }
-		return false;
+		return null;
 		//returns true if account sucessfully created, false if username already exists. Could there possibly be other errors?
 	}
 	
@@ -493,32 +508,33 @@ public class DBControl {
 		return false;
 	}
 	
-	public boolean insertItem(Item item, Account seller) {
-      String SQL = "INSERT INTO item(itemid, item_name, Category, item_price, description, quantity, Seller)"
-              + "VALUES(?,?,?,?,?,?,?,?)";
+	public Item insertItem(String itemName, String itemDescription, int quantity, double price, Category category, Account seller) {
+      String SQL = "INSERT INTO item(item_name, category, item_price, description, quantity, Seller)"
+              + "VALUES(?,?,?,?,?,?)";
 
       try (Connection conn = connect();
               PreparedStatement pstmt = conn.prepareStatement(SQL,
               Statement.RETURN_GENERATED_KEYS)) {
 
-          pstmt.setInt(1, item.getItemID());
-          pstmt.setString(2, item.getItemName());
-          pstmt.setInt(3, item.getItemCategory().getCategoryID());
-          pstmt.setDouble(4, item.getItemPrice());
-          pstmt.setString(5, item.getDescription());
-          pstmt.setInt(6, item.getQuantity());
-          pstmt.setInt(7, seller.getAccountID());
+          pstmt.setString(1, itemName);
+          pstmt.setInt(2, category.getCategoryID());
+          pstmt.setDouble(3, price);
+          pstmt.setString(4, itemDescription);
+          pstmt.setInt(5, quantity);
+          pstmt.setInt(6, seller.getAccountID());
           
           int affectedRows = pstmt.executeUpdate();
-          // check the affected rows 
-          if (affectedRows == 1) {
-              return true;
-          }
+			if (affectedRows > 0) {
+				try (ResultSet rs = pstmt.getGeneratedKeys()) {
+	                  if (rs.next())
+	                	  return new Item(rs.getInt(1), itemName, price, quantity).setDescription(itemDescription).setItemCategory(category).setSeller(seller);
+				}
+			}
           
       } catch (SQLException ex) {
           System.out.println(ex.getMessage());
       }
-      return false;
+      return null;
   }
 	
 	public boolean removeItem(Item item) {

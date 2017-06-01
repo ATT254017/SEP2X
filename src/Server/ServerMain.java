@@ -36,16 +36,12 @@ public class ServerMain {
 		
 		//output: 
 		//0: List<Category> - the categories found
-		System.out.println("client wants to get categories");
 		Category category = null;
 		if(args.length == 1)
 			if(args[0] instanceof Category)
 				category = (Category)args[0];
 		
-		System.out.println(System.nanoTime());
-		Object[] ret =  new Object[] { database.getCategories(category) };
-		System.out.println(System.nanoTime());
-		return ret;
+		return new Object[] { database.getCategories(category) };
 	}
 	
 	private Object[] handleGetItems(Object[] args)
@@ -105,19 +101,20 @@ public class ServerMain {
 	private Object[] handleRegisterAccount(Object[] args)
 	{
 		//input:
-		//0: Account - accountDetails
-		//1: String - account password
+		//0: String - username
+		//1: String - email
+		//2: Person - person
+		//3: String password
 		
 		//output:
 		//0: RegisterAccountStatus - status
 		Object[] response = new Object[] { RegisterAccountStatus.UnknownError };
-		if(args.length == 2)
+		if(args.length == 4)
 		{
-			System.out.println(args[0]);
-			System.out.println(args[1]);
-			if(args[0] instanceof Account && args[1] instanceof String)
+			if(args[0] instanceof String && args[1] instanceof String && args[2] instanceof Person && args[3] instanceof String)
 			{
-				if(database.registerAccount((Account)args[0], (String)args[1]))
+				Account account = database.insertAccount((String)args[0], (String)args[1], (Person)args[2], (String)args[3]);
+				if(account != null)
 					response[0] = RegisterAccountStatus.AccountCreated;
 				else
 					response[0] = RegisterAccountStatus.UsernameAlreadyExists;
