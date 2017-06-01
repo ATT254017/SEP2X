@@ -131,11 +131,14 @@ public class ServerMain {
 		// input:
 		// 0: Item - item offeror wants to make an offer for.
 		// 1: double - the offered item price
-		
+		Object[] response = new Object[] { MakeOfferStatus.UnsuccessfulOffer };
+		if (args.length == 2) {
+			System.out.println(args[0]);
+			System.out.println(args[1]);
+		}
 		// output:
 		// 0: Boolean - was the offer successfully registered?
-		System.out.println(offeror.getUserName() + " wants to make an offer");
-		return new Object[] { false };
+		return response;
 	}
 	
 	private Object[] handleBuyItem(Object[] args, Account buyer)

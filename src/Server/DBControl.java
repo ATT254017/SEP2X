@@ -179,6 +179,16 @@ public class DBControl {
 									"FOREIGN KEY(Category) REFERENCES "+schemaName+".category(CategoryID)," + 
 									"FOREIGN KEY(Seller) REFERENCES "+schemaName+".\"account\"(AccountID));";
 		
+		String makeOffersTable =	"CREATE TABLE IF NOT EXISTS \"offers\"(" +
+									"OfferID SERIAL," +
+									"BuyerID SERIAL," +
+									"SellerID SERIAL," +
+									"ItemID SERIAL," +
+									"PRIMARY KEY(OfferID)," +
+									"FOREIGN KEY(BuyerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
+									"FOREIGN KEY(SellerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
+									"FOREIGN KEY(ItemID) REFERENCES "+schemaName+".\"item\"(ItemID));";
+		
 		String createSalesTable =	"CREATE TABLE IF NOT EXISTS \"sales\"("	 +
 									"SalesID SERIAL," +
 									"BuyerID SERIAL," +
@@ -197,7 +207,8 @@ public class DBControl {
 				PreparedStatement accountTableStatement = connection.prepareStatement(createTableAccount);
 				PreparedStatement categoryTableStatement = connection.prepareStatement(createTableCategory);
 				PreparedStatement itemTableStatement = connection.prepareStatement(createTableItem);
-				PreparedStatement salesTableStatement = connection.prepareStatement(createSalesTable))
+				PreparedStatement salesTableStatement = connection.prepareStatement(createSalesTable);
+				PreparedStatement offersTableStatement = connection.prepareStatement(makeOffersTable))
 		{
 			schemaStatement.execute();
 			enumsStatement.execute();
@@ -205,6 +216,7 @@ public class DBControl {
 			categoryTableStatement.execute();
 			itemTableStatement.execute();
 			salesTableStatement.execute();
+			offersTableStatement.execute();
 		}
 		catch(SQLException ex)
 		{
@@ -385,6 +397,27 @@ public class DBControl {
 			ex.printStackTrace();
 			return null;
 		}
+	}
+	
+	public boolean makeOffer(Account seller, Account buyer, Item item) {
+		String makeOfferSQL = "INSERT INTO \"offers\"(BuyerID, SellerID, ItemID)" +
+							  "VALUES(?,?,?)";
+		try(Connection connection = connect();
+				PreparedStatement statement = connection.prepareStatement(makeOfferSQL))
+			{
+				statement.setInt(1, buyer.getAccountID());
+				statement.setInt(2, seller.getAccountID());
+				statement.setInt(3, item.getItemID());
+
+				int affectedRows = statement.executeUpdate();
+				
+				if (affectedRows == 1) {
+					return true;
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		return false;
 	}
 	
 	public Category insertCategory(String categoryName, String categoryDescription, Category parent)
