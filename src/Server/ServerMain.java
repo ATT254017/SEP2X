@@ -181,7 +181,7 @@ public class ServerMain {
 		Object[] response = new Object[] {InsertItemStatus.InvalidInput};
 		if (args.length == 5) {
 			if (args[0] instanceof String && args[1] instanceof String && args[2] instanceof Integer && args[3] instanceof Double && args[4] instanceof Category) {
-				Item item = database.insertItem((String)args[0], (String)args[1], (int)args[2], (double)args[3], (Category)args[4], (Account)args[5]);
+				Item item = database.insertItem((String)args[0], (String)args[1], (int)args[2], (double)args[3], (Category)args[4], owner);
 				if (item != null) {
 					response[0] = InsertItemStatus.Success;
 					System.out.println(owner.getUserName() + " successfully sold an item");

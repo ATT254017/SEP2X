@@ -31,7 +31,7 @@ public class TestClient {
 			{
 				System.out.println("logged in");
 				
-				clientControl.getItems(new Category(0, "Art"), "turd", (itemsStatus, list) ->
+				clientControl.getItems(null, null, (itemsStatus, list) ->
 				{
 					if(status == MethodStatus.SuccessfulInvocation)
 					{
@@ -39,6 +39,10 @@ public class TestClient {
 						{
 							System.out.println(st);
 							System.out.println(b);
+						});*/
+						/*clientControl.insertItem("DAVID'S BALLS", "", 1, 10, new Category(1, "Antiques"), (stat, state) ->
+						{
+							System.out.println(stat + " - " + state);
 						});*/
 						System.out.println();
 						for(Item item : list)
