@@ -8,6 +8,7 @@ import java.util.List;
 import Model.Account;
 import Model.BuyItemStatus;
 import Model.Category;
+import Model.InsertItemStatus;
 import Model.Item;
 import Model.Method;
 import Model.MethodStatus;
@@ -81,6 +82,15 @@ public class ClientControl
 			BuyItemStatus arg1 = (status != MethodStatus.TimedOut ? (BuyItemStatus)args[0] : null);
 			handler.handle(status, arg1);
 		}, item, quantity);
+	}
+	
+	public void insertItem(Item item, InsertItemHandler handler) {
+		runServerMethod(Method.SellItem, (status, args) ->
+		{
+			InsertItemStatus arg1 = (status != MethodStatus.TimedOut ? (InsertItemStatus)args[0] : null);
+			handler.handle(status, arg1);
+		}
+		, item);
 	}
 	
 	public void signIn(String username, String password, SignInResponseHandler handler)

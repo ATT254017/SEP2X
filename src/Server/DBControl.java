@@ -493,11 +493,9 @@ public class DBControl {
 		return false;
 	}
 	
-	public long insertItem(Item item) {
-      String SQL = "INSERT INTO item(itemid, item_name, item_price, description, quantity)"
-              + "VALUES(?,?,?,?)";
-
-      long id = 0;
+	public boolean insertItem(Item item, Account seller) {
+      String SQL = "INSERT INTO item(itemid, item_name, Category, item_price, description, quantity, Seller)"
+              + "VALUES(?,?,?,?,?,?,?,?)";
 
       try (Connection conn = connect();
               PreparedStatement pstmt = conn.prepareStatement(SQL,
@@ -505,27 +503,22 @@ public class DBControl {
 
           pstmt.setInt(1, item.getItemID());
           pstmt.setString(2, item.getItemName());
-          pstmt.setDouble(3, item.getItemPrice());
-          pstmt.setString(4, item.getDescription());
-          pstmt.setInt(5, item.getQuantity());
+          pstmt.setInt(3, item.getItemCategory().getCategoryID());
+          pstmt.setDouble(4, item.getItemPrice());
+          pstmt.setString(5, item.getDescription());
+          pstmt.setInt(6, item.getQuantity());
+          pstmt.setInt(7, seller.getAccountID());
           
-
           int affectedRows = pstmt.executeUpdate();
           // check the affected rows 
-          if (affectedRows > 0) {
-              // get the ID back
-              try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                  if (rs.next()) {
-                      id = rs.getLong(1);
-                  }
-              } catch (SQLException ex) {
-                  System.out.println(ex.getMessage());
-              }
+          if (affectedRows == 1) {
+              return true;
           }
+          
       } catch (SQLException ex) {
           System.out.println(ex.getMessage());
       }
-      return id;
+      return false;
   }
 	
 	public boolean removeItem(Item item) {

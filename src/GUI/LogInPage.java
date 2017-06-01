@@ -11,6 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
@@ -49,6 +52,13 @@ public class LogInPage
       title.setAlignment(Pos.CENTER);
       title.setPadding(new Insets(50, 0, 75, 0));
 
+
+      //Error label
+      errorMessage = new Label("Username and password are incorrect");
+      errorMessage.setTextFill(Color.web("#FF0000"));
+      errorMessage.setPadding(new Insets(0, 0, 10, 0));
+      errorMessage.setVisible(false);
+
       //Username field
       HBox usernameBox = new HBox();
       usernameBox.setAlignment(Pos.CENTER);
@@ -76,10 +86,6 @@ public class LogInPage
       passwordBox.setPadding(new Insets(0, 0, 55, 0));
       passwordInput.setPromptText("Password");
       passwordBox.getChildren().addAll(passwordInput);
-
-      //Error label
-      errorMessage = new Label("");
-      errorMessage.setVisible(false);
 
       //Log in Button
       Button logInButton = new Button("Log in");
@@ -113,7 +119,7 @@ public class LogInPage
 
       //Center
       VBox center = new VBox();
-      center.getChildren().addAll(title, usernameBox, passwordBox, logInButton, registerLabel, registerButton);
+      center.getChildren().addAll(title, errorMessage, usernameBox, passwordBox, logInButton, registerLabel, registerButton);
       center.setAlignment(Pos.TOP_CENTER);
       center.setMinWidth(480);
 
@@ -148,6 +154,7 @@ public class LogInPage
          {
             usernameInput.setStyle("-fx-border-color: red;");
             passwordInput.setStyle("-fx-border-color: red;");
+            errorMessage.setVisible(true);
 
          }
       });

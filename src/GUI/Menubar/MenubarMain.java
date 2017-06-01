@@ -2,6 +2,7 @@ package GUI.Menubar;/**
  * Created by filip on 30/05/2017.
  */
 
+import Client.ClientControl;
 import GUI.MainPage;
 import com.sun.glass.ui.*;
 import javafx.scene.control.*;
@@ -13,26 +14,22 @@ public class MenubarMain extends HBox
 {
    private MainPage main;
    private ChoiceBox<String> categoryList;
-   private String[] categoryStringList;
 
    public MenubarMain(MainPage parent)
    {
       setMaxWidth(Double.MAX_VALUE);
 
-      categoryStringList = new String[]
-            {
-                  "Art", "Baby", "Books", "Business & Industrial", "Cameras & Photo", "Cell Phones & Accessories", "Clothing, Shoes & Accessories", "Coins & Paper Money", "Collectibles", "Computers/Tablets & Networking",
-                  "Consumer Electronics", "Crafts", "Dolls & Bears", "DVDs & Movies", "Motors", "Gift Cards & Coupons", "Health & Beauty", "Home & Garden", "Jewelry & Watches", "Music",  "Musical Instruments & Gear", "Pet Supplies", "Specialty Services",
-                  "Sporting Goods", "Tickets & Experiences", "Toys & Hobbies", "Video Games & Consoles", "Everything Else"
-            };
       categoryList = new ChoiceBox<>();
       categoryList.getItems().add("Categories");
       categoryList.setValue("Categories");
-
-      for (int i = 0; i < categoryStringList.length; i++)
+      ClientControl.getInstance().getCategories(null, (status, categories) ->
       {
-         categoryList.getItems().add(categoryStringList[i]);
-      }
+         for(int i = 0; i <  categories.size(); i++)
+         {
+            categoryList.getItems().add(categories.get(i).getCategoryName());
+         }
+      });
+
 
       categoryList.getSelectionModel().selectedItemProperty().addListener( (v, oldValue, newValue) ->
       {
