@@ -50,7 +50,27 @@ public class ServerMain {
 	
 	private Object[] handleGetItems(Object[] args)
 	{
-		return null;
+		//input: 
+		//0: Category - the category returned items have to be in (can be null)
+		//1: String - the search predicate used to search for items (can be null)
+		
+		//output:
+		//0: List<Item> - all items matching the search parameters
+		
+		Object[] result = new Object[1];
+		
+		if(args.length == 2)
+		{
+			if((args[0] == null || args[0] instanceof Category) && (args[1] == null || args[1] instanceof String))
+			{
+				Category arg1 = args[0] == null ? null : (Category)args[0];
+				String arg2 = args[1] == null ? null : (String)args[1];
+			
+				result[0] = database.searchItems(arg1, arg2);
+			}
+		}
+		
+		return result;
 	}
 	
 	private Object[] handleSignIn(Object[] args) {

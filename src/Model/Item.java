@@ -11,16 +11,27 @@ public class Item implements Serializable{
     private double itemPrice;
     private String description;
     private int quantity;
-    private ItemState state;
+    //private ItemState state;
     private Category itemCategory;
+    private Account seller;
 
-    public Item(int itemID, String itemName, double itemPrice, String description, ItemState state, int quantity) {
+    public Item(int itemID, String itemName, double itemPrice, String description, int quantity) {
         this.itemID = itemID;
         this.itemName = itemName;
         this.itemPrice = itemPrice;
         this.description = description;
-        this.state = state;
         this.quantity = quantity;
+    }
+    
+    public Account getSeller()
+    {
+    	return seller;
+    }
+    
+    public Item setSeller(Account seller)
+    {
+    	this.seller = seller;
+    	return this;
     }
     
     
@@ -30,9 +41,10 @@ public class Item implements Serializable{
 	}
 
 
-	public void setItemCategory(Category itemCategory)
+	public Item setItemCategory(Category itemCategory)
 	{
 		this.itemCategory = itemCategory;
+		return this;
 	}
 
 
@@ -43,41 +55,40 @@ public class Item implements Serializable{
     public int getQuantity() {
     	return quantity;
     }
-    
+  /*  
     public void changeItemState(ItemState state) {
     	this.state = state;
     }
     
     public String getItemState() {
     	return this.state.getValue();
-    }
-
-    public void setItemID(int itemID) {
-        this.itemID = itemID;
-    }
+    }*/
 
     public int getItemID() {
         return itemID;
     }
-
-    public void setItemName(String itemName) {
+/*
+    public Item setItemName(String itemName) {
         this.itemName = itemName;
+        return this;
     }
-
+*/
     public String getItemName() {
         return itemName;
     }
-
-    public void setItemPrice(double itemPrice) {
+/*
+    public Item setItemPrice(double itemPrice) {
         this.itemPrice = itemPrice;
+        return this;
     }
-
+*/
     public double getItemPrice() {
         return itemPrice;
     }
 
-    public void setDescription(String description) {
+    public Item setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public String getDescription() {

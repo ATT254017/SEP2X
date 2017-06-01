@@ -24,6 +24,19 @@ public class TestClient {
 		*/
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
+		
+		
+		clientControl.getItems(null, "TURd", (status, list) ->
+		{
+			if(status == MethodStatus.SuccessfulInvocation)
+				for(Item item : list)
+				{
+					System.out.println("ITEM: " + item.getItemName());
+					System.out.println("Category: " + item.getItemCategory().getCategoryName());
+					System.out.println("Seller: " + item.getSeller().getUserName());
+					
+				}
+		}); 
 		/*
 		clientControl.getCategories(null, (status, list) ->
 		{
@@ -65,7 +78,7 @@ public class TestClient {
 					
 				}
 		});*/
-		
+		/*
 		
 		clientControl.registerAccount(new Account(332, "myusername", "myemail@email.com", 
 				new Person("firstname", "lastName", "address", 88888888, true, LocalDate.now()))
@@ -97,6 +110,7 @@ public class TestClient {
 				 });
 			 });
 		});
+		*/
 		
 		Thread.sleep(2000);
 		

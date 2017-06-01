@@ -32,9 +32,10 @@ public class Category implements Serializable
 		return categoryDescription;
 	}
 
-	public void setCategoryDescription(String categoryDescription)
+	public Category setCategoryDescription(String categoryDescription)
 	{
 		this.categoryDescription = categoryDescription;
+		return this;
 	}
 
 	public Category getParent()
@@ -42,10 +43,11 @@ public class Category implements Serializable
 		return parent;
 	}
 
-	public void setParent(Category parent)
+	public Category setParent(Category parent)
 	{
 		this.parent = parent;
 		this.hasParent = parent != null;
+		return this;
 	}
 
 	public boolean hasParent()
@@ -53,9 +55,10 @@ public class Category implements Serializable
 		return hasParent;
 	}
 	
-	public void setHasChildren(boolean hasChildren)
+	public Category setHasChildren(boolean hasChildren)
 	{
 		this.hasChildren = hasChildren;
+		return this;
 	}
 	
 	public boolean hasChildren()

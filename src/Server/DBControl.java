@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
 
 import Model.*;
@@ -197,6 +198,67 @@ public class DBControl {
 		catch(SQLException ex)
 		{
 			ex.printStackTrace();
+		}
+	}
+	
+	private Account getAccountFromRS(ResultSet resultSet) throws SQLException
+	{
+		return new Account(resultSet.getInt("accountid"), resultSet.getString("username"), resultSet.getString("email"), 
+				new Person(resultSet.getString("name"), resultSet.getString("surname"), resultSet.getString("address"), 
+						resultSet.getInt("phone"), resultSet.getBoolean("ismale"), LocalDate.ofEpochDay(resultSet.getDate("birthday").getTime())));
+	}
+	
+	public List<Item> searchItems(Category category, String searchPredicate)
+	{
+		List<Item> result = new LinkedList<>();
+		int i = 1;
+		String sql = "select * from item join account on seller = accountid join category on category = categoryid ";
+		if(category != null)
+		{
+			sql += "where ";
+			sql += (category.getCategoryID() > 0 ? "categoryid = ?" : "category_name = ?");
+		}
+		if(searchPredicate != null && !searchPredicate.equals(""))
+		{
+			if(category != null)
+			{
+				sql += " AND ";
+				i++;
+			}
+			else
+				sql += "where ";
+			sql += "(LOWER(item_name) LIKE ? OR LOWER(description) LIKE ?)";
+		}
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			System.out.println(sql);
+			if(category != null && category.getCategoryID() > 0)
+				statement.setInt(1, category.getCategoryID());
+			else if(category != null)
+				statement.setString(1, category.getCategoryName());
+			
+			if(searchPredicate != null)
+			{
+				searchPredicate = "%" + searchPredicate.toLowerCase() + "%";
+				statement.setString(i, searchPredicate);
+				statement.setString(i+1, searchPredicate);
+			}
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			while(resultSet.next())
+			{
+				result.add(new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"),
+						resultSet.getString("description"), resultSet.getInt("quantity")).setDescription(resultSet.getString("description"))
+						.setItemCategory(category == null ? getCategory(resultSet.getString("category_name")) : category).setSeller(getAccountFromRS(resultSet)));
+			}
+			return result;
+		}
+		catch(SQLException ex)
+		{
+			ex.printStackTrace();
+			return result;
 		}
 	}
 	

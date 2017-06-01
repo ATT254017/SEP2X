@@ -48,6 +48,15 @@ public class ClientControl
 		return instance;
 	}
 	
+	public void getItems(Category category, String searchPredicate, GetItemsResponseHandler handler)
+	{
+		runServerMethod(Method.GetItems, (status,  args) -> 
+		{
+			List<Item> arg1 = status != MethodStatus.TimedOut ? (List<Item>) args[0] : null;
+			handler.handle(status, arg1);
+		}, category, searchPredicate);
+	}
+	
 	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
 	{
 		runServerMethod(Method.MakeOffer, (status, args) -> 
