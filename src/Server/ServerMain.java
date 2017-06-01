@@ -3,6 +3,9 @@ package Server;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+
+import com.sun.org.apache.bcel.internal.generic.ACONST_NULL;
+
 import Net.Server.*;
 import Model.*;
 
@@ -170,12 +173,16 @@ public class ServerMain {
 	private Object[] handleSellItem(Object[] args, Account owner)
 	{
 		//input:
-		//0: Item - the item the user wants to sell
+		//0: String - itemName
+		//1: String - itemDescription
+		//2: int - quantity
+		//3: double - price
+		//4: Category - item category
 		Object[] response = new Object[] {InsertItemStatus.InvalidInput};
-		if (args.length == 1) {
-			System.out.println(args[0]);
-			if (args[0] instanceof Item) {
-				if (database.insertItem((Item) args[0], owner)) {
+		if (args.length == 5) {
+			if (args[0] instanceof String && args[1] instanceof String && args[2] instanceof Integer && args[3] instanceof Double && args[4] instanceof Category) {
+				Item item = database.insertItem((String)args[0], (String)args[1], (int)args[2], (double)args[3], (Category)args[4], (Account)args[5]);
+				if (item != null) {
 					response[0] = InsertItemStatus.Success;
 					System.out.println(owner.getUserName() + " successfully sold an item");
 					return response;

@@ -85,13 +85,12 @@ public class ClientControl
 		}, item, quantity);
 	}
 	
-	public void insertItem(Item item, InsertItemHandler handler) {
+	public void insertItem(String itemName, String itemDescription, int quantity, double price, Category category, InsertItemHandler handler) {
 		runServerMethod(Method.SellItem, (status, args) ->
 		{
 			InsertItemStatus arg1 = (status != MethodStatus.TimedOut ? (InsertItemStatus)args[0] : null);
 			handler.handle(status, arg1);
-		}
-		, item);
+		}, itemName, itemDescription, quantity, price, category);
 	}
 	
 	public void signIn(String username, String password, SignInResponseHandler handler)
