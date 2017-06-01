@@ -2,6 +2,8 @@ package Model;
 
 import java.io.Serializable;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 public class Category implements Serializable
 {
 	private int categoryID; 
@@ -64,6 +66,12 @@ public class Category implements Serializable
 	public boolean hasChildren()
 	{
 		return this.hasChildren;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return this.categoryName;
 	}
 
 }

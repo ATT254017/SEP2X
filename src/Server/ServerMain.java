@@ -30,6 +30,9 @@ public class ServerMain {
 		networkServer.addServerMethod(Method.SellItem.getValue(), a -> handleSellItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.BuyItem.getValue(), a -> handleBuyItem(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
 		networkServer.addServerMethod(Method.MakeOffer.getValue(), a -> handleMakeOffer(Arrays.copyOfRange(a, 1, a.length), getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.SignOut.getValue(), a -> handleSignOut(a, getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.GetBuyHistory.getValue(), a -> handleGetBuyHistory(a, getAuthenticatedAccount(a)));
+		networkServer.addServerMethod(Method.GetOwnedItems.getValue(), a -> handleGetItems(new Object[] { null, null, getAuthenticatedAccount(a) }));
 	}
 	
 	private Object[] handleGetCategories(Object[] args)
@@ -52,20 +55,22 @@ public class ServerMain {
 		//input: 
 		//0: Category - the category returned items have to be in (can be null)
 		//1: String - the search predicate used to search for items (can be null)
+		//2: Account - the owner of the items returned (can be null)
 		
 		//output:
 		//0: List<Item> - all items matching the search parameters
 		
 		Object[] result = new Object[1];
 		
-		if(args.length == 2)
+		if(args.length == 3)
 		{
-			if((args[0] == null || args[0] instanceof Category) && (args[1] == null || args[1] instanceof String))
+			if((args[0] == null || args[0] instanceof Category) && (args[1] == null || args[1] instanceof String) && (args[2] == null || args[2] instanceof Account))
 			{
 				Category arg1 = args[0] == null ? null : (Category)args[0];
 				String arg2 = args[1] == null ? null : (String)args[1];
+				Account arg3 = args[2] == null ? null : (Account)args[2];
 			
-				result[0] = database.searchItems(arg1, arg2);
+				result[0] = database.searchItems(arg1, arg2, arg3);
 			}
 		}
 		
@@ -83,13 +88,9 @@ public class ServerMain {
 
 		Object[] response = new Object[2];
 		response[0] = false;
-		System.out.println("recv:");
-		for(int i = 0; i < args.length; i++) System.out.println(args[i]);
-		System.out.println("end");
 		if (args.length == 2) {
 			if (args[0] instanceof String && args[1] instanceof String) {
 				Account theAccount = database.checkUserCredentials((String) args[0], (String) args[1]);
-				System.out.println(theAccount);
 				if (theAccount != null) {
 					response[0] = true;
 					String session = UUID.randomUUID().toString();
@@ -124,6 +125,13 @@ public class ServerMain {
 			}
 		}
 		return response;
+	}
+	
+	private Object[] handleGetBuyHistory(Object[] args, Account buyer)
+	{
+		if(buyer != null)
+			return new Object[] { database.getBuyHistory(buyer) };
+		return null;
 	}
 
 	private Object[] handleMakeOffer(Object[] args, Account offeror)
@@ -202,6 +210,15 @@ public class ServerMain {
 		//0: boolean - successful or not
 		
 		return response;
+	}
+	
+	private Object[] handleSignOut(Object[] args, Account account)
+	{
+		if(account != null)
+		{
+			sessionIDs.remove((String)args[0]);
+		}
+		return null;
 	}
 	
 

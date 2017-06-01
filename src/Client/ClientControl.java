@@ -2,8 +2,10 @@ package Client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import Model.Account;
 import Model.BuyItemStatus;
@@ -14,6 +16,7 @@ import Model.Method;
 import Model.MethodStatus;
 import Model.Person;
 import Model.RegisterAccountStatus;
+import Model.SalesReceipt;
 import Net.Client.NetClient;
 import Net.Client.ResponseStatus;
 import Net.Client.ServerResponse;
@@ -50,20 +53,38 @@ public class ClientControl
 		return instance;
 	}
 	
-	public void getItems(Category category, String searchPredicate, GetItemsResponseHandler handler)
+	public void getBuyHistory(GetBuyHistoryResponseHandler handler)
+	{
+		runServerMethod(Method.GetBuyHistory, (status, arg) ->
+		{
+			List<SalesReceipt>  boughtItems = status == MethodStatus.SuccessfulInvocation ? (List<SalesReceipt>)arg[0] : null;
+			handler.handle(status, boughtItems);
+		}, new Object[0]);
+	}
+	
+	public void getItems(GetItemsResponseHandler handler)
+	{
+		runServerMethod(Method.GetOwnedItems, (status,  args) -> 
+		{
+			List<Item> arg1 = status == MethodStatus.SuccessfulInvocation ? (List<Item>) args[0] : null;
+			handler.handle(status, arg1);
+		}, new Object[0]);
+	}
+	
+	public void getItems(Category category, String searchPredicate, Account owner, GetItemsResponseHandler handler)
 	{
 		runServerMethod(Method.GetItems, (status,  args) -> 
 		{
 			List<Item> arg1 = status != MethodStatus.TimedOut ? (List<Item>) args[0] : null;
 			handler.handle(status, arg1);
-		}, category, searchPredicate);
+		}, category, searchPredicate, owner);
 	}
 	
 	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
 	{
 		runServerMethod(Method.MakeOffer, (status, args) -> 
 		{
-			boolean arg1 = status != MethodStatus.TimedOut ? (Boolean)args[0] : false;
+			boolean arg1 = status == MethodStatus.SuccessfulInvocation ? (Boolean)args[0] : false;
 			handler.handle(status, arg1);
 		}, item, offerPrice);
 	}
@@ -80,7 +101,7 @@ public class ClientControl
 	public void buyItem(Item item, int quantity, BuyItemHandler handler) {
 		runServerMethod(Method.BuyItem, (status, args) ->
 		{
-			BuyItemStatus arg1 = (status != MethodStatus.TimedOut ? (BuyItemStatus)args[0] : null);
+			BuyItemStatus arg1 = (status == MethodStatus.SuccessfulInvocation ? (BuyItemStatus)args[0] : null);
 			handler.handle(status, arg1);
 		}, item, quantity);
 	}
@@ -88,9 +109,18 @@ public class ClientControl
 	public void insertItem(String itemName, String itemDescription, int quantity, double price, Category category, InsertItemHandler handler) {
 		runServerMethod(Method.SellItem, (status, args) ->
 		{
-			InsertItemStatus arg1 = (status != MethodStatus.TimedOut ? (InsertItemStatus)args[0] : null);
+			InsertItemStatus arg1 = (status == MethodStatus.SuccessfulInvocation ? (InsertItemStatus)args[0] : null);
 			handler.handle(status, arg1);
 		}, itemName, itemDescription, quantity, price, category);
+	}
+	
+	public void signOut(Runnable signoutDoneHandler)
+	{
+		runServerMethod(Method.SignOut, (status,  args) ->
+		{
+			userSessionID = null;
+			signoutDoneHandler.run();
+		});
 	}
 	
 	public void signIn(String username, String password, SignInResponseHandler handler)

@@ -3,8 +3,11 @@ package Server;
 import java.security.cert.CertificateEncodingException;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
@@ -195,6 +198,7 @@ public class DBControl {
 									"ItemID SERIAL," +
 									"QuantityBought INT," +
 									"TotalAmount DECIMAL(5, 2)," +
+									"BuyTime Timestamp,"+
 									"PRIMARY KEY(SalesID)," +
 									"FOREIGN KEY(BuyerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
 									"FOREIGN KEY(ItemID) REFERENCES "+schemaName+".\"item\"(ItemID));";
@@ -231,11 +235,15 @@ public class DBControl {
 						resultSet.getInt("phone"), resultSet.getBoolean("ismale"), LocalDate.ofEpochDay(resultSet.getDate("birthday").getTime())));
 	}
 	
-	public List<Item> searchItems(Category category, String searchPredicate)
+	public List<Item> searchItems(Category category, String searchPredicate, Account seller)
 	{
 		List<Item> result = new LinkedList<>();
-		int i = 1;
-		String sql2 = "SELECT *, (i.quantity - (SELECT COALESCE (SUM (QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) AS remainingQuantity FROM item i JOIN account ON seller = accountid JOIN category c ON category = categoryid "; 
+		int stringIndex = 1;
+		int accountIndex = 1;
+		boolean searchByString = false;
+		boolean searchByCategory = false;
+		boolean searchByAccount = false;
+		String sql2 = "SELECT *, (i.quantity - (SELECT COALESCE (SUM (QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) AS remainingQuantity FROM item i JOIN account a ON seller = accountid JOIN category c ON category = categoryid "; 
 		String sqlRecursiveCategoryP1 = "WHERE c.categoryid IN (WITH RECURSIVE category_tree AS ("+
 										"SELECT categoryid " +
 										"FROM category " +
@@ -247,50 +255,65 @@ public class DBControl {
 										") SELECT * FROM category_tree) ";
 		
 		//String sql = "select *, (i.quantity - (SELECT COALESCE(SUM(QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) as remainingQuantity from item i join account on seller = accountid join category on category = categoryid ";
-		boolean stringPredicate = false;
+		
 		if(category != null)
 		{
+			searchByCategory = true;
 			sql2 += sqlRecursiveCategoryP1;
 			sql2 += (category.getCategoryID() > 0 ? "categoryid = ? " : "category_name = ? ");
 			sql2 += sqlRecursiveCategoryP2;
 		}
 		if(searchPredicate != null && !searchPredicate.equals(""))
 		{
-			stringPredicate = true;
-			if(category != null)
+			searchByString = true;
+			if(searchByCategory)
 			{
 				sql2 += " AND ";
-				i++;
+				stringIndex++;
 			}
 			else
 				sql2 += "WHERE ";
 			sql2 += "(LOWER(item_name) LIKE ? OR LOWER(description) LIKE ?)";
 		}
+		if(seller != null)
+		{
+			searchByAccount = true;
+			if(searchByCategory || searchByString)
+			{
+				sql2 += " AND ";
+				accountIndex = stringIndex + 1;
+			}
+			else
+				sql2 += "WHERE ";
+			
+			sql2 += seller.getAccountID() > 0 ? "accountid = ? " : "username = ? ";
+			
+		}
 		try(Connection connection = connect();
 			PreparedStatement statement = connection.prepareStatement(sql2))
 		{
 			System.out.println(sql2);
-			if(category != null && category.getCategoryID() > 0)
+			if(searchByCategory && category.getCategoryID() > 0)
 				statement.setInt(1, category.getCategoryID());
-			else if(category != null)
+			else if(searchByCategory)
 				statement.setString(1, category.getCategoryName());
 			
-			if(stringPredicate)
+			if(searchByString)
 			{
 				searchPredicate = "%" + searchPredicate.toLowerCase() + "%";
-				statement.setString(i, searchPredicate);
-				statement.setString(i+1, searchPredicate);
+				statement.setString(stringIndex, searchPredicate);
+				statement.setString(stringIndex+1, searchPredicate);
 			}
+			if(searchByAccount && seller.getAccountID() > 0)
+				statement.setInt(accountIndex, seller.getAccountID());
+			else if(searchByAccount)
+				statement.setString(accountIndex, seller.getUserName());
 			
 			ResultSet resultSet = statement.executeQuery();
 			
 			while(resultSet.next())
 			{
-				result.add(new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"), resultSet.getInt("quantity"))
-						.setDescription(resultSet.getString("description"))
-						.setItemCategory(getCategory(resultSet.getString("category_name")))
-						.setSeller(getAccountFromRS(resultSet))
-						.setCurrentRemainingQuantity(resultSet.getInt("remainingQuantity")));
+				result.add(getItemFromRS(resultSet));
 			}
 			return result;
 		}
@@ -299,6 +322,15 @@ public class DBControl {
 			ex.printStackTrace();
 			return result;
 		}
+	}
+	
+	private Item getItemFromRS(ResultSet resultSet) throws SQLException
+	{
+		return new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"), resultSet.getInt("quantity"))
+		.setDescription(resultSet.getString("description"))
+		.setItemCategory(getCategory(resultSet.getString("category_name")))
+		.setSeller(getAccountFromRS(resultSet))
+		.setCurrentRemainingQuantity(resultSet.getInt("remainingQuantity"));
 	}
 	
 	public Category getCategory(String categoryName)
@@ -339,6 +371,43 @@ public class DBControl {
 		{
 			return null;
 		}
+	}
+	
+	public List<SalesReceipt> getBuyHistory(Account buyer)
+	{
+		List<SalesReceipt> result = new LinkedList();
+		String sql = 	"SELECT *, " +
+								"(i.quantity - (SELECT COALESCE (SUM (QuantityBought), 0) "+
+												"FROM sales "+
+												"WHERE ItemID = i.itemid)) "+
+								"AS remainingQuantity "+
+						"FROM sep2xgroup6.sales s "+
+						"JOIN sep2xgroup6.account a ON a.accountid = s.buyerid "+
+						"JOIN sep2xgroup6.item i ON i.itemid = s.itemid "+
+						"JOIN sep2xgroup6.category c ON c.categoryid = i.category " +
+						"WHERE a.accountid = ? ";
+		
+		try(Connection connection = connect();
+			PreparedStatement statement = connection.prepareStatement(sql))
+		{
+			statement.setInt(1, buyer.getAccountID());
+			
+			ResultSet resultSet = statement.executeQuery();
+			
+			while(resultSet.next())
+			{
+				result.add(new SalesReceipt(getItemFromRS(resultSet),
+						resultSet.getTimestamp("buytime").toLocalDateTime(),
+						resultSet.getInt("quantitybought"),
+						resultSet.getDouble("totalamount")));
+			}
+			return result;
+		}
+		catch(SQLException ex)
+		{
+			System.out.println();
+		}
+		return result;
 	}
 	
 	public List<Category> getCategories(Category category)
@@ -500,8 +569,8 @@ public class DBControl {
 	}
 	
 	public synchronized boolean buyItem(Account buyer, Item item, int quantity) { //basic synchronization; we don't want two purchases happening at the same time - We might end up with selling something that has already been sold.
-		String buyItemSQL = "INSERT INTO \"sales\"(BuyerID, ItemID, QuantityBought, TotalAmount)" +
-							"VALUES(?, ?, ?, ?)";
+		String buyItemSQL = "INSERT INTO \"sales\"(BuyerID, ItemID, QuantityBought, TotalAmount, BuyTime)" +
+							"VALUES(?, ?, ?, ?, ?)";
 		String checkForErrorsSQL = "SELECT COALESCE(SUM(QuantityBought), 0) FROM \"sales\" WHERE ItemID = ?";
 		
 		try(Connection conn = connect();
@@ -514,6 +583,7 @@ public class DBControl {
 			pstmt.setInt(2, item.getItemID());
 			pstmt.setInt(3, quantity);
 			pstmt.setDouble(4, item.getItemPrice() * quantity);
+			pstmt.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
 			
 			ResultSet result = pstmt2.executeQuery();
 			int soldAmount = 0;
