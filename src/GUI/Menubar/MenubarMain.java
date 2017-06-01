@@ -33,11 +33,8 @@ public class MenubarMain extends HBox
             {
                if (!(newValue.equals("Categories")))
                {
-                  Platform.runLater( () ->
-                  {
                      //Category search
                      this.parent.searchCategory(newValue);
-                  });
                }
             });
 
