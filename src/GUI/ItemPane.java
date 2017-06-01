@@ -1,34 +1,41 @@
 package GUI;/**
- * Created by filip on 29/05/2017.
+ * Created by filip on 01/06/2017.
  */
 
+import Model.Item;
+import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import javax.swing.text.html.ListView;
-
-import Model.Item;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import java.text.DecimalFormat;
-
-public class ListItem extends VBox
+public class ItemPane
 {
    private Item item;
-   private ItemPane itemWindow;
+   private Stage window;
+   private Scene scene;
 
-   public ListItem(Item item)
+
+   public ItemPane(Item item)
    {
+      this.item = item;
+   }
+
+   public void display()
+   {
+      window = new Stage();
+      window.initModality(Modality.APPLICATION_MODAL);
+      window.setTitle("Log In");
+
       Font font1 = new Font("Arial", 37);
       Font font2 = new Font("Arial", 28);
-
-      itemWindow = new ItemPane(item);
-
-      setPadding(new Insets(10, 0, 10, 0));
 
       //Left
       Rectangle r1 = new Rectangle(50, 200);
@@ -39,14 +46,13 @@ public class ListItem extends VBox
       //Right
 
       Label name = new Label(item.getItemName());
-      name.setOnMouseClicked(event -> itemWindow.display());
       name.setFont(font1);
       name.setPadding(new Insets(0, 0, 10, 0));
 
       Rectangle underline = new Rectangle(985, 2);
       underline.setFill(Color.valueOf("#BBBBBB"));
 
-      Label price = new Label("Price: " + String.format( "%.2f", item.getItemPrice() ) + "dkk");
+      Label price = new Label("Price: " + item.getItemPrice() + "dkk");
       price.setPadding(new Insets(5, 0, 5, 0));
       price.setFont(font2);
       Label quantity = new Label("Quantity: " + item.getCurrentRemainingQuantity());
@@ -69,7 +75,16 @@ public class ListItem extends VBox
       box.getChildren().addAll(r1, box2, r2);
       box.setPadding(new Insets(5, 0, 5, 0));
 
-      getChildren().addAll(box, underline2);
+      HBox layout = new HBox();
+      layout.getChildren().addAll(box, underline2);
+      layout.setPadding(new Insets(10, 0, 10, 0));
+
+      //Scene and window
+      scene = new Scene(layout, 600, 700);
+      window.setScene(scene);
+
+      window.showAndWait();
 
    }
+
 }

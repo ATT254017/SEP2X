@@ -47,7 +47,7 @@ public class ItemListPane extends VBox
 
    public void addBlankItem()
    {
-      getChildren().add(new ListItem(new Item(0, "Blank Item", 0.00, 0)));
+      getChildren().add(new ListItem(new Item(0, "Blank item", 0.00, 0).setItemCategory(new Category(0, "none"))));
    }
 
    public void getFeaturedItems()

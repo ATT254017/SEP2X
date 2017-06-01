@@ -58,6 +58,10 @@ public class TestClient
 						System.out.println("Remain Qty: " + blah.getItemBought().getCurrentRemainingQuantity());
 						System.out.println("Bought Qty: " + blah.getQuantityBought());
 						System.out.println("Amount due: " + blah.getAmountDue());
+						/*clientControl.insertItem("DAVID'S BALLS", "", 1, 10, new Category(1, "Antiques"), (stat, state) ->
+						{
+							System.out.println(stat + " - " + state);
+						});*/
 						System.out.println();
 					}
 				});*/

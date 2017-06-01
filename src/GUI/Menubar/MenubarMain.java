@@ -4,21 +4,19 @@ package GUI.Menubar;/**
 
 import Client.ClientControl;
 import GUI.MainPage;
-import com.sun.glass.ui.*;
+import javafx.application.*;
 import javafx.scene.control.*;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.layout.HBox;
 
 public class MenubarMain extends HBox
 {
-   private MainPage main;
+   private MainPage parent;
    private ChoiceBox<String> categoryList;
 
    public MenubarMain(MainPage parent)
    {
       setMaxWidth(Double.MAX_VALUE);
-
+      this.parent = parent;
       categoryList = new ChoiceBox<>();
       categoryList.getItems().add("Categories");
       categoryList.setValue("Categories");
@@ -35,7 +33,11 @@ public class MenubarMain extends HBox
             {
                if (!(newValue.equals("Categories")))
                {
-                  System.out.println(newValue);
+                  Platform.runLater( () ->
+                  {
+                     //Category search
+                     this.parent.searchCategory(newValue);
+                  });
                }
             });
 
