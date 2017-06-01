@@ -32,9 +32,9 @@ public class TestClient
 
 		clientControl.signIn("pineapplemastah", "theyreawesomel0l", (status, loginSuccess, q) ->
 		{
-			clientControl.makeOffer(new Item(999, "itemName", 345, 1), 10, (stat, isOfferPlaced) ->
+			clientControl.makeOffer(new Item(999, "itemName", 345, 1), 10, (stat, state) ->
 			{
-				System.out.println(stat + " - " + isOfferPlaced);
+				System.out.println(stat + " - " + state);
 			});
 			
 			clientControl.getItems((status2, list) ->

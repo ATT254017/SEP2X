@@ -140,7 +140,8 @@ public class ServerMain {
 		// 0: Item - item offeror wants to make an offer for.
 		// 1: double - the offered item price
 		Object[] response = new Object[] { MakeOfferStatus.UnsuccessfulOffer };
-		if (args.length == 2) {
+		if (args.length > 0) {
+			response[0] = MakeOfferStatus.Success;
 			System.out.println(args[0]);
 			System.out.println(args[1]);
 		}
