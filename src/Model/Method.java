@@ -10,7 +10,8 @@ public enum Method {
 	GetItems("GET_ITEMS", false),
 	GetCategories("GET_CATEGORIES", false),
 	SignOut("SIGN_OUT", true),
-	GetBuyHistory("GET_BUY_HISTORY", true);
+	GetBuyHistory("GET_BUY_HISTORY", true),
+	GetOwnedItems("GET_OWNED_ITEMS",true);
 	
     private final String value;
     private final boolean loginRequired;

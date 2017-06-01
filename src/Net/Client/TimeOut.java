@@ -3,6 +3,8 @@ package Net.Client;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import com.sun.glass.ui.Timer;
+
 /**
  * Created by Afonso on 5/24/2017.
  */
@@ -21,9 +23,9 @@ public class TimeOut {
                     e.printStackTrace();
                 }
                 for (int i = timeOuts.size() - 1; i > -1; i--) {
-                    if (LocalDateTime.now().isAfter(timeOuts.get(i).getTimer())) {
-                        TimeOut temp = timeOuts.get(i);
-                       new Thread(() -> temp.fireTimeElapsedEvent()).start();
+                	TimeOut next = timeOuts.get(i);
+                    if (next != null && LocalDateTime.now().isAfter(next.getTimer())) {
+                       new Thread(() -> next.fireTimeElapsedEvent()).start();
                        synchronized (timeOuts) {
                         timeOuts.remove(i);
                        }

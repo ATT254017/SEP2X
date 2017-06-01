@@ -1,6 +1,8 @@
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 import Client.*;
 import Model.Account;
@@ -9,6 +11,7 @@ import Model.Item;
 import Model.ItemState;
 import Model.MethodStatus;
 import Model.Person;
+import Model.SalesReceipt;
 
 public class TestClient
 {
@@ -27,19 +30,43 @@ public class TestClient
 		ClientControl clientControl = ClientControl.getInstance();
 		clientControl.setServerConnectionDetails("localhost", 9999);
 
-		clientControl.signIn("cakeisalie", "icanhazcake?", (status, loginSuccess, q) ->
+		clientControl.signIn("pineapplemastah", "theyreawesomel0l", (status, loginSuccess, q) ->
 		{
+			clientControl.getItems((status2, list) ->
+			{
+				for(Item item : list)
+				{
+					System.out.println(item.getItemName());
+				}
+			});
+			
 			if (loginSuccess)
 			{
 				System.out.println("logged in");
-				clientControl.signOut(() ->
+				/*clientControl.signOut(() ->
+				{*/
+				
+				
+				/*
+				clientControl.getBuyHistory((status2, list) -> 
 				{
-					clientControl.getItems(new Category(0, "Art"), "turd", (itemsStatus, list) ->
+					for(SalesReceipt blah : list)
+					{
+						System.out.println("TIME: " + blah.getBuyTime());
+						System.out.println("Item: " + blah.getItemBought().getItemName());
+						System.out.println("Qty: " + blah.getItemBought().getInitialQuantity());
+						System.out.println("Remain Qty: " + blah.getItemBought().getCurrentRemainingQuantity());
+						System.out.println("Bought Qty: " + blah.getQuantityBought());
+						System.out.println("Amount due: " + blah.getAmountDue());
+						System.out.println();
+					}
+				});*/
+					/*clientControl.getItems(new Category(0, "Art"), "turd", (itemsStatus, list) ->
 					{
 						if (status == MethodStatus.SuccessfulInvocation)
 						{
 
-							clientControl.buyItem(list.get(0), 1, (st, b) ->
+							clientControl.buyItem(list.get(0), 3, (st, b) ->
 							{
 								System.out.println(st);
 								System.out.println(b);
@@ -55,9 +82,9 @@ public class TestClient
 
 							}
 						}
-					});
+					});*/
 
-				});
+				//});
 			}
 		});
 

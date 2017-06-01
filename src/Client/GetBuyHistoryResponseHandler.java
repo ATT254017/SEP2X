@@ -1,12 +1,11 @@
 package Client;
 
-import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.List;
 
-import Model.Item;
 import Model.MethodStatus;
+import Model.SalesReceipt;
 
 public interface GetBuyHistoryResponseHandler
 {
-	void handle(MethodStatus status, Map<LocalDateTime, Item> items);
+	void handle(MethodStatus status, List<SalesReceipt> items);
 }

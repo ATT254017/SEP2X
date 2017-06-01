@@ -16,6 +16,7 @@ import Model.Method;
 import Model.MethodStatus;
 import Model.Person;
 import Model.RegisterAccountStatus;
+import Model.SalesReceipt;
 import Net.Client.NetClient;
 import Net.Client.ResponseStatus;
 import Net.Client.ServerResponse;
@@ -56,18 +57,27 @@ public class ClientControl
 	{
 		runServerMethod(Method.GetBuyHistory, (status, arg) ->
 		{
-			Map<LocalDateTime, Item> boughtItems = status == MethodStatus.SuccessfulInvocation ? (Map<LocalDateTime, Item>)arg[0] : null;
+			List<SalesReceipt>  boughtItems = status == MethodStatus.SuccessfulInvocation ? (List<SalesReceipt>)arg[0] : null;
 			handler.handle(status, boughtItems);
 		}, new Object[0]);
 	}
 	
-	public void getItems(Category category, String searchPredicate, GetItemsResponseHandler handler)
+	public void getItems(GetItemsResponseHandler handler)
+	{
+		runServerMethod(Method.GetOwnedItems, (status,  args) -> 
+		{
+			List<Item> arg1 = status == MethodStatus.SuccessfulInvocation ? (List<Item>) args[0] : null;
+			handler.handle(status, arg1);
+		}, new Object[0]);
+	}
+	
+	public void getItems(Category category, String searchPredicate, Account owner, GetItemsResponseHandler handler)
 	{
 		runServerMethod(Method.GetItems, (status,  args) -> 
 		{
 			List<Item> arg1 = status != MethodStatus.TimedOut ? (List<Item>) args[0] : null;
 			handler.handle(status, arg1);
-		}, category, searchPredicate);
+		}, category, searchPredicate, owner);
 	}
 	
 	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
