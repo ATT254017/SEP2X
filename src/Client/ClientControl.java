@@ -13,6 +13,7 @@ import Model.CancelSellItemStatus;
 import Model.Category;
 import Model.InsertItemStatus;
 import Model.Item;
+import Model.MakeOfferStatus;
 import Model.Method;
 import Model.MethodStatus;
 import Model.Person;
@@ -95,7 +96,7 @@ public class ClientControl
 	{
 		runServerMethod(Method.MakeOffer, (status, args) -> 
 		{
-			boolean arg1 = status == MethodStatus.SuccessfulInvocation ? (Boolean)args[0] : false;
+			MakeOfferStatus arg1 = status == MethodStatus.SuccessfulInvocation ? (MakeOfferStatus)args[0] : null;
 			handler.handle(status, arg1);
 		}, item, offerPrice);
 	}

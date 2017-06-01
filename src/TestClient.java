@@ -32,6 +32,11 @@ public class TestClient
 
 		clientControl.signIn("awesome1337", "youllneverguess13", (status, loginSuccess, q) ->
 		{
+			clientControl.makeOffer(new Item(999, "itemName", 345, 1), 10, (stat, state) ->
+			{
+				System.out.println(stat + " - " + state);
+			});
+			
 			clientControl.getItems((status2, list) ->
 			{
 				for(Item item : list)
