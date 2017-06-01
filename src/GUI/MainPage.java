@@ -4,7 +4,6 @@ package GUI;/**
 
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
-import Model.Account;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -18,7 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 
 public class MainPage extends Application
 {
@@ -27,13 +25,14 @@ public class MainPage extends Application
    private ClientControl controller;
    private Stage window;
    private Scene scene;
-   //main page = true, search results = false;
-   private boolean state;
+
+   //STATE main page = true, search results = false;
+   private boolean isMain;
    private boolean logedIn;
 
    private ScrollPane scrollwindow;
-   private ItemListPane r1;
-   private ItemListPane r2;
+   private ItemListPane featuredList;
+   private ItemListPane searchList;
 
    private Button titleButton1;
    private Button titleButton2;
@@ -48,7 +47,7 @@ public class MainPage extends Application
    {
       window = primaryStage;
       window.setTitle("JavaFx");
-      state = true;
+      isMain = true;
       logedIn = false;
       isSignedIn = false;
       controller = ClientControl.getInstance();
@@ -72,6 +71,7 @@ public class MainPage extends Application
       title.setFont(new Font("Verdana", 65));
       title.setAlignment(Pos.CENTER);
       title.setPadding(new Insets(0, 150, 0, 300));
+      title.setOnMouseClicked(event -> returnToMain());
 
       //Buttons
       titleButton1 = new Button("Sign in");
@@ -110,7 +110,7 @@ public class MainPage extends Application
             {
                if (!(newValue.equals("Categories")))
                {
-                  System.out.println(newValue);
+                  System.out.println("Category set to: " + newValue);
                }
             });
 
@@ -132,12 +132,12 @@ public class MainPage extends Application
       MenubarMain menuBar = new MenubarMain(this);
 
       //Scroll window
-      r1 = new ItemListPane();
-      r1.addBlankItem();
-      r2 = new ItemListPane();
+      featuredList = new ItemListPane();
+      featuredList.addBlankItem();
+      searchList = new ItemListPane();
 
       scrollwindow = new ScrollPane();
-      scrollwindow.setContent(r1);
+      scrollwindow.setContent(featuredList);
 
       VBox center = new VBox();
       center.getChildren().addAll(menuBar, scrollwindow);
@@ -176,7 +176,7 @@ public class MainPage extends Application
          {
             if (ke.getCode().equals(KeyCode.ENTER))
             {
-               search(searchBar);
+               search(searchBar, categoryList);
             }
          }
       });
@@ -184,14 +184,14 @@ public class MainPage extends Application
       //Toggle center scene
       /*titleButton1.setOnAction(event ->
       {
-         if(state)
+         if(isMain)
          {
-            scrollwindow.setContent(r2);
+            scrollwindow.setContent(searchList);
             toggleState();
          }
          else
          {
-            scrollwindow.setContent(r1);
+            scrollwindow.setContent(featuredList);
             toggleState();
          }
       });*/
@@ -211,41 +211,60 @@ public class MainPage extends Application
       window.show();
    }
 
-   private void search(TextField searchbar)
+   private void returnToMain()
+   {
+      if(!(isMain))
+      {
+         changeList();
+         System.out.println("2");
+      }
+
+   }
+
+   private void search(TextField searchbar, ChoiceBox categoryBox)
 
    {
       if (!(searchbar.getText().equals("")) || !(searchbar.getText() != null))
       {
-         //controller.
+
          changeList();
       }
       System.out.println(searchbar.getText());
 
    }
 
+   public void searchCategory(String category)
+
+   {
+      //
+      changeList();
+      System.out.println("Search category: " + category);
+
+   }
+
    private void changeList()
    {
-      if (state)
+      if (isMain)
       {
-         scrollwindow.setContent(r2);
+         scrollwindow.setContent(searchList);
          toggleState();
       }
       else
       {
-         scrollwindow.setContent(r1);
+         scrollwindow.setContent(featuredList);
          toggleState();
       }
    }
 
    private void toggleState()
    {
-      if (state)
+      if (isMain)
       {
-         state = false;
+         isMain = false;
       }
       else
       {
-         state = true;
+         isMain = true;
       }
    }
 

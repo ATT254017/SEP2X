@@ -149,7 +149,7 @@ public class LogInPage
                            mainPage.signIn();
                            /*if (isSignedIn)
                            {
-                              mainPage.loginIn();
+                              mainPage.signIn();
                            }
                            else
                            {
