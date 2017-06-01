@@ -31,7 +31,7 @@ public class TestClient {
 			{
 				System.out.println("logged in");
 				
-				clientControl.getItems(null, "", (itemsStatus, list) ->
+				clientControl.getItems(new Category(0, "Art"), "turd", (itemsStatus, list) ->
 				{
 					if(status == MethodStatus.SuccessfulInvocation)
 					{

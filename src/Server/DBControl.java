@@ -223,29 +223,41 @@ public class DBControl {
 	{
 		List<Item> result = new LinkedList<>();
 		int i = 1;
-		String sql = "select *, (i.quantity - (SELECT COALESCE(SUM(QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) as remainingQuantity from item i join account on seller = accountid join category on category = categoryid ";
+		String sql2 = "SELECT *, (i.quantity - (SELECT COALESCE (SUM (QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) AS remainingQuantity FROM item i JOIN account ON seller = accountid JOIN category c ON category = categoryid "; 
+		String sqlRecursiveCategoryP1 = "WHERE c.categoryid IN (WITH RECURSIVE category_tree AS ("+
+										"SELECT categoryid " +
+										"FROM category " +
+										"WHERE ";
+		String sqlRecursiveCategoryP2 =	"UNION ALL " + 
+										"SELECT child.categoryid " +
+										"FROM category child " +
+										"JOIN category_tree parent ON parent.categoryid = child.cat_parent "+
+										") SELECT * FROM category_tree) ";
+		
+		//String sql = "select *, (i.quantity - (SELECT COALESCE(SUM(QuantityBought), 0) FROM sales WHERE ItemID = i.itemid)) as remainingQuantity from item i join account on seller = accountid join category on category = categoryid ";
 		boolean stringPredicate = false;
 		if(category != null)
 		{
-			sql += "where ";
-			sql += (category.getCategoryID() > 0 ? "categoryid = ?" : "category_name = ?");
+			sql2 += sqlRecursiveCategoryP1;
+			sql2 += (category.getCategoryID() > 0 ? "categoryid = ? " : "category_name = ? ");
+			sql2 += sqlRecursiveCategoryP2;
 		}
 		if(searchPredicate != null && !searchPredicate.equals(""))
 		{
 			stringPredicate = true;
 			if(category != null)
 			{
-				sql += " AND ";
+				sql2 += " AND ";
 				i++;
 			}
 			else
-				sql += "where ";
-			sql += "(LOWER(item_name) LIKE ? OR LOWER(description) LIKE ?)";
+				sql2 += "WHERE ";
+			sql2 += "(LOWER(item_name) LIKE ? OR LOWER(description) LIKE ?)";
 		}
 		try(Connection connection = connect();
-			PreparedStatement statement = connection.prepareStatement(sql))
+			PreparedStatement statement = connection.prepareStatement(sql2))
 		{
-			System.out.println(sql);
+			System.out.println(sql2);
 			if(category != null && category.getCategoryID() > 0)
 				statement.setInt(1, category.getCategoryID());
 			else if(category != null)
@@ -264,7 +276,7 @@ public class DBControl {
 			{
 				result.add(new Item(resultSet.getInt("itemid"), resultSet.getString("item_name"), resultSet.getDouble("item_price"), resultSet.getInt("quantity"))
 						.setDescription(resultSet.getString("description"))
-						.setItemCategory(category == null ? getCategory(resultSet.getString("category_name")) : category)
+						.setItemCategory(getCategory(resultSet.getString("category_name")))
 						.setSeller(getAccountFromRS(resultSet))
 						.setCurrentRemainingQuantity(resultSet.getInt("remainingQuantity")));
 			}
