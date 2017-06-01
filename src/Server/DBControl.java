@@ -171,11 +171,9 @@ public class DBControl {
 									"Item_name VARCHAR(100)," +
 									"Category SERIAL," + 
 									"Item_price DECIMAL," +
-									"Item_state \"state\"," + 
 									"Description VARCHAR(2000)," +
 									"Quantity INT,"+
 									"Seller SERIAL," +
-									"Sold_amount INT," +
 									"Image_source VARCHAR(150)," + 
 									"PRIMARY KEY(ItemID)," +
 									"FOREIGN KEY(Category) REFERENCES "+schemaName+".category(CategoryID)," + 
