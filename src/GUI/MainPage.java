@@ -165,7 +165,6 @@ public class MainPage extends Application
 
       //Scroll window
       featuredList = new ItemListPane();
-      featuredList.addBlankItem();
       searchList = new ItemListPane();
 
       scrollwindow = new ScrollPane();

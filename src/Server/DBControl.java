@@ -78,18 +78,18 @@ public class DBControl {
 		
 		Category antiques = insertCategory("Antiques", "", null);
 		Category art = insertCategory("Art", "", null);
-		insertCategory("Baby", "", null);
-		insertCategory("Books", "", null);
+		Category baby = insertCategory("Baby", "", null);
+		Category books = insertCategory("Books", "", null);
 		insertCategory("Business & Industrial", "", null);
 		insertCategory("Cameras & Photo", "", null);
 		insertCategory("Cell Phones & Accessories", "", null);
 		insertCategory("Clothing, Shoes & Accessories", "", null);
 		insertCategory("Coins & Paper Money", "", null);
 		insertCategory("Collectibles", "", null);
-		Category ctn = insertCategory("Computers/Tablets & Networking", "", insertCategory("Consumer Electronics", "", null));
+		Category ctn = insertCategory("Computers/Tablets & Networking", "", null);
 		insertCategory("Crafts", "", null);
 		insertCategory("Dolls & Bears", "", null);
-		insertCategory("DVDs & Movies", "", null);
+		Category dvd = insertCategory("DVDs & Movies", "", null);
 		insertCategory("Motors", "", null);
 		insertCategory("Gift Cards & Coupons", "", null);
 		insertCategory("Health & Beauty", "", null);
@@ -105,6 +105,12 @@ public class DBControl {
 		insertCategory("Video Games & Consoles", "", null);
 		
 		Item raspBerry = insertItem("RaspBerryPi", "It's grreeeaaat!", 7, 99.95, ctn, jAccount);
+		insertItem("Crib", "For da' hood!", 1, 499.95, baby, jAccount);
+		insertItem("Harry potter and the philosophers stone", "It's a book. Fo real!", 1, 199.95, books, hAccount);
+		insertItem("Artistic turd", "Smells like teen spirit", 1, 49.95, art, hAccount);
+		insertItem("Your mom", "She's like real old. Like for real.", 1, 549.95, antiques, pAccount);
+		insertItem("The Pink Panther", "She's like real old. Like for real.", 10, 0.01, antiques, pAccount);
+		insertItem("Sex tape", "SPOILER!: Features the pope and archimedes! It's some ancient shit", 10, 100.25, dvd, pAccount);
 		insertItem("My awesome laptop", "you know it's da' shit!", 1, 3995.95, ctn, hAccount);
 		makeOffer(jAccount, hAccount, raspBerry);
 		buyItem(hAccount, raspBerry, 2);

@@ -258,7 +258,7 @@ public class SellItemPage
                   //1.1
                   case Success:
                   {
-                     msg.setText("Successfully bought item");
+                     msg.setText("Successfully put item up for sale");
                      msg.setVisible(true);
                      msg.setTextFill(Color.web("#77ff42"));
                   };break;

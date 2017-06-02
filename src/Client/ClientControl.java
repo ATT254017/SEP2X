@@ -2,10 +2,7 @@ package Client;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import Model.Account;
 import Model.BuyItemStatus;
@@ -153,11 +150,6 @@ public class ClientControl
 		}, parent);
 	}
 	
-	/*public void getAccount(String username, MethodResponseHandler handler)
-	{
-		runServerMethod(Method.GetAccount, handler, username);
-	}*/
-
 	private void runServerMethod(Method m, MethodResponseHandler responseHandler, Object... args)
 	{
 		Object[] args2 = args;
