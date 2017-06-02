@@ -483,7 +483,7 @@ public class DBControl {
 
 				int affectedRows = statement.executeUpdate();
 				
-				if (affectedRows == 1) {
+				if (affectedRows > 0) {
 					return true;
 				}
 			} catch (SQLException e) {

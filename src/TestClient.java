@@ -23,14 +23,23 @@ public class TestClient
 
 		clientControl.signIn("awesome1337", "youllneverguess13", (status, loginSuccess, q) ->
 		{
-			clientControl.makeOffer(new Item(999, "itemName", 345, 1), 10, (stat, state) ->
+			clientControl.getCategories(null, (stat, list) ->
+			{
+			clientControl.insertItem("Dildo", "35cm!", 1, 12.90, list.get(0), (stat2, state) ->
 			{
 				System.out.println(stat + " - " + state);
-			});
-			
-			clientControl.getItems((status2, list) ->
+			}
+			);
+			clientControl.getItems(list.get(0), null, null, (statu, list4) ->
 			{
-				for(Item item : list)
+				
+			clientControl.makeOffer(list4.get(0), 10, (stat3, state) ->
+			{
+				System.out.println(stat3 + " - " + state);
+			
+			clientControl.getItems((status2, list2) ->
+			{
+				for(Item item : list2)
 				{
 					System.out.println(item.getItemName());
 
@@ -42,6 +51,9 @@ public class TestClient
 						System.out.println(blah);
 					});*/
 				}
+			});
+			});
+			});
 			});
 			
 		});
