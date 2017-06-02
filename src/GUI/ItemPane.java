@@ -34,13 +34,13 @@ public class ItemPane
       window.initModality(Modality.APPLICATION_MODAL);
       window.setTitle("Log In");
 
-      Font font1 = new Font("Arial", 37);
-      Font font2 = new Font("Arial", 28);
+      Font font1 = new Font("Arial", 45);
+      Font font2 = new Font("Arial", 35);
 
       //Left
-      Rectangle r1 = new Rectangle(50, 200);
+      Rectangle r1 = new Rectangle(50, 650);
       r1.setFill(Color.valueOf("#DDDDDD"));
-      Rectangle r2 = new Rectangle(50, 200);
+      Rectangle r2 = new Rectangle(50, 650);
       r2.setFill(Color.valueOf("#DDDDDD"));
 
       //Right
@@ -49,10 +49,10 @@ public class ItemPane
       name.setFont(font1);
       name.setPadding(new Insets(0, 0, 10, 0));
 
-      Rectangle underline = new Rectangle(985, 2);
+      Rectangle underline = new Rectangle(900, 2);
       underline.setFill(Color.valueOf("#BBBBBB"));
 
-      Label price = new Label("Price: " + item.getItemPrice() + "dkk");
+      Label price = new Label("Price: " + String.format( "%.2f", item.getItemPrice() ) + "dkk");
       price.setPadding(new Insets(5, 0, 5, 0));
       price.setFont(font2);
       Label quantity = new Label("Quantity: " + item.getCurrentRemainingQuantity());
@@ -63,8 +63,12 @@ public class ItemPane
       category.setPadding(new Insets(5, 0, 5, 0));
       category.setFont(font2);
 
+      Label description = new Label("Description: " + item.getDescription());
+      description.setPadding(new Insets(5, 0, 5, 0));
+      description.setFont(font2);
+
       VBox box2 = new VBox(5);
-      box2.getChildren().addAll(name, underline, price, quantity, category);
+      box2.getChildren().addAll(name, underline, price, quantity, category, description);
       box2.setPadding(new Insets(0, 10, 20, 20));
       box2.setMaxWidth(Double.MAX_VALUE);
 
@@ -75,12 +79,12 @@ public class ItemPane
       box.getChildren().addAll(r1, box2, r2);
       box.setPadding(new Insets(5, 0, 5, 0));
 
-      HBox layout = new HBox();
+      VBox layout = new VBox(10);
       layout.getChildren().addAll(box, underline2);
       layout.setPadding(new Insets(10, 0, 10, 0));
 
       //Scene and window
-      scene = new Scene(layout, 600, 700);
+      scene = new Scene(layout, 1000, 700);
       window.setScene(scene);
 
       window.showAndWait();

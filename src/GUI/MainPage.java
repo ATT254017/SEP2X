@@ -1,11 +1,12 @@
 package GUI;/**
  * Created by filip on 26/05/2017.
  */
-import com.sun.security.ntlm.Client;
 
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
+import Model.Category;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
@@ -21,7 +22,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.application.Platform;
 
 public class MainPage extends Application
 {
@@ -53,6 +53,9 @@ public class MainPage extends Application
     private EventHandler<ActionEvent> signoutAction = event -> ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
     private EventHandler<ActionEvent> registerPageAction = event -> registerPage.display();
     
+    private Category defaultCategory;
+    
+
    public static void main(String[] args)
    {
       launch(args);
@@ -109,26 +112,27 @@ public class MainPage extends Application
       searchBar.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
 
       //Search category box
-      ChoiceBox<String> categoryList = new ChoiceBox<>();
-      categoryList.getItems().add("Categories");
-      categoryList.setValue("Categories");
+      ChoiceBox<Category> categoryList = new ChoiceBox<>();
+      defaultCategory = new Category(-1, "Categories");
+      categoryList.getItems().add(defaultCategory);
+      categoryList.setValue(defaultCategory);
 
       ClientControl.getInstance().getCategories(null, (status, categories) ->
       {
          for (int i = 0; i < categories.size(); i++)
          {
-            categoryList.getItems().add(categories.get(i).getCategoryName());
+            categoryList.getItems().add(categories.get(i));
          }
       });
 
-      categoryList.getSelectionModel().selectedItemProperty()
+      /*categoryList.getSelectionModel().selectedItemProperty()
             .addListener((v, oldValue, newValue) ->
             {
                if (!(newValue.equals("Categories")))
                {
                   System.out.println("Category set to: " + newValue);
                }
-            });
+            });*/
 
       HBox searchBox = new HBox(5);
       searchBox.setPrefWidth(Double.MAX_VALUE);
@@ -166,12 +170,12 @@ public class MainPage extends Application
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      
       //Open log in page
       titleButton1.setOnAction(loginWindowAction);
 
       //Open register page
       titleButton2.setOnAction(registerPageAction);
+
 
       searchBar.setOnKeyPressed(new EventHandler<KeyEvent>()
       {
@@ -180,7 +184,8 @@ public class MainPage extends Application
          {
             if (ke.getCode().equals(KeyCode.ENTER))
             {
-               search(searchBar, categoryList);
+            	Category searchCategory = categoryList.getValue() != defaultCategory ? categoryList.getValue() : null;
+               search(searchBar.getText(), searchCategory);
             }
          }
       });
@@ -227,25 +232,78 @@ public class MainPage extends Application
 
    }
 
-   private void search(TextField searchbar, ChoiceBox categoryBox)
+   public void search(String searchString, Category searchCategory)
 
    {
-      if (!(searchbar.getText().equals("")) || !(searchbar.getText() != null))
-      {
 
-         changeList();
-      }
-      System.out.println(searchbar.getText());
+            //call server for list
+            ClientControl.getInstance().getItems(searchCategory,
+                  searchString, null, ((status, items) ->
+            {
+            	System.out.println(searchString);
+            	System.out.println(searchCategory);
+            	System.out.println(status);
+            	System.out.println(items.size());
+               Platform.runLater(() ->
+               {
+                  //clear searchList
+                  searchList.getChildren().clear();
 
+                  //add new items to searchList
+                  for (int i = 0; i < items.size(); i++)
+                  {
+                	  System.out.println(items.get(i).getItemName());
+                     searchList.addItem(items.get(i));
+                  }
+
+                  //change to search list
+                  changeToSearch();
+               });
+            }));
+
+            System.out.println("search method: " + searchString);
+
+
+      
    }
 
+   /*
    public void searchCategory(String category)
 
    {
-      //
+      //call server for list
+      ClientControl.getInstance().getItems(new Category(0, category), null, null, (status, items) ->
+      {
+         Platform.runLater(() ->
+         {
+            //clear searchList
+            searchList.getChildren().clear();
+
+            //add new items to searchList
+            for(int i = 0; i < items.size(); i++)
+            {
+               searchList.addItem(items.get(i));
+            }
+
+            //change to search list
+            changeToSearch();
+         });
+
+      });
+
+
+
       changeList();
       System.out.println("Search category: " + category);
 
+   }
+*/
+   private void changeToSearch()
+   {
+      if(isMain)
+      {
+         changeList();
+      }
    }
 
    private void changeList()
@@ -253,12 +311,12 @@ public class MainPage extends Application
       if (isMain)
       {
          scrollwindow.setContent(searchList);
-         toggleState();
+         isMain = false;
       }
       else
       {
          scrollwindow.setContent(featuredList);
-         toggleState();
+         isMain = true;
       }
    }
 
@@ -282,7 +340,6 @@ public class MainPage extends Application
       titleButton1.setText("Sell Item");
       titleButton2.setText("Sign Out");
       isSignedIn = true;
-      
    }
 
    public void signOut()

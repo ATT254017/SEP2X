@@ -2,35 +2,43 @@ package GUI.Menubar;/**
  * Created by filip on 30/05/2017.
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import Client.ClientControl;
 import GUI.MainPage;
+import Model.Category;
 import javafx.application.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
 public class MenubarMain extends HBox
 {
    private MainPage parent;
-   private ChoiceBox<String> categoryList;
+   private ChoiceBox<Category> categoryList;
+   private Category defaultCategory;
 
    public MenubarMain(MainPage parent)
    {
       setMaxWidth(Double.MAX_VALUE);
       this.parent = parent;
       categoryList = new ChoiceBox<>();
-      categoryList.getItems().add("Categories");
-      categoryList.setValue("Categories");
+      defaultCategory = new Category(-1, "Categories");
+      categoryList.getItems().add(defaultCategory);
+      categoryList.setValue(defaultCategory);
       ClientControl.getInstance().getCategories(null, (status, categories) ->
       {
          for (int i = 0; i < categories.size(); i++)
          {
             if(categories.get(i).hasParent())
             {
-               categoryList.getItems().add("-" + categories.get(i).getCategoryName());
+               categoryList.getItems().add(categories.get(i));
             }
             else
             {
-               categoryList.getItems().add(categories.get(i).getCategoryName());
+               categoryList.getItems().add(categories.get(i));
             }
 
          }
@@ -39,33 +47,49 @@ public class MenubarMain extends HBox
       categoryList.getSelectionModel().selectedItemProperty()
             .addListener((v, oldValue, newValue) ->
             {
-               if (!(newValue.equals("Categories")))
+               if (newValue != defaultCategory)
                {
                   //Category search
-                  this.parent.searchCategory(newValue);
+                  this.parent.search(null, newValue);
                }
             });
 
-      Button books = new Button("Books");
-      books.setOnAction(event -> System.out.println("Books"));
+    
+      Button booksButton = new Button("Books");
+      booksButton.setOnAction(event -> parent.search(null, findCategory("books")));
 
-      Button clothes = new Button("Clothes");
-      clothes.setOnAction(event -> System.out.println("Clothes"));
+      Button clothesButton = new Button("Clothes");
+      clothesButton.setOnAction(event -> parent.search(null, findCategory("cloth")));
 
-      Button videoGames = new Button("Video Games");
-      videoGames.setOnAction(event -> System.out.println("Video Games"));
+      Button videoGamesButton = new Button("Video Games");
+      videoGamesButton.setOnAction(event -> parent.search(null, findCategory("video")));
 
-      Button computers = new Button("Computers");
-      computers.setOnAction(event -> System.out.println("Computers"));
+      Button computersButton = new Button("Computers");
+      computersButton.setOnAction(event -> parent.search(null, findCategory("consumer electronic")));
 
       this.getChildren()
-            .addAll(books, clothes, videoGames, computers, categoryList);
+            .addAll(booksButton, clothesButton, videoGamesButton, computersButton, categoryList);
 
-      books.setPrefWidth(230);
-      clothes.setPrefWidth(230);
-      videoGames.setPrefWidth(230);
-      computers.setPrefWidth(230);
+      booksButton.setPrefWidth(230);
+      clothesButton.setPrefWidth(230);
+      videoGamesButton.setPrefWidth(230);
+      computersButton.setPrefWidth(230);
       categoryList.setPrefWidth(260);
 
+   }
+   private Map<String, Category> findCategoryCache = new HashMap<>();
+   private Category findCategory(String catName)
+   {
+	   if(findCategoryCache.containsKey(catName))
+		   return findCategoryCache.get(catName);
+	      for(Category category : categoryList.getItems())
+	      {
+	    	  if(category.getCategoryName().toLowerCase().contains(catName))
+	    	  {
+	    		  findCategoryCache.put(catName, category);
+	    		  return category;
+	    	  }
+	      }
+	      return defaultCategory;	      
    }
 }
