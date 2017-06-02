@@ -2,6 +2,16 @@ package GUI;/**
  * Created by filip on 24/05/2017.
  */
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+
+import Client.ClientControl;
+import Model.Method;
+import Model.MethodStatus;
+import Model.Person;
+import Model.RegisterAccountStatus;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -157,6 +167,7 @@ public class RegisterPage
       genderSelector.getItems().add("Male");
       genderSelector.getItems().add("Female");
       genderSelector.setValue("Male");
+      
 
       HBox genderbox = new HBox(3);
       genderbox.setAlignment(Pos.CENTER);
@@ -192,7 +203,10 @@ public class RegisterPage
       Button registerButton = new Button("Register");
       registerButton.setFont(new Font("Verdana", 24));
       registerButton.setMaxWidth(190);
-      registerButton.setOnAction(event -> checkRegistration());
+      registerButton.setOnAction(event -> { 
+    	  if(checkRegistration())
+    		  register();
+      });
 
       //Cancel button
       Button cancelButton = new Button("Cancel");
@@ -250,9 +264,46 @@ public class RegisterPage
       yearInput.clear();
       genderSelector.setValue("Male");
    }
-
-   private void checkRegistration()
+   
+   private void register()
    {
+
+	   Person person = new Person(firstNameInput.getText(),
+			   lastNameInput.getText(),
+			   addressInput.getText(),
+			   Integer.parseInt(phoneNumberInput.getText()),
+			   genderSelector.getSelectionModel().getSelectedItem().equals("Male"),
+			   LocalDate.of(Integer.parseInt(yearInput.getText()), Integer.parseInt(monthInput.getText()), Integer.parseInt(dayInput.getText())));
+	   
+	   ClientControl.getInstance().registerAccount(usernameInput.getText(), emailInput.getText(), person, passwordInput.getText(), (status, rStatus) ->
+	   {
+		   Platform.runLater(() ->
+		   {
+			   String errortext = null;
+			   if(status == MethodStatus.SuccessfulInvocation)
+			   {
+				   if(rStatus == RegisterAccountStatus.UsernameAlreadyExists)
+					   errortext = "That username is already taken!";
+				   else if(rStatus == RegisterAccountStatus.AccountCreated)
+					   window.close();
+			   }
+			   else if(status == MethodStatus.TimedOut)
+				   errortext = "Connection to the server has timed out";
+			   else 
+				   errortext = "Unknown error happened";
+		   
+			   if(errortext != null)
+			   {
+				   errorMessage.setText(errortext);
+				   errorMessage.setVisible(true);
+			   }
+		   	});
+	   });
+   }
+
+   private boolean checkRegistration()
+   {
+	   
       boolean correct = false;
 
       if (usernameInput.getText().equals("") || usernameInput.getText()
@@ -369,5 +420,6 @@ public class RegisterPage
          }
       }
 
+      return !correct;
    }
 }
