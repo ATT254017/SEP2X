@@ -7,6 +7,6 @@ import java.util.EventListener;
 /**
  * Created by Afonso on 5/23/2017.
  */
-public interface StatusListener extends EventListener {
+public interface StatusListener {
     void statusChangeEvent(ServerResponse sender);
 }
