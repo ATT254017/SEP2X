@@ -31,7 +31,6 @@ public class MainPage extends Application
 
    //STATE main page = true, search results = false;
    private boolean isMain;
-   private boolean logedIn;
 
    private ScrollPane scrollwindow;
    private ItemListPane featuredList;
@@ -41,22 +40,22 @@ public class MainPage extends Application
    private Button titleButton2;
 
    private SellItemPage sellItemPage;
-   private LogInPage logInPage;
+   private LogInPage signInPage;
    private RegisterPage registerPage;
    private EventHandler<ActionEvent> titleButton1Action = event ->
    {
-       if (logedIn)
+       if (isSignedIn)
        {
           sellItemPage.display();
        }
        else
        {
-          logInPage.display();
+          signInPage.display();
        }
     };
     private EventHandler<ActionEvent> titleButton2Action = event ->
     {
-       if(logedIn)
+       if(isSignedIn)
        {
           ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
        }
@@ -80,7 +79,6 @@ public class MainPage extends Application
       window = primaryStage;
       window.setTitle("Marketplace");
       isMain = true;
-      logedIn = false;
       isSignedIn = false;
       controller = ClientControl.getInstance();
       try
@@ -92,7 +90,8 @@ public class MainPage extends Application
          System.out.println("Error: no connection!");
       }
       registerPage = new RegisterPage();
-      logInPage = new LogInPage(this, registerPage);
+      sellItemPage = new SellItemPage();
+      signInPage = new LogInPage(this, registerPage);
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //Top

@@ -65,18 +65,10 @@ public class SellItemPage
       //Description field
       descInput = new TextField();
       descInput.setPrefWidth(400);
-      descInput.setPrefHeight(40);
-      descInput.setPromptText("Password");
+      descInput.setPrefHeight(80);
+      descInput.setPromptText("Description");
       descInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
-      descInput.setPadding(new Insets(0, 0, 25, 0));
-
-      //Quantity field
-      quantityInput = new TextField();
-      quantityInput.setPrefWidth(400);
-      quantityInput.setPrefHeight(30);
-      quantityInput.setPromptText("Email");
-      quantityInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
-      quantityInput.setPadding(new Insets(0, 0, 25, 0));
+      descInput.setPadding(new Insets(10, 0, 25, 0));
 
       //First & Last name field
       HBox quantityAndPriceBox = new HBox(10);
@@ -86,13 +78,13 @@ public class SellItemPage
       quantityInput.setPrefWidth(195);
       quantityInput.setPrefHeight(30);
       quantityInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
-      quantityInput.setPromptText("First name");
+      quantityInput.setPromptText("Quantity");
 
       priceInput = new TextField();
       priceInput.setPrefWidth(195);
       priceInput.setPrefHeight(30);
       priceInput.setStyle("-fx-border-color: grey; -fx-border-width: 1px ;");
-      priceInput.setPromptText("List name");
+      priceInput.setPromptText("Price");
 
       quantityAndPriceBox.setPadding(new Insets(0, 0, 25, 0));
       quantityAndPriceBox.getChildren().addAll(quantityInput, priceInput);
@@ -116,10 +108,10 @@ public class SellItemPage
       });
       
 
-      HBox genderbox = new HBox(3);
-      genderbox.setAlignment(Pos.CENTER);
-      genderbox.setPadding(new Insets(0, 15, 0, 0));
-      genderbox.getChildren().addAll(categoryLabel, categoryInput);
+      categoryBox = new HBox(3);
+      categoryBox.setAlignment(Pos.CENTER);
+      categoryBox.setPadding(new Insets(0, 15, 0, 0));
+      categoryBox.getChildren().addAll(categoryLabel, categoryInput);
 
 
 
@@ -147,7 +139,7 @@ public class SellItemPage
       buttonbox.getChildren().addAll(sellButton, cancelButton);
 
       //Center
-      VBox center = new VBox();
+      VBox center = new VBox(10);
       center.getChildren().addAll(title, errorMessage, nameInput, descInput, quantityAndPriceBox, categoryBox, buttonbox);
       center.setAlignment(Pos.TOP_CENTER);
       center.setMinWidth(480);
