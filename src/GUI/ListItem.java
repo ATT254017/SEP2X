@@ -62,7 +62,7 @@ public class ListItem extends VBox
       box2.setPadding(new Insets(0, 10, 20, 20));
       box2.setMaxWidth(Double.MAX_VALUE);
 
-      Rectangle underline2 = new Rectangle(1000, 3);
+      Rectangle underline2 = new Rectangle(1153, 3);
       underline2.setFill(Color.valueOf("#DDDDDD"));
 
       HBox box = new HBox(20);
