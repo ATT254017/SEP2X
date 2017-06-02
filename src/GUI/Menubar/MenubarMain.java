@@ -24,6 +24,7 @@ public class MenubarMain extends HBox
    {
       setMaxWidth(Double.MAX_VALUE);
       this.parent = parent;
+
       categoryList = new ChoiceBox<>();
       defaultCategory = new Category(-1, "Categories");
       categoryList.getItems().add(defaultCategory);
@@ -32,15 +33,7 @@ public class MenubarMain extends HBox
       {
          for (int i = 0; i < categories.size(); i++)
          {
-            if(categories.get(i).hasParent())
-            {
-               categoryList.getItems().add(categories.get(i));
-            }
-            else
-            {
-               categoryList.getItems().add(categories.get(i));
-            }
-
+            categoryList.getItems().add(categories.get(i));
          }
       });
 

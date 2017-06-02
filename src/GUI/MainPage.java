@@ -9,8 +9,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.event.WeakEventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -41,17 +39,32 @@ public class MainPage extends Application
 
    private Button titleButton1;
    private Button titleButton2;
-   
+
+   private SellItemPage sellItemPage;
    private LogInPage logInPage;
    private RegisterPage registerPage;
-   private EventHandler<ActionEvent> loginWindowAction = event ->
+   private EventHandler<ActionEvent> titleButton1Action = event ->
    {
-       if (!logedIn)
-    	   logInPage.display();
+       if (logedIn)
+       {
+          sellItemPage.display();
+       }
+       else
+       {
+          logInPage.display();
+       }
     };
-    private EventHandler<ActionEvent> sellItemWindowAction = event -> System.out.println("Open sell item window");
-    private EventHandler<ActionEvent> signoutAction = event -> ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
-    private EventHandler<ActionEvent> registerPageAction = event -> registerPage.display();
+    private EventHandler<ActionEvent> titleButton2Action = event ->
+    {
+       if(logedIn)
+       {
+          ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
+       }
+       else
+       {
+          registerPage.display();
+       }
+    };
     
     private Category defaultCategory;
     
@@ -65,7 +78,7 @@ public class MainPage extends Application
    public void start(Stage primaryStage)
    {
       window = primaryStage;
-      window.setTitle("JavaFx");
+      window.setTitle("Marketplace");
       isMain = true;
       logedIn = false;
       isSignedIn = false;
@@ -171,10 +184,10 @@ public class MainPage extends Application
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
       //Open log in page
-      titleButton1.setOnAction(loginWindowAction);
+      titleButton1.setOnAction(titleButton1Action);
 
       //Open register page
-      titleButton2.setOnAction(registerPageAction);
+      titleButton2.setOnAction(titleButton2Action);
 
 
       searchBar.setOnKeyPressed(new EventHandler<KeyEvent>()
@@ -334,18 +347,14 @@ public class MainPage extends Application
 
    public void signIn()
    {
-	   //changes the button functionalities
-	   titleButton1.setOnAction(sellItemWindowAction);
-	   titleButton2.setOnAction(signoutAction);
-      titleButton1.setText("Sell Item");
+	   titleButton1.setText("Sell Item");
       titleButton2.setText("Sign Out");
       isSignedIn = true;
    }
 
    public void signOut()
    {
-	   titleButton1.setOnAction(loginWindowAction);
-	   titleButton2.setOnAction(registerPageAction);
+	   ClientControl.getInstance().signOut(() -> {});
       titleButton1.setText("Sign In");
       titleButton2.setText("Register");
       isSignedIn = false;

@@ -43,7 +43,7 @@ public class ItemPane
    {
       window = new Stage();
       window.initModality(Modality.APPLICATION_MODAL);
-      window.setTitle("Log In");
+      window.setTitle(item.getItemName());
 
       Font font1 = new Font("Arial", 45);
       Font font2 = new Font("Arial", 35);
@@ -100,6 +100,7 @@ public class ItemPane
       Text message = new Text("");
       message.setStyle("-fx-stroke: black; -fx-stroke-width: 1;");
       msg = new Label();
+      msg.setVisible(false);
 
       HBox quantityBox = new HBox(10);
       quantityBox.getChildren().addAll(quantityLabel, quantityChoiceBox);
@@ -124,7 +125,7 @@ public class ItemPane
          int q = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem().toString());
          ClientControl.getInstance().buyItem(item, q, (status, state) ->
          {
-            buyResponse(status, state, message);
+            buyResponse(status, state);
          });
       });
       Button cancelButton = new Button("Cancel");
@@ -146,7 +147,7 @@ public class ItemPane
 
    }
 
-   private void buyResponse(MethodStatus status, BuyItemStatus state, Text message)
+   private void buyResponse(MethodStatus status, BuyItemStatus state)
    {
       Platform.runLater( () ->
       {
@@ -160,24 +161,23 @@ public class ItemPane
                   //1.1
                   case SuccessfullyBought:
                   {
-                     message.setText("Successfully bought item");
-                     message.setVisible(true);
+                     msg.setText("Successfully bought item");
+                     msg.setVisible(true);
                      msg.setTextFill(Color.web("#77ff42"));
                   };break;
 
                   //1.2
                   case AllowedQuantityExceeded:
                   {
-                     message.setText("Selected quantity you wish to buy is over the actual stock");
-                     message.setVisible(true);
+                     msg.setText("Selected quantity you wish to buy is over the actual stock");
+                     msg.setVisible(true);
                      msg.setTextFill(Color.web("#ff9900"));
                   };break;
 
                   //1.3
                   case ItemNotFoundOrCancelled:
                   {
-                     message.setText("Item could not be found!");
-                     Label msg = new Label(message.getText());
+                     msg.setText("Item could not be found!");
                      msg.setTextFill(Color.web("#00ff00"));
                   };break;
                }
@@ -186,27 +186,24 @@ public class ItemPane
             //2
             case Unauthorized:
             {
-               message.setText("To buy an item you need to sign in!");
-               message.setVisible(true);
-               Label msg = new Label(message.getText());
+               msg.setText("To buy an item you need to sign in!");
+               msg.setVisible(true);
                msg.setTextFill(Color.web("#ff9900"));
             };break;
 
             //3
             case TimedOut:
             {
-               message.setText("Connection with server timed out!");
-               message.setVisible(true);
-               Label msg = new Label(message.getText());
+               msg.setText("Connection with server timed out!");
+               msg.setVisible(true);
                msg.setTextFill(Color.web("#ff0000"));
             };break;
 
             //4
             case UnknownError:
             {
-               message.setText("Unknown error!");
-               message.setVisible(true);
-               Label msg = new Label(message.getText());
+               msg.setText("Unknown error!");
+               msg.setVisible(true);
                msg.setTextFill(Color.web("#ff0000"));
             };break;
          }
