@@ -33,7 +33,7 @@ public class SellItemPage
    private TextField descInput;
    private TextField quantityInput;
    private TextField priceInput;
-   private ChoiceBox<String> categoryInput;
+   private ChoiceBox<Category> categoryInput;
    private Category defaultCategory;
 
    private Label errorMessage;
@@ -97,13 +97,13 @@ public class SellItemPage
 
       categoryInput = new ChoiceBox<>();
       defaultCategory = new Category(-1, "Categories");
-      categoryInput.getItems().add(defaultCategory.getCategoryName());
-      categoryInput.setValue(defaultCategory.getCategoryName());
+      categoryInput.getItems().add(defaultCategory);
+      categoryInput.setValue(defaultCategory);
       ClientControl.getInstance().getCategories(null, (status, categories) ->
       {
          for (int i = 0; i < categories.size(); i++)
          {
-            categoryInput.getItems().add(categories.get(i).getCategoryName());
+            categoryInput.getItems().add(categories.get(i));
          }
       });
       
@@ -169,7 +169,7 @@ public class SellItemPage
       descInput.clear();
       quantityInput.clear();
       priceInput.clear();
-      categoryInput.setValue("Category");
+      categoryInput.setValue(defaultCategory);
    }
    
    private void register()
@@ -177,7 +177,7 @@ public class SellItemPage
 
 	   ClientControl.getInstance().insertItem(nameInput.getText(), descInput.getText(),
             Integer.parseInt(quantityInput.getText()), Double.parseDouble(priceInput.getText()),
-            new Category(0, categoryInput.getSelectionModel().getSelectedItem()),
+            categoryInput.getValue(),
             (status, state) ->
             {
                sellResponse(status, state, errorMessage);

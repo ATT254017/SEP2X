@@ -199,7 +199,7 @@ public class DBControl {
 									"BuyerID SERIAL," +
 									"ItemID SERIAL," +
 									"QuantityBought INT," +
-									"TotalAmount DECIMAL(5, 2)," +
+									"TotalAmount double precision," +
 									"BuyTime Timestamp,"+
 									"PRIMARY KEY(SalesID)," +
 									"FOREIGN KEY(BuyerID) REFERENCES "+schemaName+".\"account\"(AccountID)," +
@@ -641,6 +641,7 @@ public class DBControl {
 				return false; // all sold out
 			}
 		} catch (SQLException ex) {
+			System.out.println("here");
 	          System.out.println(ex.getMessage());
 	    }
 		return false;

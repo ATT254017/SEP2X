@@ -91,7 +91,6 @@ public class ClientControl
 		}, item);
 	}
 	
-	
 	public void makeOffer(Item item, double offerPrice, MakeOfferResponseHandler handler)
 	{
 		runServerMethod(Method.MakeOffer, (status, args) -> 
