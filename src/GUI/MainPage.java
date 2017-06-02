@@ -1,12 +1,12 @@
 package GUI;/**
  * Created by filip on 26/05/2017.
  */
-import com.sun.security.ntlm.Client;
 
 import Client.ClientControl;
 import GUI.Menubar.MenubarMain;
+import Model.Category;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.event.WeakEventHandler;
@@ -21,7 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.application.Platform;
 
 public class MainPage extends Application
 {
@@ -41,18 +40,7 @@ public class MainPage extends Application
 
    private Button titleButton1;
    private Button titleButton2;
-   
-   private LogInPage logInPage;
-   private RegisterPage registerPage;
-   private EventHandler<ActionEvent> loginWindowAction = event ->
-   {
-       if (!logedIn)
-    	   logInPage.display();
-    };
-    private EventHandler<ActionEvent> sellItemWindowAction = event -> System.out.println("Open sell item window");
-    private EventHandler<ActionEvent> signoutAction = event -> ClientControl.getInstance().signOut(() -> Platform.runLater(() -> signOut()));
-    private EventHandler<ActionEvent> registerPageAction = event -> registerPage.display();
-    
+
    public static void main(String[] args)
    {
       launch(args);
@@ -75,8 +63,8 @@ public class MainPage extends Application
       {
          System.out.println("Error: no connection!");
       }
-      registerPage = new RegisterPage();
-      logInPage = new LogInPage(this, registerPage);
+      RegisterPage registerPage = new RegisterPage();
+      LogInPage logInPage = new LogInPage(this, registerPage);
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
       //Top
@@ -166,12 +154,37 @@ public class MainPage extends Application
 
       ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-      
       //Open log in page
-      titleButton1.setOnAction(loginWindowAction);
+      titleButton1.setOnAction(event ->
+      {
+         if (logedIn)
+         {
+            //Sell item
+            System.out.println("Open sell item");
+         }
+         else
+         {
+            //Log in
+            logInPage.display();
+            System.out.println("Open log in");
+         }
+      });
 
       //Open register page
-      titleButton2.setOnAction(registerPageAction);
+      titleButton2.setOnAction(event ->
+      {
+         if (logedIn)
+         {
+            //Sell item
+            System.out.println("Open sell item");
+         }
+         else
+         {
+            //Open register page
+            registerPage.display();
+         }
+
+      });
 
       searchBar.setOnKeyPressed(new EventHandler<KeyEvent>()
       {
@@ -233,19 +246,68 @@ public class MainPage extends Application
       if (!(searchbar.getText().equals("")) || !(searchbar.getText() != null))
       {
 
-         changeList();
-      }
-      System.out.println(searchbar.getText());
+            //call server for list
+            ClientControl.getInstance().getItems(new Category(0, categoryBox.getSelectionModel().getSelectedItem().toString()),
+                  searchbar.getText(), null, ((status, items) ->
+            {
+               Platform.runLater(() ->
+               {
+                  //clear searchList
+                  searchList.getChildren().clear();
 
+                  //add new items to searchList
+                  for (int i = 0; i < items.size(); i++)
+                  {
+                     searchList.addItem(items.get(i));
+                  }
+
+                  //change to search list
+                  changeToSearch();
+               });
+            }));
+
+            System.out.println("search method: " + searchbar.getText());
+
+
+      }
    }
 
    public void searchCategory(String category)
 
    {
-      //
+      //call server for list
+      ClientControl.getInstance().getItems(new Category(0, category), null, null, (status, items) ->
+      {
+         Platform.runLater(() ->
+         {
+            //clear searchList
+            searchList.getChildren().clear();
+
+            //add new items to searchList
+            for(int i = 0; i < items.size(); i++)
+            {
+               searchList.addItem(items.get(i));
+            }
+
+            //change to search list
+            changeToSearch();
+         });
+
+      });
+
+
+
       changeList();
       System.out.println("Search category: " + category);
 
+   }
+
+   private void changeToSearch()
+   {
+      if(isMain)
+      {
+         changeList();
+      }
    }
 
    private void changeList()
@@ -253,12 +315,12 @@ public class MainPage extends Application
       if (isMain)
       {
          scrollwindow.setContent(searchList);
-         toggleState();
+         isMain = false;
       }
       else
       {
          scrollwindow.setContent(featuredList);
-         toggleState();
+         isMain = true;
       }
    }
 
@@ -276,19 +338,13 @@ public class MainPage extends Application
 
    public void signIn()
    {
-	   //changes the button functionalities
-	   titleButton1.setOnAction(sellItemWindowAction);
-	   titleButton2.setOnAction(signoutAction);
       titleButton1.setText("Sell Item");
       titleButton2.setText("Sign Out");
       isSignedIn = true;
-      
    }
 
    public void signOut()
    {
-	   titleButton1.setOnAction(loginWindowAction);
-	   titleButton2.setOnAction(registerPageAction);
       titleButton1.setText("Sign In");
       titleButton2.setText("Register");
       isSignedIn = false;
