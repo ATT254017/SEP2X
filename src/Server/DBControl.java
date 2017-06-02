@@ -104,8 +104,10 @@ public class DBControl {
 		insertCategory("Toys & Hobbies", "", null);
 		insertCategory("Video Games & Consoles", "", null);
 		
-		insertItem("Turd Sandwitch", "It's grreeeaaat!", 7, 99.95, art, jAccount);
+		Item raspBerry = insertItem("RaspBerryPi", "It's grreeeaaat!", 7, 99.95, ctn, jAccount);
 		insertItem("My awesome laptop", "you know it's da' shit!", 1, 3995.95, ctn, hAccount);
+		makeOffer(jAccount, hAccount, raspBerry);
+		buyItem(hAccount, raspBerry, 2);
 	}
 	
 	private boolean databaseExists()
