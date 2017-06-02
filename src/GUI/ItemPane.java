@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -28,6 +29,9 @@ public class ItemPane
    private Item item;
    private Stage window;
    private Scene scene;
+   private VBox box2;
+
+   private Label msg;
 
 
    public ItemPane(Item item)
@@ -76,8 +80,32 @@ public class ItemPane
       description.setPadding(new Insets(5, 0, 5, 0));
       description.setFont(font2);
 
-      VBox box2 = new VBox(5);
-      box2.getChildren().addAll(name, underline, price, quantity, category, description);
+      //Quantity box
+      Label quantityLabel = new Label("Select the amount you want to buy");
+      ChoiceBox<String> quantityChoiceBox = new ChoiceBox<>();
+      for(int i = 1; i < item.getCurrentRemainingQuantity()+1; i++)
+      {
+         quantityChoiceBox.getItems().add("" + i);
+      }
+
+      try
+      {
+         quantityChoiceBox.setValue("1");
+      }
+      catch (Exception e)
+      {
+         System.out.println("Item doesn't have stock");
+      }
+
+      Text message = new Text("");
+      message.setStyle("-fx-stroke: black; -fx-stroke-width: 1;");
+      msg = new Label();
+
+      HBox quantityBox = new HBox(10);
+      quantityBox.getChildren().addAll(quantityLabel, quantityChoiceBox);
+
+      box2 = new VBox(5);
+      box2.getChildren().addAll(name, underline, price, quantity, category, description, quantityChoiceBox, msg);
       box2.setPadding(new Insets(0, 10, 20, 20));
       box2.setMaxWidth(Double.MAX_VALUE);
 
@@ -89,32 +117,19 @@ public class ItemPane
       box.getChildren().addAll(r1, box2, r2);
       box.setPadding(new Insets(5, 0, 5, 0));
 
-      Label quantityLabel = new Label("Select the amount you want to buy");
-
-      ChoiceBox<String> quantityChoiceBox = new ChoiceBox<>();
-      for(int i = 0; i < item.getCurrentRemainingQuantity(); i++)
-      {
-         quantityChoiceBox.getItems().add("" + i+1);
-      }
-
-      HBox quantityBox = new HBox(10);
-      quantityBox.getChildren().addAll(quantityLabel, quantityChoiceBox);
-
-      Label message = new Label("");
-      message.setVisible(false);
-
       Button buyButton = new Button("Buy");
-      buyButton.setFont(font2);
+      buyButton.setFont(new Font("Arial", 28));
       buyButton.setOnAction(event ->
       {
-         int q = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem());
+         int q = Integer.parseInt(quantityChoiceBox.getSelectionModel().getSelectedItem().toString());
          ClientControl.getInstance().buyItem(item, q, (status, state) ->
          {
             buyResponse(status, state, message);
          });
       });
       Button cancelButton = new Button("Cancel");
-      cancelButton.setFont(font2);
+      cancelButton.setFont(new Font("Arial", 28));
+      cancelButton.setOnAction(event -> window.close());
       HBox buttonBox = new HBox(15);
       buttonBox.setAlignment(Pos.CENTER);
       buttonBox.getChildren().addAll(buyButton, cancelButton);
@@ -131,7 +146,7 @@ public class ItemPane
 
    }
 
-   private void buyResponse(MethodStatus status, BuyItemStatus state, Label message)
+   private void buyResponse(MethodStatus status, BuyItemStatus state, Text message)
    {
       Platform.runLater( () ->
       {
@@ -147,7 +162,7 @@ public class ItemPane
                   {
                      message.setText("Successfully bought item");
                      message.setVisible(true);
-                     message.setTextFill(Color.web("#77ff42"));
+                     msg.setTextFill(Color.web("#77ff42"));
                   };break;
 
                   //1.2
@@ -155,15 +170,15 @@ public class ItemPane
                   {
                      message.setText("Selected quantity you wish to buy is over the actual stock");
                      message.setVisible(true);
-                     message.setTextFill(Color.web("#fff600"));
+                     msg.setTextFill(Color.web("#ff9900"));
                   };break;
 
                   //1.3
                   case ItemNotFoundOrCancelled:
                   {
                      message.setText("Item could not be found!");
-                     message.setVisible(true);
-                     message.setTextFill(Color.web("#fff600"));
+                     Label msg = new Label(message.getText());
+                     msg.setTextFill(Color.web("#00ff00"));
                   };break;
                }
             }; break;
@@ -173,7 +188,8 @@ public class ItemPane
             {
                message.setText("To buy an item you need to sign in!");
                message.setVisible(true);
-               message.setTextFill(Color.web("#FFFF00"));
+               Label msg = new Label(message.getText());
+               msg.setTextFill(Color.web("#ff9900"));
             };break;
 
             //3
@@ -181,7 +197,8 @@ public class ItemPane
             {
                message.setText("Connection with server timed out!");
                message.setVisible(true);
-               message.setTextFill(Color.web("#FF0000"));
+               Label msg = new Label(message.getText());
+               msg.setTextFill(Color.web("#ff0000"));
             };break;
 
             //4
@@ -189,7 +206,8 @@ public class ItemPane
             {
                message.setText("Unknown error!");
                message.setVisible(true);
-               message.setTextFill(Color.web("#FF0000"));
+               Label msg = new Label(message.getText());
+               msg.setTextFill(Color.web("#ff0000"));
             };break;
          }
       });
