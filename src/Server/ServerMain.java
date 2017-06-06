@@ -14,7 +14,7 @@ public class ServerMain {
 	
 	public static void main(String[] args) throws IOException, SQLException
 	{
-		new ServerMain(9999, "jdbc:postgresql://localhost:5432/", "postgres", "Qwerty1234!!");
+		new ServerMain(9999, "jdbc:postgresql://localhost:5432/", "postgres", "benedictcumberbatch");
 	}
 
 	public ServerMain(int listenerPort, String dbURL, String dbUsername, String dbPassword) throws IOException, SQLException {
