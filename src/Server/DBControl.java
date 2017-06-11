@@ -693,7 +693,8 @@ public class DBControl {
 			if (affectedRows > 0) {
 				try (ResultSet rs = pstmt.getGeneratedKeys()) {
 	                  if (rs.next())
-	                	  return new Item(rs.getInt(1), itemName, price, quantity).setDescription(itemDescription).setItemCategory(category).setSeller(seller);
+	                	  return new Item(rs.getInt(1), itemName, price, quantity).setDescription(itemDescription)
+	                			  .setItemCategory(category).setSeller(seller);
 				}
 			}
           
